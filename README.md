@@ -1,6 +1,6 @@
 # HydroFlow
 <p align="center">
-  <img width="200" height="200" alt="Gemini_Generated_Image_3ltzmn3ltzmn3ltz" src="https://github.com/user-attachments/assets/2a1192d3-2e14-49a7-9b13-45d9adb3ea26" />
+  <img width="500" height="500" alt="Gemini_Generated_Image_3ltzmn3ltzmn3ltz" src="https://github.com/user-attachments/assets/2a1192d3-2e14-49a7-9b13-45d9adb3ea26" />
 </p>
 
 # 🌱 HydroFlow – Sistema de Irrigação Automática
