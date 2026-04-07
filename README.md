@@ -84,8 +84,8 @@ O sistema possui as seguintes funcionalidades:
 | Product Owner | Mariana Biscaino Caiafa Ribeiro |
 | Back-End | Mariana Biscaino Caiafa Ribeiro |
 | Back-End | Ana Rita Boiago Evangelista |
-| Analista de Sistemas | Giulia dos Reis Ribeiro |
-| Analista / Designer | Rubens Aparecido Moscardini Neto |
+| Analista de Sistemas e Designer | Giulia dos Reis Ribeiro |
+| Analista de Sistemas e Designer | Rubens Aparecido Moscardini Neto |
 | Full Stack | Diego Viel Bortolotti |
 | Full Stack | Felipe Donizetti Ribeiro |
 
@@ -228,8 +228,8 @@ The system has the following features:
 | Product Owner | Mariana Biscaino Caiafa Ribeiro |
 | Back-End | Mariana Biscaino Caiafa Ribeiro |
 | Back-End | Ana Rita Boiago Evangelista |
-| Systems Analyst | Giulia dos Reis Ribeiro |
-| Analyst / Designer | Rubens Aparecido Moscardini Neto |
+| Systems Analyst and Designer | Giulia dos Reis Ribeiro |
+| Systems Analyst and Designer | Rubens Aparecido Moscardini Neto |
 | Full Stack | Diego Viel Bortolotti |
 | Full Stack | Felipe Donizetti Ribeiro |
 
