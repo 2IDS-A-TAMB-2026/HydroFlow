@@ -1,6 +1,6 @@
 # HydroFlow
 <p align="center">
-  <img width="500" height="500" alt="Logo HYDROFLOW" src="https://github.com/user-attachments/assets/2a1192d3-2e14-49a7-9b13-45d9adb3ea26" />
+  <img width="500" height="500" alt="logo HYDROFLOW" src="https://github.com/user-attachments/assets/7a3e295a-ab22-494d-81f3-3d6518d6fcc7" />
 </p>
 
 <h1 align="center">🌱 HydroFlow – Sistema de Irrigação Automática</h1>
@@ -143,7 +143,7 @@ O banco de dados foi desenvolvido em MySQL contendo as seguintes tabelas:
 
 
 <p align="center">
-  <img width="500" height="500" alt="Logo HYDROFLOW" src="https://github.com/user-attachments/assets/2a1192d3-2e14-49a7-9b13-45d9adb3ea26" />
+  <img width="500" height="500" alt="logo HYDROFLOW" src="https://github.com/user-attachments/assets/7a3e295a-ab22-494d-81f3-3d6518d6fcc7" />
 </p>
 
 <h1 align="center">🌱 HydroFlow – Automatic Irrigation System</h1>
