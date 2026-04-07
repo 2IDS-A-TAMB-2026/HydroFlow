@@ -3,7 +3,12 @@
   <img width="500" height="500" alt="Logo HYDROFLOW" src="https://github.com/user-attachments/assets/2a1192d3-2e14-49a7-9b13-45d9adb3ea26" />
 </p>
 
-# 🌱 HydroFlow – Sistema de Irrigação Automática
+<h1 align="center">🌱 HydroFlow – Sistema de Irrigação Automática</h1>
+
+<p align="center">
+Sistema inteligente para monitoramento e automação de irrigação
+</p>
+
 
 ## 📌 Descrição do Projeto
 
