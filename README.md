@@ -1,6 +1,7 @@
 # HydroFlow
 <p align="center">
-  <img src="https://drive.google.com/uc?export=view&id=1k3Kf9uPJzicaf5jHvQO6OjdIQNyggs-R" width="250">
+  <img src="<img width="1920" height="1080" alt="logo hidroflow (2)" src="https://github.com/user-attachments/assets/3d52e671-1a9a-481e-9654-c9f3e87b837e" />
+" width="250">
 </p>
 
 # 🌱 HydroFlow – Sistema de Irrigação Automática
