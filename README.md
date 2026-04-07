@@ -1,6 +1,6 @@
 # HydroFlow
 <p align="center">
-  <img width="500" height="500" alt="Gemini_Generated_Image_3ltzmn3ltzmn3ltz" src="https://github.com/user-attachments/assets/2a1192d3-2e14-49a7-9b13-45d9adb3ea26" />
+  <img width="500" height="500" alt="Logo HYDROFLOW" src="https://github.com/user-attachments/assets/2a1192d3-2e14-49a7-9b13-45d9adb3ea26" />
 </p>
 
 # 🌱 HydroFlow – Sistema de Irrigação Automática
@@ -88,7 +88,7 @@ O sistema possui as seguintes funcionalidades:
 
 ## 🏃 Sprints do Projeto
 
-### Sprint 1
+### Sprint 1 - Concluído
 
 WEB:
 
@@ -106,7 +106,7 @@ MOBILE:
 
 ---
 
-### Sprint 2
+### Sprint 2 - Em andamento
 
 WEB:
 
@@ -133,5 +133,149 @@ O banco de dados foi desenvolvido em MySQL contendo as seguintes tabelas:
 - dados_sensores
 - planta
 - adm
+
+---
+
+
+<p align="center">
+  <img width="500" height="500" alt="Logo HYDROFLOW" src="https://github.com/user-attachments/assets/2a1192d3-2e14-49a7-9b13-45d9adb3ea26" />
+</p>
+
+<h1 align="center">🌱 HydroFlow – Automatic Irrigation System</h1>
+
+<p align="center">
+Smart system for irrigation monitoring and automation
+</p>
+
+---
+
+## 📌 Project Description
+
+HydroFlow is an automatic irrigation system developed to automate plant irrigation through soil moisture monitoring using sensors. The system allows the registration of users, irrigation devices, sensors, and plants, as well as monitoring the collected data.
+
+This project was developed as a Course Completion Project (TCC).
+
+---
+
+## 🎯 Objective
+
+Develop a system capable of monitoring soil moisture and automating irrigation, reducing water waste and ensuring plants receive the correct amount of water.
+
+---
+
+## ❗ Problem
+
+Many irrigation systems are manual and depend on human intervention, which can cause:
+
+- Water waste  
+- Excessive or insufficient irrigation  
+- Lack of soil condition monitoring  
+- Difficulty managing multiple plants  
+
+---
+
+## 💡 Proposed Solution
+
+HydroFlow proposes an automated solution using moisture sensors connected to irrigation devices that collect real-time data and allow automatic irrigation control.
+
+---
+
+## ⚙️ Technologies Used
+
+### Backend:
+- PHP  
+- MySQL  
+- REST API  
+- JSON  
+
+### Frontend:
+- HTML  
+- CSS  
+- JavaScript  
+
+### Modeling:
+- ER Model (MER)  
+- ER Diagram (DER)  
+- UML (Class Diagram)  
+
+---
+
+## ✨ System Features
+
+The system has the following features:
+
+- User registration  
+- Device registration  
+- Sensor registration  
+- Plant registration  
+- Moisture monitoring  
+- Sensor data recording  
+- Irrigation control  
+- Administrator management  
+
+---
+
+## 👥 Project Team
+
+| Role | Name |
+|------|------|
+| Scrum Master | Ana Rita Boiago Evangelista |
+| Product Owner | Mariana Biscaino Caiafa Ribeiro |
+| Back-End | Mariana Biscaino Caiafa Ribeiro |
+| Back-End | Ana Rita Boiago Evangelista |
+| Systems Analyst | Giulia dos Reis Ribeiro |
+| Analyst / Designer | Rubens Aparecido Moscardini Neto |
+| Full Stack | Diego Viel Bortolotti |
+| Full Stack | Felipe Donizetti Ribeiro |
+
+---
+
+## 🏃 Project Sprints
+
+### Sprint 1 - Completed
+
+WEB:
+
+- Admin login  
+- User login  
+- Password recovery  
+- Admin registration  
+- User registration  
+- Sensor registration  
+- Home screen  
+
+MOBILE:
+
+- Home screen  
+
+---
+
+### Sprint 2 - In progress
+
+WEB:
+
+- Structural dashboard  
+- About project page  
+
+MOBILE:
+
+- Structural dashboard  
+- About project page  
+- Password recovery  
+- User login  
+- Admin login  
+
+---
+
+## 🗄️ Database
+
+The database was developed in MySQL containing the following tables:
+
+- usuario  
+- dispositivo  
+- sensor  
+- dados_sensores  
+- planta  
+- adm  
 
 ---
