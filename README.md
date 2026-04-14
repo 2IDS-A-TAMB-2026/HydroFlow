@@ -246,11 +246,11 @@ HydroFlow proposes an automated solution using moisture sensors connected to irr
 
 ### Modeling:
 <p>
-- ER Model (ERM)<br><br>
+- MER Model (MER)<br><br>
   <img width="250" height="250" alt="ERM" src="https://github.com/user-attachments/assets/3afa4cc9-9500-4f65-98dc-e5f276535508" />
 </p>
 <p>
-- ER Diagram (ERD)<br><br>
+- DER Diagram (DER)<br><br>
   <img width="250" height="250" alt="ERD" src="https://github.com/user-attachments/assets/ffe004ae-f841-4fd2-b436-21251b35aea6" />
 </p>
 <p>
