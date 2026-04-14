@@ -88,40 +88,47 @@ O HydroFlow propõe uma solução automatizada utilizando sensores de umidade co
 
 <table>
   <tr>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/93ec464b-11f1-4d55-b212-668c2de1b329" width="120" style="border-radius:50%;"><br>
-      <strong>Ana Rita Boiago Evangelista</strong><br>
-      Scrum Master / Programadora Back-End
-    </td>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/4fad2669-dfda-46d4-b3a6-ffbe688ccc94" width="120" style="border-radius:50%;"><br>
-      <strong>Mariana Biscaino Caiafa Ribeiro</strong><br>
-      Product Owner / Programadora Back-End
-    </td>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/b8d9c68c-1c69-42f6-be6e-c2b1c6d0d7ef" width="120" style="border-radius:50%;"><br>
-      <strong>Giulia dos Reis Ribeiro</strong><br>
-      Analista de Sistemas e Designer
-    </td>
+    <th>Foto</th>
+    <th>Nome</th>
+    <th>Cargo</th>
   </tr>
 
   <tr>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/fc9914b7-371e-4264-a0b1-e1741e6706c0" width="120" style="border-radius:50%;"><br>
-      <strong>Rubens Aparecido Moscardini Neto</strong><br>
-      Analista de Sistemas e Designer
-    </td>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/4cf52ad6-22db-48f0-9cae-e2604d4340bf" width="120" style="border-radius:50%;"><br>
-      <strong>Diego Viel Bortolotti</strong><br>
-      Programador Full-Stack
-    </td>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/6196f77e-75e9-43b8-8a3c-eef9f193ccbf" width="120" style="border-radius:50%;"><br>
-      <strong>Felipe Donizetti Ribeiro</strong><br>
-      Programador Full-Stack
-    </td>
+    <td><img src="https://github.com/user-attachments/assets/93ec464b-11f1-4d55-b212-668c2de1b329" width="80"></td>
+    <td>Ana Rita Boiago Evangelista</td>
+    <td>Scrum Master / Programadora Back-End</td>
   </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/4fad2669-dfda-46d4-b3a6-ffbe688ccc94" width="80"></td>
+    <td>Mariana Biscaino Caiafa Ribeiro</td>
+    <td>Product Owner / Programadora Back-End</td>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/b8d9c68c-1c69-42f6-be6e-c2b1c6d0d7ef" width="80"></td>
+    <td>Giulia dos Reis Ribeiro</td>
+    <td>Analista de Sistemas e Designer</td>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/fc9914b7-371e-4264-a0b1-e1741e6706c0" width="80"></td>
+    <td>Rubens Aparecido Moscardini Neto</td>
+    <td>Analista de Sistemas e Designer</td>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/4cf52ad6-22db-48f0-9cae-e2604d4340bf" width="80"></td>
+    <td>Diego Viel Bortolotti</td>
+    <td>Programador Full-Stack</td>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/6196f77e-75e9-43b8-8a3c-eef9f193ccbf" width="80"></td>
+    <td>Felipe Donizetti Ribeiro</td>
+    <td>programador Full-Stack</td>
+  </tr>
+
 </table>
 
 ---
