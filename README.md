@@ -56,14 +56,19 @@ O HydroFlow propõe uma solução automatizada utilizando sensores de umidade co
 - ESP32  
 
 ### Modelagem:
-<p align="center">
-- MER<br>
-  <img width="1365" height="675" alt="MER" src="https://github.com/user-attachments/assets/3afa4cc9-9500-4f65-98dc-e5f276535508" />
+<p>
+- MER<br><br>
+  <img width="250" height="250" alt="MER" src="https://github.com/user-attachments/assets/3afa4cc9-9500-4f65-98dc-e5f276535508" />
 </p>
-- DER
-  <img src="![WhatsApp Image 2026-04-14 at 07 32 25](https://github.com/user-attachments/assets/d170270b-dd46-4e28-90ce-7539210dc733)" width="120" style="border-radius:50%;"><br>
-- UML (Diagrama de Classes)  
-  <img src="![diagrama_classes_page-0001](https://github.com/user-attachments/assets/7d2e3728-267e-4d6e-b0b2-6562ab92d0b7)" width="120" style="border-radius:50%;"><br>
+<p>
+- DER<br><br>
+  <img width="250" height="250" alt="DER" src="https://github.com/user-attachments/assets/ffe004ae-f841-4fd2-b436-21251b35aea6" />
+</p>
+<p>
+- UML (Diagrama de Classes)<br><br>
+  <img width="250" height="250" alt="Diagrama de classes" src="https://github.com/user-attachments/assets/c1b5eceb-4b06-47b4-982a-ed225bbf5800"/>
+</p>
+
 ---
 
 ## ✨ Funcionalidades do Sistema
@@ -84,17 +89,17 @@ O HydroFlow propõe uma solução automatizada utilizando sensores de umidade co
 <table>
   <tr>
     <td align="center">
-      <img src="![WhatsApp Image 2026-04-14 at 07 37 45](https://github.com/user-attachments/assets/071b6a94-0966-497d-a27f-605cfcb0a050)" width="120" style="border-radius:50%;"><br>
+      <img src="https://github.com/user-attachments/assets/93ec464b-11f1-4d55-b212-668c2de1b329" width="120" style="border-radius:50%;"><br>
       <strong>Ana Rita Boiago Evangelista</strong><br>
       Scrum Master / Programadora Back-End
     </td>
     <td align="center">
-      <img src="./img/mariana.jpg" width="120" style="border-radius:50%;"><br>
+      <img src="https://github.com/user-attachments/assets/4fad2669-dfda-46d4-b3a6-ffbe688ccc94" width="120" style="border-radius:50%;"><br>
       <strong>Mariana Biscaino Caiafa Ribeiro</strong><br>
       Product Owner / Programadora Back-End
     </td>
     <td align="center">
-      <img src="./img/giulia.jpg" width="120" style="border-radius:50%;"><br>
+      <img src="https://github.com/user-attachments/assets/b8d9c68c-1c69-42f6-be6e-c2b1c6d0d7ef" width="120" style="border-radius:50%;"><br>
       <strong>Giulia dos Reis Ribeiro</strong><br>
       Analista de Sistemas e Designer
     </td>
@@ -102,17 +107,17 @@ O HydroFlow propõe uma solução automatizada utilizando sensores de umidade co
 
   <tr>
     <td align="center">
-      <img src="./img/rubens.jpg" width="120" style="border-radius:50%;"><br>
+      <img src="https://github.com/user-attachments/assets/fc9914b7-371e-4264-a0b1-e1741e6706c0" width="120" style="border-radius:50%;"><br>
       <strong>Rubens Aparecido Moscardini Neto</strong><br>
       Analista de Sistemas e Designer
     </td>
     <td align="center">
-      <img src="./img/diego.jpg" width="120" style="border-radius:50%;"><br>
+      <img src="https://github.com/user-attachments/assets/4cf52ad6-22db-48f0-9cae-e2604d4340bf" width="120" style="border-radius:50%;"><br>
       <strong>Diego Viel Bortolotti</strong><br>
       Programador Full-Stack
     </td>
     <td align="center">
-      <img src="./img/felipe.jpg" width="120" style="border-radius:50%;"><br>
+      <img src="https://github.com/user-attachments/assets/6196f77e-75e9-43b8-8a3c-eef9f193ccbf" width="120" style="border-radius:50%;"><br>
       <strong>Felipe Donizetti Ribeiro</strong><br>
       Programador Full-Stack
     </td>
