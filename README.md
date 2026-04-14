@@ -57,8 +57,8 @@ O HydroFlow propõe uma solução automatizada utilizando sensores de umidade co
 
 ### Modelagem:
 <p align="center">
-  - MER
-  <img width="1365" height="675" alt="MER" src="![MER](https://github.com/user-attachments/assets/3afa4cc9-9500-4f65-98dc-e5f276535508)" />
+- MER<br>
+  <img width="1365" height="675" alt="MER" src="https://github.com/user-attachments/assets/3afa4cc9-9500-4f65-98dc-e5f276535508" />
 </p>
 - DER
   <img src="![WhatsApp Image 2026-04-14 at 07 32 25](https://github.com/user-attachments/assets/d170270b-dd46-4e28-90ce-7539210dc733)" width="120" style="border-radius:50%;"><br>
