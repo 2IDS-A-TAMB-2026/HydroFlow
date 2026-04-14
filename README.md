@@ -126,7 +126,7 @@ O HydroFlow propõe uma solução automatizada utilizando sensores de umidade co
   <tr>
     <td><img src="https://github.com/user-attachments/assets/6196f77e-75e9-43b8-8a3c-eef9f193ccbf" width="80"></td>
     <td>Felipe Donizetti Ribeiro</td>
-    <td>programador Full-Stack</td>
+    <td>Programador Full-Stack</td>
   </tr>
 
 </table>
@@ -187,30 +187,23 @@ Projeto acadêmico desenvolvido para fins educacionais.
 
 ---
 
-
 <p align="center">
-  <img width="500" height="500" alt="logo HYDROFLOW" src="https://github.com/user-attachments/assets/7a3e295a-ab22-494d-81f3-3d6518d6fcc7" />
+  <img width="1365" height="675" alt="HydroFlow Logo" src="https://github.com/user-attachments/assets/1a63faed-ef19-4e6c-a94f-effa0d8e7f69" />
 </p>
 
-<h1 align="center">🌱 HydroFlow – Automatic Irrigation System</h1>
-
-<p align="center">
-Smart system for irrigation monitoring and automation
-</p>
-
----
+# 🌱 HydroFlow - Automatic Irrigation System
 
 ## 📌 Project Description
 
-HydroFlow is an automatic irrigation system developed to automate plant irrigation through soil moisture monitoring using sensors. The system allows the registration of users, irrigation devices, sensors, and plants, as well as monitoring the collected data.
+HydroFlow is an automatic irrigation system developed with the goal of automating the plant irrigation process by monitoring soil moisture using sensors. The system allows the registration of users, irrigation devices, sensors, and plants, as well as tracking collected data.
 
-This project was developed as a Course Completion Project (TCC).
+This project was developed as a Final Course Project (TCC).
 
 ---
 
 ## 🎯 Objective
 
-Develop a system capable of monitoring soil moisture and automating irrigation, reducing water waste and ensuring plants receive the correct amount of water.
+To develop a system capable of monitoring soil moisture and automating irrigation, reducing water waste and ensuring that plants receive the appropriate amount of water.
 
 ---
 
@@ -219,15 +212,15 @@ Develop a system capable of monitoring soil moisture and automating irrigation, 
 Many irrigation systems are manual and depend on human intervention, which can cause:
 
 - Water waste  
-- Excessive or insufficient irrigation  
+- Over-irrigation or under-irrigation  
 - Lack of soil condition monitoring  
-- Difficulty managing multiple plants  
+- Difficulty in managing multiple plants  
 
 ---
 
 ## 💡 Proposed Solution
 
-HydroFlow proposes an automated solution using moisture sensors connected to irrigation devices that collect real-time data and allow automatic irrigation control.
+HydroFlow proposes an automated solution using moisture sensors connected to irrigation devices that collect real-time data and enable automated irrigation control.
 
 ---
 
@@ -244,49 +237,96 @@ HydroFlow proposes an automated solution using moisture sensors connected to irr
 - CSS  
 - JavaScript  
 
+### Mobile:
+- Flutter  
+
+### IoT:
+- C++  
+- ESP32  
+
 ### Modeling:
-- ER Model (MER)  
-- ER Diagram (DER)  
-- UML (Class Diagram)  
+<p>
+- ER Model (ERM)<br><br>
+  <img width="250" height="250" alt="ERM" src="https://github.com/user-attachments/assets/3afa4cc9-9500-4f65-98dc-e5f276535508" />
+</p>
+<p>
+- ER Diagram (ERD)<br><br>
+  <img width="250" height="250" alt="ERD" src="https://github.com/user-attachments/assets/ffe004ae-f841-4fd2-b436-21251b35aea6" />
+</p>
+<p>
+- UML (Class Diagram)<br><br>
+  <img width="250" height="250" alt="Class Diagram" src="https://github.com/user-attachments/assets/c1b5eceb-4b06-47b4-982a-ed225bbf5800"/>
+</p>
 
 ---
 
 ## ✨ System Features
-
-The system has the following features:
 
 - User registration  
 - Device registration  
 - Sensor registration  
 - Plant registration  
 - Moisture monitoring  
-- Sensor data recording  
+- Sensor data logging  
 - Irrigation control  
-- Administrator management  
+- Admin management  
 
 ---
 
 ## 👥 Project Team
 
-| Role | Name |
-|------|------|
-| Scrum Master | Ana Rita Boiago Evangelista |
-| Product Owner | Mariana Biscaino Caiafa Ribeiro |
-| Back-End | Mariana Biscaino Caiafa Ribeiro |
-| Back-End | Ana Rita Boiago Evangelista |
-| Systems Analyst and Designer | Giulia dos Reis Ribeiro |
-| Systems Analyst and Designer | Rubens Aparecido Moscardini Neto |
-| Full Stack | Diego Viel Bortolotti |
-| Full Stack | Felipe Donizetti Ribeiro |
+<table>
+  <tr>
+    <th>Photo</th>
+    <th>Name</th>
+    <th>Role</th>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/93ec464b-11f1-4d55-b212-668c2de1b329" width="80"></td>
+    <td>Ana Rita Boiago Evangelista</td>
+    <td>Scrum Master / Back-End Developer</td>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/4fad2669-dfda-46d4-b3a6-ffbe688ccc94" width="80"></td>
+    <td>Mariana Biscaino Caiafa Ribeiro</td>
+    <td>Product Owner / Back-End Developer</td>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/b8d9c68c-1c69-42f6-be6e-c2b1c6d0d7ef" width="80"></td>
+    <td>Giulia dos Reis Ribeiro</td>
+    <td>Systems Analyst and Designer</td>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/fc9914b7-371e-4264-a0b1-e1741e6706c0" width="80"></td>
+    <td>Rubens Aparecido Moscardini Neto</td>
+    <td>Systems Analyst and Designer</td>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/4cf52ad6-22db-48f0-9cae-e2604d4340bf" width="80"></td>
+    <td>Diego Viel Bortolotti</td>
+    <td>Full-Stack Developer</td>
+  </tr>
+
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/6196f77e-75e9-43b8-8a3c-eef9f193ccbf" width="80"></td>
+    <td>Felipe Donizetti Ribeiro</td>
+    <td>Full-Stack Developer</td>
+  </tr>
+
+</table>
 
 ---
 
 ## 🏃 Project Sprints
 
-### Sprint 1 - Completed
+### Sprint 1
 
-WEB:
-
+**WEB:**
 - Admin login  
 - User login  
 - Password recovery  
@@ -295,21 +335,18 @@ WEB:
 - Sensor registration  
 - Home screen  
 
-MOBILE:
-
+**MOBILE:**
 - Home screen  
 
 ---
 
-### Sprint 2 - In progress
+### Sprint 2
 
-WEB:
-
+**WEB:**
 - Structural dashboard  
 - About project page  
 
-MOBILE:
-
+**MOBILE:**
 - Structural dashboard  
 - About project page  
 - Password recovery  
@@ -320,13 +357,13 @@ MOBILE:
 
 ## 🗄️ Database
 
-The database was developed in MySQL containing the following tables:
+The database was developed in MySQL and contains the following tables:
 
-- usuario  
-- dispositivo  
+- user  
+- device  
 - sensor  
-- dados_sensores  
-- planta  
-- adm  
+- sensor_data  
+- plant  
+- admin  
 
 ---
