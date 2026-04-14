@@ -1,14 +1,8 @@
-# HydroFlow
 <p align="center">
-  <img width="500" height="500" alt="logo HYDROFLOW" src="https://github.com/user-attachments/assets/7a3e295a-ab22-494d-81f3-3d6518d6fcc7" />
+  <img width="1365" height="675" alt="Logo HydroFlow" src="https://github.com/user-attachments/assets/1a63faed-ef19-4e6c-a94f-effa0d8e7f69" />
 </p>
 
-<h1 align="center">🌱 HydroFlow – Sistema de Irrigação Automática</h1>
-
-<p align="center">
-Sistema inteligente para monitoramento e automação de irrigação
-</p>
-
+# 🌱 HydroFlow - Sistema de Irrigação Automática
 
 ## 📌 Descrição do Projeto
 
@@ -28,10 +22,10 @@ Desenvolver um sistema capaz de monitorar a umidade do solo e automatizar a irri
 
 Muitos sistemas de irrigação são manuais e dependem da intervenção humana, o que pode causar:
 
-- Desperdício de água
-- Irrigação excessiva ou insuficiente
-- Falta de monitoramento das condições do solo
-- Dificuldade no controle de múltiplas plantas
+- Desperdício de água  
+- Irrigação excessiva ou insuficiente  
+- Falta de monitoramento das condições do solo  
+- Dificuldade no controle de múltiplas plantas  
 
 ---
 
@@ -44,87 +38,117 @@ O HydroFlow propõe uma solução automatizada utilizando sensores de umidade co
 ## ⚙️ Tecnologias Utilizadas
 
 ### Backend:
-- PHP
-- MySQL
-- API REST
-- JSON
+- PHP  
+- MySQL  
+- API REST  
+- JSON  
 
 ### Frontend:
-- HTML
-- CSS
-- JavaScript
+- HTML  
+- CSS  
+- JavaScript  
+
+### Mobile:
+- Flutter  
+
+### IoT:
+- C++  
+- ESP32  
 
 ### Modelagem:
 - MER
+  <img src="![MER](https://github.com/user-attachments/assets/f6ddd129-f2cf-4da8-8530-12efce899e4a)" width="120" style="border-radius:50%;"><br>
 - DER
-- UML (Diagrama de Classes)
-
+  <img src="![WhatsApp Image 2026-04-14 at 07 32 25](https://github.com/user-attachments/assets/d170270b-dd46-4e28-90ce-7539210dc733)" width="120" style="border-radius:50%;"><br>
+- UML (Diagrama de Classes)  
+  <img src="![diagrama_classes_page-0001](https://github.com/user-attachments/assets/7d2e3728-267e-4d6e-b0b2-6562ab92d0b7)" width="120" style="border-radius:50%;"><br>
 ---
 
 ## ✨ Funcionalidades do Sistema
 
-O sistema possui as seguintes funcionalidades:
-
-- Cadastro de usuários
-- Cadastro de dispositivos
-- Cadastro de sensores
-- Cadastro de plantas
-- Monitoramento da umidade
-- Registro de dados dos sensores
-- Controle de irrigação
-- Gerenciamento pelo administrador
+- Cadastro de usuários  
+- Cadastro de dispositivos  
+- Cadastro de sensores  
+- Cadastro de plantas  
+- Monitoramento da umidade  
+- Registro de dados dos sensores  
+- Controle de irrigação  
+- Gerenciamento pelo administrador  
 
 ---
 
 ## 👥 Equipe do Projeto
 
-| Papel | Nome |
-|------|------|
-| Scrum Master | Ana Rita Boiago Evangelista |
-| Product Owner | Mariana Biscaino Caiafa Ribeiro |
-| Back-End | Mariana Biscaino Caiafa Ribeiro |
-| Back-End | Ana Rita Boiago Evangelista |
-| Analista de Sistemas e Designer | Giulia dos Reis Ribeiro |
-| Analista de Sistemas e Designer | Rubens Aparecido Moscardini Neto |
-| Full Stack | Diego Viel Bortolotti |
-| Full Stack | Felipe Donizetti Ribeiro |
+<table>
+  <tr>
+    <td align="center">
+      <img src="![WhatsApp Image 2026-04-14 at 07 37 45](https://github.com/user-attachments/assets/071b6a94-0966-497d-a27f-605cfcb0a050)" width="120" style="border-radius:50%;"><br>
+      <strong>Ana Rita Boiago Evangelista</strong><br>
+      Scrum Master / Programadora Back-End
+    </td>
+    <td align="center">
+      <img src="./img/mariana.jpg" width="120" style="border-radius:50%;"><br>
+      <strong>Mariana Biscaino Caiafa Ribeiro</strong><br>
+      Product Owner / Programadora Back-End
+    </td>
+    <td align="center">
+      <img src="./img/giulia.jpg" width="120" style="border-radius:50%;"><br>
+      <strong>Giulia dos Reis Ribeiro</strong><br>
+      Analista de Sistemas e Designer
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <img src="./img/rubens.jpg" width="120" style="border-radius:50%;"><br>
+      <strong>Rubens Aparecido Moscardini Neto</strong><br>
+      Analista de Sistemas e Designer
+    </td>
+    <td align="center">
+      <img src="./img/diego.jpg" width="120" style="border-radius:50%;"><br>
+      <strong>Diego Viel Bortolotti</strong><br>
+      Programador Full-Stack
+    </td>
+    <td align="center">
+      <img src="./img/felipe.jpg" width="120" style="border-radius:50%;"><br>
+      <strong>Felipe Donizetti Ribeiro</strong><br>
+      Programador Full-Stack
+    </td>
+  </tr>
+</table>
 
 ---
 
 ## 🏃 Sprints do Projeto
 
-### Sprint 1 - Concluído
+### Sprint 1
 
-WEB:
+**WEB:**
+- Login administrador  
+- Login usuário  
+- Recuperação de senha  
+- Cadastro administrador  
+- Cadastro usuário  
+- Cadastro de sensores  
+- Tela inicial  
 
-- Login administrador
-- Login usuário
-- Recuperação de senha
-- Cadastro administrador
-- Cadastro usuário
-- Cadastro de sensores
-- Tela inicial
-
-MOBILE:
-
-- Tela inicial
+**MOBILE:**
+- Tela inicial  
 
 ---
 
-### Sprint 2 - Em andamento
+### Sprint 2
 
-WEB:
+**WEB:**
+- Dashboard estrutural  
+- Página sobre o projeto  
 
-- Dashboard estrutural
-- Página sobre o projeto
-
-MOBILE:
-
-- Dashboard estrutural
-- Página sobre o projeto
-- Recuperação de senha
-- Login usuário
-- Login administrador
+**MOBILE:**
+- Dashboard estrutural  
+- Página sobre o projeto  
+- Recuperação de senha  
+- Login usuário  
+- Login administrador  
 
 ---
 
@@ -132,12 +156,20 @@ MOBILE:
 
 O banco de dados foi desenvolvido em MySQL contendo as seguintes tabelas:
 
-- usuario
-- dispositivo
-- sensor
-- dados_sensores
-- planta
-- adm
+- usuario  
+- dispositivo  
+- sensor  
+- dados_sensores  
+- planta  
+- adm  
+
+---
+
+---
+
+## 📌 Observações
+
+Projeto acadêmico desenvolvido para fins educacionais.
 
 ---
 
