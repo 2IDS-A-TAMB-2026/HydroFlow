@@ -56,8 +56,10 @@ O HydroFlow propõe uma solução automatizada utilizando sensores de umidade co
 - ESP32  
 
 ### Modelagem:
-- MER
-  <img src="![MER](https://github.com/user-attachments/assets/f6ddd129-f2cf-4da8-8530-12efce899e4a)" width="120" style="border-radius:50%;"><br>
+<p align="center">
+  - MER
+  <img width="1365" height="675" alt="MER" src="![MER](https://github.com/user-attachments/assets/3afa4cc9-9500-4f65-98dc-e5f276535508)" />
+</p>
 - DER
   <img src="![WhatsApp Image 2026-04-14 at 07 32 25](https://github.com/user-attachments/assets/d170270b-dd46-4e28-90ce-7539210dc733)" width="120" style="border-radius:50%;"><br>
 - UML (Diagrama de Classes)  
