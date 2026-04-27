@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Equipamentos - Gestão Online</title>
+    <link rel="stylesheet" href="style_dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-droplet"></i> <span class="logos">HYDRO</span>FLOW
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Procurar opção do menu...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Painel</a></li>
+                <li><a href="agendamento.html"><i class="fa-solid fa-calendar-days"></i> Agendamentos</a></li>
+                <li><a href="cadastro_planta.html"><i class="fa-solid fa-seedling"></i> Cadastro de Plantas</a></li>
+                <li><a href="plantas.html"><i class="fa-solid fa-tree"></i> Plantas</a></li>
+                <li><a href="historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+                <li class="active"><a href="cadastro_equipamento.html"><i class="fa-solid fa-cart-shopping"></i>Cadastro de Equipamento</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+                    <h2>Cadastro de Equipamentos</h2>
+                </div>
+                <div class="nav-right">
+                    <span>Manual Sistema Gestão Online</span>
+                    <i class="fa-solid fa-user"></i>
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+            </header>
+                
+                <div class="widget card-big">
+                    <div class="form-header-flex">
+                        <h3 class="form-title">
+                            <i class="fa-solid fa-rss" style="color: #007bff;"></i> Cadastro de Sensores
+                        </h3>
+                    </div>
+                    <hr class="divider">
+                    <p style="margin-bottom: 20px; color: #666;">Registre novos sensores para monitoramento de campo.</p>
+                    
+                    <form id="formSensor">
+                        <h4 class="section-title">Sensor de Umidade do Solo</h4>
+                        <div class="form-group">
+                            <label for="nomeSensor">Nome do Sensor</label>
+                            <input type="text" id="nomeSensorUS" class="form-control" placeholder="Ex: Sensor de Umidade Solo A1" required>
+                        </div>
+                        <hr class="divider">
+                        <div class="form-group">
+                            <h4 class="section-title">Sensor de Umidade do Ar e Temperatura</h4>
+                            <label for="nomeSensor">Nome do Sensor</label>
+                            <input type="text" id="nomeSensorUAT" class="form-control" placeholder="Ex: Sensor de Temperatura A1" required>
+                        </div>
+                        
+                        <div class="form-actions" style="justify-content: flex-start; margin-top: 30px;">
+                            <button type="submit" class="btn-submit">
+                                <i class="fa-solid fa-plus"></i> Cadastrar Sensores
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="widget card-big">
+                    <div class="form-header-flex">
+                        <h3 class="form-title">
+                            <i class="fa-solid fa-microchip" style="color: #e67e22;"></i> Cadastro de Dispositivos
+                        </h3>
+                    </div>
+                    <hr class="divider">
+                    <p style="margin-bottom: 20px; color: #666;">Configure hubs, controladores ou atuadores da rede.</p>
+                    
+                    <form id="formDispositivo">
+                        <div class="form-row">
+                            <div class="form-group" style="flex: 2;">
+                                <label for="nomeDisp">Nome do Dispositivo</label>
+                                <input type="text" id="nomeDisp" class="form-control" placeholder="Ex: Controlador Central Norte" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="capacidade">Capacidade</label>
+                                <input type="text" id="capacidade" class="form-control" placeholder="Ex: 10L">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descDisp">Descrição</label>
+                            <textarea id="descDisp" class="form-control" rows="2" placeholder="Breve descrição da função do dispositivo..."></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="lat">Latitude</label>
+                                <input type="text" id="lat" class="form-control" placeholder="-23.XXXX">
+                            </div>
+                            <div class="form-group">
+                                <label for="long">Longitude</label>
+                                <input type="text" id="long" class="form-control" placeholder="-46.XXXX">
+                            </div>
+                        </div>
+                        <hr class="divider">
+                        <h4 class="section-title">Endereço</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cid">Cidade</label>
+                                <input type="text" id="cidade" class="form-control" placeholder="Tambaú...">
+                            </div>
+                            <div class="form-group">
+                                <label for="ru">Rua</label>
+                                <input type="text" id="rua" class="form-control" placeholder="José Calipto...">
+                            </div>
+                            <div class="form-group">
+                                <label for="bai">Bairro</label>
+                                <input type="text" id="bairro" class="form-control" placeholder="Jardim das Maravilhas...">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cid">Número</label>
+                                <input type="text" id="num" class="form-control" placeholder="123">
+                            </div>
+                            <div class="form-group">
+                                <label for="cid">CEP</label>
+                                <input type="text" id="cidade" class="form-control" placeholder="13712-46">
+                            </div>
+                        </div>
+
+                        <div class="form-actions" style="justify-content: flex-start; margin-top: 20px;">
+                            <button type="submit" class="btn-submit" style="background-color: #e67e22;">
+                                <i class="fa-solid fa-save"></i> Salvar Dispositivo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+        </main>
+    </div>
+
+</body>
+</html>

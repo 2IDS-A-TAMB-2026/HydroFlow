@@ -1,0 +1,574 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f6f9;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 250px;
+    background: linear-gradient(to bottom, #1e3c72, #2a5298); /* Fundo azul escuro */
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    padding: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.search-bar {
+    padding: 15px;
+    position: relative;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.search-bar input::placeholder { color: #ccc; }
+.search-bar i {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    color: white;
+}
+
+.nav-menu {
+    list-style: none;
+}
+
+.nav-menu li a {
+    display: block;
+    padding: 15px 20px;
+    color: #cfd8dc;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.nav-menu li a i {
+    margin-right: 10px;
+    width: 20px;
+}
+
+.nav-menu li a:hover, .nav-menu li.active a {
+    background-color: white;
+    color: #1e3c72;
+    border-left: 4px solid #1e3c72;
+}
+
+/* --- CONTEÚDO PRINCIPAL --- */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Navbar */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.nav-left { display: flex; align-items: center; gap: 15px; }
+.menu-btn {
+    border: none;
+    background: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #333;
+}
+.nav-right { display: flex; align-items: center; gap: 15px; color: #555; font-size: 0.9rem; }
+.nav-right i { font-size: 1.2rem; background: #1e3c72; color: white; padding: 8px; border-radius: 50%; }
+
+/* Cards KPI */
+.kpi-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card {
+    border-radius: 5px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content { padding: 20px; z-index: 2; }
+.card h3 { font-size: 2.2rem; font-weight: bold; }
+.card p { font-size: 1rem; margin-top: 5px; }
+.card-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 60px;
+    color: rgba(0,0,0,0.15);
+    z-index: 1;
+}
+.card-footer {
+    background-color: rgba(0,0,0,0.1);
+    padding: 8px;
+    text-align: center;
+    font-size: 0.8rem;
+    z-index: 2;
+    margin-top: auto;
+}
+
+/* Cores dos Cards baseado na imagem */
+.card-cyan { background-color: #00c0ef; }
+.card-orange { background-color: #f39c12; }
+.card-green { background-color: #00a65a; }
+.card-red { background-color: #dd4b39; }
+
+/* Grade Inferior */
+.bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+}
+
+.widget {
+    background-color: white;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Tabela */
+.table-widget table { width: 100%; border-collapse: collapse; text-align: center; }
+.table-widget th { border-bottom: 2px solid #eee; padding-bottom: 10px; color: #555; }
+.table-widget td { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+.badge-green { background-color: #00a65a; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: bold; }
+.badge-red { background-color: #ce2222; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: bold; }
+
+/* Gráfico */
+.chart-title { text-align: center; font-weight: normal; color: #333; margin-bottom: 20px; }
+
+/* Correção do bug de altura infinita do Chart.js */
+.chart-container {
+    position: relative;
+    height: 300px; /* Você pode aumentar ou diminuir essa altura se preferir */
+    width: 100%;
+}
+
+/* Promo Widget */
+.promo-widget { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.promo-widget h4 { margin: 10px 0 20px 0; color: #333; }
+.promo-circle { width: 150px; height: 150px; background-color: #f4f4f4; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
+.promo-footer { font-size: 0.8rem; color: #777; }
+
+/* Responsividade Básica */
+@media (max-width: 992px) {
+    .bottom-grid { grid-template-columns: 1fr; }
+}
+.logos{
+    color:#4dd0e1
+}
+
+/* --- TELA DE AGENDA --- */
+
+.agenda-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* O formulário ocupa 1 parte, a tabela ocupa 2 partes */
+    gap: 20px;
+    align-items: start;
+}
+
+.widget h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #eee;
+    margin-bottom: 20px;
+}
+
+/* Formulário */
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-group input, 
+.form-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    border-color: #1e3c72;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #00a65a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background-color: #008d4c;
+}
+
+/* Badge laranja para itens pendentes */
+.badge-orange {
+    background-color: #f39c12;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+/* Responsividade da Agenda */
+@media (max-width: 992px) {
+    .agenda-grid { 
+        grid-template-columns: 1fr; /* Empilha o formulário e a tabela em telas menores */
+    }
+}
+
+/* =========================================
+   AJUSTES DA TELA DE CADASTRO DE PLANTAS
+========================================= */
+
+/* Cabeçalho do formulário (Título e botão de voltar na mesma linha) */
+.form-header-flex {
+    display: flex;
+    justify-content: space-between; /* Joga um pra cada lado */
+    align-items: center; /* Centraliza na altura */
+    margin-bottom: 20px;
+}
+
+.form-header-flex .form-title {
+    margin-bottom: 0; /* Remove a margem padrão para não desalinhhar */
+}
+
+/* Títulos das separações (Informações da Espécie, etc) */
+.section-title {
+    font-size: 1.1rem;
+    color: #1e3c72; /* Azul escuro do seu menu */
+    border-bottom: 2px solid #eee; /* Linha sutil embaixo */
+    padding-bottom: 8px;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Estilo para botões secundários (Ver Cadastradas, Limpar, Cancelar) */
+.btn-voltar, .btn-cancelar {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #ced4da;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaço entre o ícone e o texto */
+}
+
+/* Efeito ao passar o mouse nos botões secundários */
+.btn-voltar:hover, .btn-cancelar:hover {
+    background-color: #e2e6ea;
+    border-color: #dae0e5;
+    color: #212529;
+}
+
+/* Alinhamento dos botões no final do formulário (Limpar e Salvar) */
+.form-actions {
+    display: flex;
+    justify-content: flex-start; /* Alinha os botões à esquerda */
+    align-items: center;
+    gap: 15px; /* Espaço entre o botão limpar e salvar */
+    margin-top: 25px;
+}
+
+/* Ajuste fino no botão de salvar para ele casar com o botão limpar */
+.form-actions .btn-submit {
+    margin-top: 0; 
+    width: auto;
+    padding: 11px 30px;
+}
+
+/* =========================================
+   AJUSTES DA TABELA DE LISTAGEM
+========================================= */
+
+/* Barra de pesquisa acima da tabela */
+.table-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+/* Container da barra de pesquisa */
+.search-table {
+    position: relative;
+    width: 350px; /* Deixei um pouco mais largo para caber todo o texto */
+    max-width: 100%; /* Garante que não quebre em telas de celular */
+}
+
+/* Ícone da Lupa */
+.search-table i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #6c757d; /* Um cinza um pouco mais moderno e suave */
+    font-size: 1rem;
+    pointer-events: none; /* Garante que o clique passe pela lupa e vá para o input */
+}
+
+/* Campo de digitação (Input) */
+.search-table input {
+    width: 100%;
+    /* Paddings: topo (10px), direita (15px), baixo (10px), esquerda (45px - espaço da lupa) */
+    padding: 10px 15px 10px 45px; 
+    border: 1px solid #ced4da;
+    border-radius: 25px; /* Bordas bem arredondadas, estilo pílula */
+    font-size: 0.95rem;
+    color: #495057;
+    background-color: #f8f9fa; /* Um fundo cinza bem clarinho pra dar contraste */
+    box-sizing: border-box; /* MÁGICA: Impede que o padding quebre a largura do input */
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+/* Efeito ao clicar para digitar (Focus) */
+.search-table input:focus {
+    background-color: #ffffff; /* Fica branco ao clicar */
+    border-color: #1e3c72; /* Azul do seu menu lateral */
+    box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.15); /* Sombra suave em volta */
+}
+/* Estrutura da Tabela */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.data-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 12px 15px;
+    border-bottom: 2px solid #dee2e6;
+    font-size: 0.95rem;
+}
+
+.data-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    color: #333;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+/* Efeito ao passar o mouse na linha da tabela */
+.data-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Botões de Ação (Editar e Excluir) */
+.actions-cell {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-icon {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.btn-edit {
+    background-color: #f39c12; /* Laranja do seu painel */
+}
+
+.btn-edit:hover {
+    background-color: #d68910;
+}
+
+.btn-delete {
+    background-color: #dd4b39; /* Vermelho do seu painel */
+}
+
+.btn-delete:hover {
+    background-color: #c9302c;
+}
+
+/* =========================================
+   AJUSTES DA TELA DE HISTÓRICO
+========================================= */
+
+/* Barra de Filtros (Grid Flexível) */
+.filter-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    align-items: end;
+}
+
+.filter-bar .form-group {
+    margin-bottom: 0; /* Remove a margem padrão para alinhar com o botão */
+}
+
+/* Etiquetas de Status (Badges) da Tabela */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px; /* Estilo pílula */
+    font-size: 0.85rem;
+    font-weight: bold;
+    display: inline-block;
+    min-width: 90px;
+    text-align: center;
+}
+
+/* Cores dos Status */
+.badge-green {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.badge-red {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.badge-yellow {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+/* Ícones de Acionamento na Tabela */
+.data-table td i.fa-robot {
+    color: #6c757d;
+    margin-right: 5px;
+}
+
+.data-table td i.fa-hand-pointer {
+    color: #007bff;
+    margin-right: 5px;
+}
+
+/* Container para colocar os cards lado a lado */
+.cards-container-flex {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; /* Faz o segundo card ir pra baixo se a tela for pequena */
+    align-items: flex-start;
+}
+
+/* Estilo para o card grandão */
+.card-big {
+    flex: 1; /* Faz os cards dividirem o espaço igualmente */
+    min-width: 400px; /* Não deixa eles ficarem muito "magros" */
+    padding: 25px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Ajuste para o textarea que usei na descrição */
+textarea.form-control {
+    resize: vertical;
+    font-family: inherit;
+    padding: 10px;
+}
+
+/* Responsividade para telas de celular */
+@media (max-width: 768px) {
+    .card-big {
+        min-width: 100%;
+    }
+}   

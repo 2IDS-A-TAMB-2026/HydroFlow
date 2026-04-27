@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Plantas - Gestão Online</title>
+    <link rel="stylesheet" href="style_dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-droplet"></i> <span class="logos">HYDRO</span>FLOW
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Procurar opção do menu...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Painel</a></li>
+                <li><a href="agendamento.html"><i class="fa-solid fa-calendar-days"></i> Agendamentos</a></li>
+                <li><a href="cadastro_planta.html"><i class="fa-solid fa-seedling"></i> Cadastro de Plantas</a></li>
+                <li class="active"><a href="plantas.html"><i class="fa-solid fa-tree"></i> Plantas</a></li>
+                <li><a href="historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+                <li><a href="cadastro_equipamento.html"><i class="fa-solid fa-cart-shopping"></i>Cadastro de Equipamento</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+                    <h2>Listagem de Culturas e Plantas</h2>
+                </div>
+                <div class="nav-right">
+                    <span>Manual Sistema Gestão Online</span>
+                    <i class="fa-solid fa-user"></i>
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+            </header>
+
+            <div class="widget form-widget full-width-form">
+                <div class="form-header-flex">
+                    <h3 class="form-title">
+                        <i class="fa-solid fa-list" style="color: #1e3c72;"></i> Plantas Cadastradas
+                    </h3>
+                    <a href="cadastro_planta.html" style="text-decoration: none;">
+                        <button class="btn-submit" style="margin: 0; padding: 10px 20px;">
+                            <i class="fa-solid fa-plus"></i> Nova Planta
+                        </button>
+                    </a>
+                </div>
+                <hr class="divider">
+
+                <div class="table-toolbar">
+                    <div class="search-table">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="form-control" placeholder="Buscar por nome ou cultura...">
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome da Planta</th>
+                                <th>Tipo</th>
+                                <th>Cultura</th>
+                                <th>Parâmetros de Irrigação</th>
+                                <th>Dispositvo responsável</th>
+                                <th style="text-align: center;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Tomate Carmem</strong></td>
+                                <td>Hortaliça</td>
+                                <td>Solanáceas</td>
+                                <td>5 Litros/dia (a cada 12 Horas)</td>
+                                <td>Irrigation 1000</td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon btn-edit" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon btn-delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Alface Crespa</strong></td>
+                                <td>Hortaliça</td>
+                                <td>Folhosas</td>
+                                <td>2 Litros/dia (a cada 24 Horas)</td>
+                                <td>Irrigation 1000</td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon btn-edit" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon btn-delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Morangos (Estufa)</strong></td>
+                                <td>Frutífera</td>
+                                <td>Pequenos Frutos</td>
+                                <td>1.5 Litros/dia (a cada 8 Horas)</td>
+                                <td>Irrigation 1000</td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon btn-edit" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon btn-delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Milho Verde</strong></td>
+                                <td>Grão / Cereal</td>
+                                <td>Gramíneas</td>
+                                <td>10 mm/dia (a cada 2 Dias)</td>
+                                <td>Irrigation 1000</td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon btn-edit" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon btn-delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

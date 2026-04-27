@@ -1,0 +1,347 @@
+:root {
+    --azul-primario: #002855;
+    --azul-royal: #0056B3;
+    --azul-cyan: #4DD0E1;
+    --borda-gota: #B2EBF2;
+    --off-white: #F2F2F2;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--off-white);
+    color: var(--azul-primario);
+}
+
+/* Container Principal dividindo a tela */
+.login-container {
+    display: flex;
+    min-height: 100vh; /* Ocupa 100% da altura da tela */
+}
+
+/* === LADO ESQUERDO (Painel Escuro) === */
+.login-left {
+    flex: 1; /* Ocupa metade da tela */
+   background: linear-gradient(135deg, var(--azul-primario) 0%, #00152b 100%);
+    color: var(--white);
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Aquele brilho de fundo suave na parte escura */
+.login-left::before {
+    content: '';
+    position: absolute;
+    top: -150px;
+    right: -150px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(77, 208, 225, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    z-index: 1;
+}
+
+.logo span {
+    color: var(--azul-cyan);
+}
+
+.left-content {
+    margin-top: auto;
+    margin-bottom: auto;
+    z-index: 1;
+}
+
+.left-content h1 {
+    font-size: 54px;
+    font-style: italic;
+    margin-bottom: 10px;
+    line-height: 1.1;
+}
+
+.left-content p {
+    font-size: 18px;
+    color: var(--borda-gota);
+    font-style: italic;
+    font-weight: 400;
+}
+
+/* === LADO DIREITO (Formulário) === */
+.login-right {
+    flex: 1.2; /* Ocupa um pouquinho mais de espaço que o lado esquerdo */
+    background-color: var(--off-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+/* O Card do Formulário */
+.login-card {
+    background-color: var(--white);
+    padding: 50px 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0, 40, 85, 0.08); /* Sombra elegante azulada */
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-card h2 {
+    font-size: 22px;
+    margin-bottom: 30px;
+    color: var(--azul-primario);
+}
+
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--azul-primario);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.3s;
+    outline: none;
+    color: #333;
+}
+
+.input-group input:focus {
+    border-color: var(--azul-royal);
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+}
+
+.forgot-password {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 12px;
+    color: var(--azul-royal);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.forgot-password:hover {
+    color: var(--azul-cyan);
+}
+
+/* Botão de Ação */
+.btn-main {
+    width: 100%;
+    background-color: var(--azul-royal);
+    color: var(--white);
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn-main:hover {
+    background-color: var(--azul-primario);
+    transform: translateY(-2px);
+}
+
+/* Linha com a palavra "ou" */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0;
+    color: #999;
+    font-size: 13px;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.divider::before { margin-right: 15px; }
+.divider::after { margin-left: 15px; }
+
+/* Botão Google */
+.btn-google {
+    width: 100%;
+    background-color: var(--white);
+    color: var(--azul-primario);
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: 0.3s;
+}
+
+.btn-google:hover {
+    background-color: var(--off-white);
+    border-color: var(--azul-cyan);
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 14px;
+    color: #666;
+}
+
+.signup-link a {
+    color: var(--azul-royal);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-link a:hover {
+    color: var(--azul-cyan);
+}
+
+/* === RESPONSIVIDADE (Telas menores e celulares) === */
+@media (max-width: 850px) {
+    .login-container {
+        flex-direction: column;
+    }
+    
+    .login-left {
+        flex: none;
+        padding: 50px 30px;
+        text-align: center;
+    }
+    
+    .left-content {
+        margin-top: 50px;
+    }
+    
+    .login-right {
+        padding: 20px;
+    }
+    
+    .login-card {
+        padding: 40px 25px;
+    }
+}
+
+/* =========================================
+   ESTILOS ESPECÍFICOS PARA O CADASTRO (LARGO E CURTO)
+   ========================================= */
+
+/* Card agora é bem mais largo (850px) para caber as informações lado a lado */
+.signup-card {
+    max-width: 850px; 
+    padding: 35px 40px; /* Reduzi o padding vertical para achatar a tela */
+    margin: 20px 0;
+}
+
+/* Reduz o respiro entre os campos para o formulário ficar mais compacto na vertical */
+.signup-card .input-group {
+    margin-bottom: 12px; 
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+.form-row .input-group {
+    flex: 1; /* Comportamento padrão: divide igualmente */
+}
+
+/* === PROPORÇÕES DOS CAMPOS === */
+/* Dados Pessoais */
+.nome-group { flex: 2 !important; }
+.cpf-group { flex: 1.2 !important; }
+.email-group { flex: 2 !important; }
+
+/* Endereço (Linha 1) */
+.cep-group { flex: 1.2 !important; }
+.rua-group { flex: 2.5 !important; }
+.bairro-group { flex: 1.8 !important; }
+.numero-group { flex: 0.8 !important; }
+
+/* Endereço (Linha 2 - Cidade e UF Exatamente 50% / 50%) */
+.cidade-group { flex: 1 !important; } 
+.uf-group { flex: 1 !important; }
+
+/* Divisor de Seções mais espremido para poupar altura */
+.form-section-title {
+    width: 100%;
+    border-bottom: 2px solid var(--borda-gota);
+    margin: 20px 0 15px 0; /* Margens menores */
+    position: relative;
+}
+
+.form-section-title span {
+    background-color: var(--white);
+    color: var(--azul-cyan);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-right: 15px;
+    position: absolute;
+    top: -10px;
+    left: 0;
+}
+
+/* Responsividade (Para não quebrar tudo no celular) */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column; /* Empilha no celular */
+        gap: 0;
+    }
+    .signup-card {
+        padding: 25px;
+    }
+}
+
+/* =========================================
+   ESTILOS DE VALIDAÇÃO DE ERROS
+   ========================================= */
+.erro-borda {
+    border-color: #ec3a3a !important;
+    box-shadow: 0 0 0 3px rgba(236, 58, 58, 0.1) !important;
+}
+
+/* Estiliza todos os <span> que estão dentro do input-group */
+.input-group span {
+    color: #ec3a3a;
+    font-size: 11px;
+    display: block;
+    margin-top: 4px;
+    font-weight: 600;
+    min-height: 16px; /* Evita que o formulário fique "pulando" quando o texto aparece */
+}

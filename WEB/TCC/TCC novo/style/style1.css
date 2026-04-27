@@ -1,0 +1,331 @@
+:root {
+            --azul-primario: #002855;
+            --azul-royal: #0056B3;
+            --azul-cyan: #4DD0E1;
+            --borda-gota: #B2EBF2;
+            --off-white: #F2F2F2;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--off-white);
+            color: var(--azul-primario);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: var(--azul-primario);
+            color: var(--white);
+            padding: 8px 10%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        /* Header & Nav */
+        header {
+            background-color: var(--white);
+            padding: 20px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--azul-primario);
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--azul-royal);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--azul-primario);
+            margin-left: 25px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--azul-cyan);
+        }
+
+        /* Hero Section */
+        .hero {
+    position: relative; /* Necessário para conter a imagem e o texto */
+    height: 500px;
+    width: 100%;
+    overflow: hidden; /* Garante que a imagem não saia da borda */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz a imagem se comportar como o 'background-size: cover' */
+    z-index: -1; /* Joga a imagem para trás do texto */
+}
+
+.hero-content {
+    text-align: center;
+    color: var(--white);
+    padding: 20px;
+    /* Se quiser manter aquele efeito azul escuro da sua foto antiga: */
+    background: rgba(0, 40, 85, 0.7); 
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            max-width: 800px;
+        }
+
+        .hero p {
+            color: var(--azul-cyan);
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .btn-main {
+            background-color: var(--azul-royal);
+            color: var(--white);
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .btn-main:hover {
+            background-color: transparent;
+            border-color: var(--white);
+        }
+
+        /* Cards Section */
+        .cards-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: -60px;
+            padding: 0 10%;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 8px;
+            text-align: center;
+            width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-bottom: 4px solid var(--borda-gota);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-bottom-color: var(--azul-cyan);
+        }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            display: inline-block;
+            color: var(--azul-royal);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: var(--azul-primario);
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card a {
+            color: var(--azul-royal);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        /*Cards grupo*/
+        /* Ajustes para a Grade da Equipe */
+.team-section-wrapper {
+    padding-bottom: 80px;
+}
+
+.team-grid {
+    margin-top: 20px !important; /* Reseta o margin-top negativo se necessário */
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilo da Imagem da Equipe */
+.team-img-box {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--borda-gota);
+}
+
+.team-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Subtítulo do Cargo */
+.role {
+    color: var(--azul-royal) !important;
+    font-weight: 600;
+    font-size: 12px !important;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+/* Links Sociais dentro do Card */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-links a {
+    color: var(--azul-primario);
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--azul-cyan);
+    transform: scale(1.2);
+}
+
+/* Ajuste Responsivo para não quebrar o layout em telas médias */
+@media (max-width: 768px) {
+    .cards-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .card {
+        width: 100%;
+        max-width: 350px;
+    }
+}
+        /* Section Flow */
+        .description-section {
+            padding: 100px 10%;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .description-section h2 {
+            margin-bottom: 20px;
+            color: var(--azul-primario);
+        }
+
+        .description-section p {
+            line-height: 1.8;
+            color: #555;
+        }
+/* Quando o body tiver essa classe, essas regras vão forçar as cores */
+body.alto-contraste {
+    /* Substituímos as cores normais por cores de altíssimo contraste */
+    --cor-fundo: #000000;
+    --cor-texto: #ffffff;
+    --cor-primaria: #000000;
+    --cor-secundaria: #000000;
+    --cor-destaque: #FFFF00; /* Amarelo grita no fundo preto, ótimo para links/bordas */
+
+    /* Aqui ainda precisamos do !important só para matar a imagem da plantação */
+    background-image: none !important;
+    background-color: var(--cor-fundo);
+}
+
+/* Ajustando o cabeçalho no alto contraste */
+body.alto-contraste header, 
+body.alto-contraste .top-bar {
+    background-color: #000000 !important;
+    border-bottom: 2px solid #FFFFFF; /* Linha branca para separar */
+}
+
+body.alto-contraste header a,
+body.alto-contraste header span {
+    color: #FFFFFF !important;
+}
+
+/* Ajustando os cards para o alto contraste */
+/* =========================================
+   MÁGICA DO ALTO CONTRASTE NOS CARDS 
+   ========================================= */
+
+/* 1. Deixa o fundo do card preto e coloca uma borda de destaque */
+body.alto-contraste .card {
+    background: #000000 !important;
+    border: 2px solid #FFFF00 !important; /* Borda amarela */
+    box-shadow: none !important; /* Tira a sombra que não aparece no fundo preto */
+}
+
+/* 2. Força os parágrafos (o #666) e os ícones a ficarem brancos */
+body.alto-contraste .card p,
+body.alto-contraste .card-icon {
+    color: #FFFFFF !important;
+}
+
+/* 3. Força os títulos (h3) a ficarem amarelos para dar destaque */
+body.alto-contraste .card h3 {
+    color: #FFFF00 !important;
+}
+
+/* 4. Força os links a ficarem brancos e sublinhados (ótimo para acessibilidade) */
+body.alto-contraste .card a {
+    color: #FFFFFF !important;
+    text-decoration: underline !important;
+}
+
+/* 5. Muda o comportamento de quando passa o mouse (hover) para manter o contraste */
+body.alto-contraste .card:hover {
+    border-color: #FFFFFF !important;
+}
+
+body.alto-contraste .description-section{
+    color: #FFFFFF !important;
+}
