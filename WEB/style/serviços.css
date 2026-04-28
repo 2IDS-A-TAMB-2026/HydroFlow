@@ -1,0 +1,213 @@
+:root {
+    --azul-primario: #002855;
+    --azul-royal: #0056B3;
+    --azul-cyan: #4DD0E1;
+    --borda-gota: #B2EBF2;
+    --off-white: #F2F2F2;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--off-white);
+    font-family: 'Poppins', sans-serif;
+    color: var(--azul-primario);
+    overflow-x: hidden; /* Evita rolagem horizontal indesejada */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Hero da página de serviços */
+.services-hero {
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-royal));
+    color: var(--white);
+    padding: 80px 0;
+    text-align: center;
+}
+
+.services-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.services-hero p {
+    font-size: 1.2rem;
+    color: var(--azul-cyan);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Seção Problema/Solução */
+.problem-solution {
+    display: flex;
+    gap: 30px;
+    margin: -40px 0 60px 0;
+}
+
+.problem-box, .solution-box {
+    flex: 1;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.problem-box {
+    background: #fff;
+    border-left: 5px solid #0056B3;
+}
+
+.solution-box {
+    background: var(--white);
+    border-left: 5px solid var(--azul-cyan);
+}
+
+/* ============================================================
+   NOVO LAYOUT: TEXTO À ESQUERDA E IMAGEM À DIREITA
+   ============================================================ */
+.content-split {
+    display: flex;
+    align-items: center; /* Alinha o texto verticalmente com o centro da imagem */
+    justify-content: space-between;
+    gap: 60px;
+    margin: 80px 0;
+    text-align: left; /* Garante alinhamento à esquerda */
+}
+
+.text-side {
+    flex: 1.2; /* Dá um pouco mais de espaço para o texto */
+}
+
+.text-side h2 {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    color: var(--azul-primario);
+}
+
+.text-side p {
+    line-height: 1.8;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.image-side {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.image-side img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    /* Sombra estilizada usando o Azul Cyan da marca */
+    box-shadow: 20px 20px 0px var(--azul-cyan); 
+    transition: transform 0.4s ease;
+}
+
+.image-side img:hover {
+    transform: scale(1.02);
+}
+
+/* ============================================================ */
+
+/* Grid de Serviços */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 80px;
+}
+
+.service-card {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+    text-align: center;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0,40,85,0.1);
+    border-color: var(--azul-cyan);
+}
+
+.service-card .icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.service-card h3 {
+    margin-bottom: 15px;
+    color: var(--azul-royal);
+}
+
+.service-card p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Público Alvo */
+.target-audience {
+    text-align: center;
+    padding: 60px 0;
+    background: var(--white);
+    border-radius: 20px;
+    margin-bottom: 60px;
+}
+
+.audience-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.audience-tags span {
+    background: var(--borda-gota);
+    color: var(--azul-primario);
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Footer */
+.services-footer {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .content-split {
+        flex-direction: column; /* Empilha no tablet/celular */
+        text-align: center;
+        gap: 40px;
+    }
+
+    .image-side {
+        justify-content: center;
+    }
+
+    .image-side img {
+        box-shadow: 10px 10px 0px var(--azul-cyan); /* Sombra menor no mobile */
+    }
+}
+
+@media (max-width: 768px) {
+    .problem-solution {
+        flex-direction: column;
+    }
+    .services-hero h1 {
+        font-size: 2.2rem;
+    }
+}

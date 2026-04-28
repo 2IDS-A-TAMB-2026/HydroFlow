@@ -1,0 +1,269 @@
+:root {
+    --azul-primario: #002855;
+    --azul-royal: #0056B3;
+    --azul-cyan: #4DD0E1;
+    --borda-gota: #B2EBF2;
+    --off-white: #F2F2F2;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--off-white);
+    color: var(--azul-primario);
+}
+
+/* Container Principal dividindo a tela */
+.login-container {
+    display: flex;
+    min-height: 100vh; /* Ocupa 100% da altura da tela */
+}
+
+/* === LADO ESQUERDO (Painel Escuro) === */
+.login-left {
+    flex: 1; /* Ocupa metade da tela */
+    background: linear-gradient(135deg, var(--azul-primario) 0%, #00152b 100%);
+    color: var(--white);
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Aquele brilho de fundo suave na parte escura */
+.login-left::before {
+    content: '';
+    position: absolute;
+    top: -150px;
+    right: -150px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(77, 208, 225, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+}
+.pequeno{
+    font-size: smaller;
+    color:#023269;
+}
+.log_adm{
+    text-decoration: none;
+    color:#023269;
+}
+.log_adm:hover{
+    text-decoration: none;
+    color:#044085;
+}
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    z-index: 1;
+}
+.logo_bonita{
+    display: flex;
+    margin: auto;
+}
+.logo span {
+    color: var(--azul-cyan);
+}
+
+.left-content {
+    margin-top: auto;
+    margin-bottom: auto;
+    z-index: 1;
+}
+
+.left-content h1 {
+    font-size: 54px;
+    font-style: italic;
+    margin-bottom: 10px;
+    line-height: 1.1;
+}
+
+.left-content p {
+    font-size: 18px;
+    color: var(--borda-gota);
+    font-style: italic;
+    font-weight: 400;
+}
+
+/* === LADO DIREITO (Formulário) === */
+.login-right {
+    flex: 1.2; /* Ocupa um pouquinho mais de espaço que o lado esquerdo */
+    background-color: var(--off-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+/* O Card do Formulário */
+.login-card {
+    background-color: var(--white);
+    padding: 50px 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0, 40, 85, 0.08); /* Sombra elegante azulada */
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-card h2 {
+    font-size: 22px;
+    margin-bottom: 30px;
+    color: var(--azul-primario);
+}
+
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--azul-primario);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.3s;
+    outline: none;
+    color: #333;
+}
+
+.input-group input:focus {
+    border-color: var(--azul-royal);
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+}
+
+.forgot-password {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 12px;
+    color: var(--azul-royal);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.forgot-password:hover {
+    color: var(--azul-cyan);
+}
+
+/* Botão de Ação */
+.btn-main {
+    width: 100%;
+    background-color: var(--azul-royal);
+    color: var(--white);
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn-main:hover {
+    background-color: var(--azul-primario);
+    transform: translateY(-2px);
+}
+
+/* Linha com a palavra "ou" */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0;
+    color: #999;
+    font-size: 13px;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.divider::before { margin-right: 15px; }
+.divider::after { margin-left: 15px; }
+
+/* Botão Google */
+.btn-google {
+    width: 100%;
+    background-color: var(--white);
+    color: var(--azul-primario);
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: 0.3s;
+}
+
+.btn-google:hover {
+    background-color: var(--off-white);
+    border-color: var(--azul-cyan);
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 14px;
+    color: #666;
+}
+
+.signup-link a {
+    color: var(--azul-royal);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-link a:hover {
+    color: var(--azul-cyan);
+}
+
+/* === RESPONSIVIDADE (Telas menores e celulares) === */
+@media (max-width: 850px) {
+    .login-container {
+        flex-direction: column;
+    }
+    
+    .login-left {
+        flex: none;
+        padding: 50px 30px;
+        text-align: center;
+    }
+    
+    .left-content {
+        margin-top: 50px;
+    }
+    
+    .login-right {
+        padding: 20px;
+    }
+    
+    .login-card {
+        padding: 40px 25px;
+    }
+}
