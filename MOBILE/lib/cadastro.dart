@@ -120,7 +120,7 @@ class _CadastroPageState extends State<CadastroPage> {
                         TextSpan(text: 'HydroFlow'),
                         TextSpan(
                           text: '.',
-                          style: TextStyle(color: azulCyan),
+                          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                         ),
                       ],
                     ),

@@ -1,176 +1,165 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
-  // 🔐 LOGOUT
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  // Cores oficiais Hydroflow
+  static const Color azulPrimario = Color(0xFF002855);
+  static const Color azulBanco = Color(0xFF0D47A1);
+  static const Color azulCyan = Color(0xFF4DD0E1);
+  static const Color offWhite = Color(0xFFF5F6FA);
+
+  bool _isAdmin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPermissions();
+  }
+
+  Future<void> _checkPermissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isAdmin = prefs.getBool('isAdmin') ?? false;
+    });
+  }
+
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLogged', false);
-
-    Navigator.pushReplacementNamed(context, '/login');
+    await prefs.clear();
+    if (!mounted) return;
+    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        children: [
-          // SIDEBAR
-          Container(
-            width: 250,
-            color: const Color(0xFF002855),
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                const Text(
-                  "HYDROFLOW",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-                const SizedBox(height: 20),
-                _menuItem(Icons.home, "Painel", true),
-                _menuItem(Icons.calendar_month, "Agendamentos", false),
-                _menuItem(Icons.eco, "Cadastro de Plantas", false),
-                _menuItem(Icons.park, "Plantas", false),
-                _menuItem(Icons.history, "Histórico", false),
-                _menuItem(Icons.shopping_cart, "Equipamentos", false),
-
-                const Spacer(),
-
-                // 🔴 BOTÃO LOGOUT
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.white),
-                  title: const Text("Sair",
-                      style: TextStyle(color: Colors.white)),
-                  onTap: () => _logout(context),
-                ),
-
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-
-          // MAIN CONTENT
-          Expanded(
-            child: Container(
-              color: Colors.grey[100],
-              child: Column(
-                children: [
-                  // TOP BAR
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    color: Colors.white,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text("Painel",
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold)),
-                        Row(
-                          children: [
-                            Icon(Icons.person),
-                            SizedBox(width: 10),
-                            Icon(Icons.notifications),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-
-                  // KPI CARDS
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: const [
-                        KPIcard("66", "Dispositivos Ativos", Colors.cyan),
-                        KPIcard("68", "Alertas", Colors.orange),
-                        KPIcard("30", "Plantas", Colors.green),
-                        KPIcard("30", "Inativos", Colors.red),
-                      ],
-                    ),
-                  ),
-
-                  // GRID
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Expanded(child: _table()),
-                          const SizedBox(width: 16),
-                          Expanded(child: _chart()),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+      backgroundColor: offWhite,
+      // Usando o Drawer padronizado com as outras telas
+      drawer: _buildDrawer(context),
+      appBar: AppBar(
+        title: const Text("Painel Hydroflow"),
+        backgroundColor: azulPrimario,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_none),
+            onPressed: () {},
           )
         ],
       ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _isAdmin ? "Painel Administrativo" : "Status em Tempo Real",
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: azulPrimario),
+            ),
+            const SizedBox(height: 20),
+            
+            // Seção de Cards KPI
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              children: [
+                SizedBox(width: 160, child: KPIcard("24°C", "Temp. Ambiente", Colors.orange)),
+                SizedBox(width: 160, child: KPIcard("65%", "Umidade Solo", azulCyan)),
+                SizedBox(width: 160, child: KPIcard("Ligado", "Status Bomba", Colors.green)),
+                SizedBox(width: 160, child: KPIcard("120L", "Consumo Diário", azulBanco)),
+              ],
+            ),
+
+            const SizedBox(height: 30),
+            
+            // Card Informativo Central
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Próxima Rega Agendada", style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Icon(Icons.timer, color: azulCyan),
+                      const SizedBox(width: 10),
+                      Text("Hoje às 18:30", style: TextStyle(fontSize: 18, color: Colors.grey[800])),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _menuItem(IconData icon, String title, bool active) {
+  // --- DRAWER PADRONIZADO E DINÂMICO ---
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: Container(
+        color: azulPrimario, // Fundo escuro igual às outras telas
+        child: Column(
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(color: azulPrimario),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "HYDROFLOW",
+                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      _isAdmin ? "Administrador" : "Usuário Comum",
+                      style: const TextStyle(color: azulCyan, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
+            // Opções visíveis para todos
+            _drawerItem(Icons.dashboard, "Painel", () {}, active: true),
+            _drawerItem(Icons.calendar_month, "Agendamentos", () => Navigator.pushNamed(context, '/agendamentos')),
+            _drawerItem(Icons.park, "Plantas", () => Navigator.pushNamed(context, '/plantas')),
+            _drawerItem(Icons.history, "Histórico", () => Navigator.pushNamed(context, '/historico')),
+
+            const Spacer(),
+            const Divider(color: Colors.white24),
+            _drawerItem(Icons.logout, "Sair", () => _logout(context)),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _drawerItem(IconData icon, String title, VoidCallback onTap, {bool active = false}) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
       title: Text(title, style: const TextStyle(color: Colors.white)),
-      tileColor: active ? Colors.blue : Colors.transparent,
-    );
-  }
-
-  Widget _table() {
-    return Card(
-      child: DataTable(columns: const [
-        DataColumn(label: Text("Planta")),
-        DataColumn(label: Text("Dispositivo")),
-        DataColumn(label: Text("Status")),
-      ], rows: const [
-        DataRow(cells: [
-          DataCell(Text("Samambaia")),
-          DataCell(Text("Irriga 1000")),
-          DataCell(Text("IRRIGADO")),
-        ]),
-        DataRow(cells: [
-          DataCell(Text("Tomateira")),
-          DataCell(Text("Irrigador Lest")),
-          DataCell(Text("IRRIGADO")),
-        ]),
-        DataRow(cells: [
-          DataCell(Text("Cliente 2")),
-          DataCell(Text("2,00")),
-          DataCell(Text("FALHA")),
-        ]),
-      ]),
-    );
-  }
-
-  Widget _chart() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: LineChart(
-          LineChartData(
-            titlesData: FlTitlesData(show: false),
-            borderData: FlBorderData(show: false),
-            lineBarsData: [
-              LineChartBarData(
-                spots: const [
-                  FlSpot(0, 1),
-                  FlSpot(1, 3),
-                  FlSpot(2, 2),
-                  FlSpot(3, 5),
-                ],
-                isCurved: true,
-              )
-            ],
-          ),
-        ),
-      ),
+      tileColor: active ? Colors.blue.withOpacity(0.3) : Colors.transparent,
+      onTap: onTap,
     );
   }
 }
@@ -184,23 +173,33 @@ class KPIcard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Card(
+    return Container(
+      decoration: BoxDecoration(
         color: color,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Text(value,
-                  style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-              Text(label,
-                  style: const TextStyle(color: Colors.white)),
-            ],
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          )
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            value,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
           ),
-        ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+        ],
       ),
     );
   }

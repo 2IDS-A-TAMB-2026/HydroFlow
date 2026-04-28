@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tcc/dashboad_adm.dart';
+import 'package:tcc/login_admin.dart';
 
+// Importações originais
 import 'home.dart';
 import 'login.dart';
 import 'sobre_nos.dart';
 import 'cadastro.dart';
 import 'dashboard.dart';
+
+// 🔥 Importações que você deve garantir que estão aqui
+import 'agendamento.dart';
+import 'cadastro_planta.dart';
+import 'plantas.dart';
+import 'equipamentos.dart';
+import 'historico.dart'; // Certifique-se de ter criado este arquivo também
+import 'dashboad_adm.dart';
 
 void main() {
   runApp(const HydroflowApp());
@@ -26,7 +36,8 @@ class HydroflowApp extends StatelessWidget {
         ),
       ),
 
-      home: const Home(), // 🔥 MELHOR QUE initialRoute
+      // Tela inicial
+      home: const Home(),
 
       routes: {
         '/home': (context) => const Home(),
@@ -34,51 +45,16 @@ class HydroflowApp extends StatelessWidget {
         '/sobre': (context) => const SobreNos(),
         '/cadastro': (context) => const CadastroPage(),
         '/dashboard': (context) => const DashboardPage(),
+        
+        // 🔥 ADICIONE ESTAS ROTAS PARA O MENU FUNCIONAR:
+        '/agendamentos': (context) => const AgendamentoPage(),
+        '/cadastro_plantas': (context) => const CadastroPlantaPage(),
+        '/plantas': (context) => const PlantasPage(),
+        '/equipamentos': (context) => const EquipamentosPage(),
+        '/historico': (context) => const HistoricoPage(),
+        '/login_admin': (context) => const LoginAdminPage(),
+        '/dashboard_admin': (context) => const DashboardAdminPage(),
       },
     );
-  }
-}
-
-//
-// 🔐 VERIFICA LOGIN
-//
-class AuthCheck extends StatefulWidget {
-  const AuthCheck({super.key});
-
-  @override
-  State<AuthCheck> createState() => _AuthCheckState();
-}
-
-class _AuthCheckState extends State<AuthCheck> {
-  bool? isLogged;
-
-  @override
-  void initState() {
-    super.initState();
-    checkLogin();
-  }
-
-  Future<void> checkLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-    final logged = prefs.getBool('isLogged') ?? false;
-
-    if (!mounted) return;
-
-    setState(() {
-      isLogged = logged;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (isLogged == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    return isLogged!
-        ? const DashboardPage()
-        : const LoginMobilePage();
   }
 }

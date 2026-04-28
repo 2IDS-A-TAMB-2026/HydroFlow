@@ -265,7 +265,7 @@ class _SobreNosState extends State<SobreNos> {
             children: [
               IconButton(
                 icon: const Icon(
-                  FontAwesomeIcons.linkedin,
+                  Icons.business,
                   size: 18,
                   color: Color(0xFF0077B5),
                 ),
@@ -273,7 +273,7 @@ class _SobreNosState extends State<SobreNos> {
               ),
               IconButton(
                 icon: Icon(
-                  FontAwesomeIcons.github,
+                  Icons.code,
                   size: 18,
                   color: highContrast ? Colors.white : Colors.black,
                 ),
