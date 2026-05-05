@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - HYDROFLOW</title>
+    <link rel="stylesheet" href="style/style_dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+                    <h2>Configurações do Perfil</h2>
+                </div>
+                <div class="nav-right">
+                    <span>Manual Sistema Gestão Online</span>
+                    <i class="fa-solid fa-user" style="color: #00a65a;"></i>
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+            </header>
+
+            <div class="cards-container-flex">
+                
+                <div class="widget card-big" style="flex: 2;">
+                    <h3 class="form-title">
+                        <i class="fa-solid fa-id-card" style="color: #1e3c72;"></i> Informações Pessoais
+                    </h3>
+                    <hr class="divider">
+                    
+                    <form id="formPerfil">
+                        <div class="profile-photo-section">
+                            <div class="avatar-wrapper">
+                                <img src="https://via.placeholder.com/120" alt="Foto de Perfil" class="profile-img" id="fotoPreview">
+                                <label for="uploadFoto" class="upload-btn" title="Alterar Foto">
+                                    <i class="fa-solid fa-camera"></i>
+                                </label>
+                                <input type="file" id="uploadFoto" accept="image/*" style="display: none;">
+                            </div>
+                            <div class="photo-info">
+                                <h4>João da Silva</h4>
+                                <p>Administrador do Sistema</p>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nomeUser">Nome Completo</label>
+                                <input type="text" id="nomeUser" class="form-control" value="João da Silva" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailUser">E-mail</label>
+                                <input type="email" id="emailUser" class="form-control" value="joao.silva@hydroflow.com.br" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="telUser">Telefone / WhatsApp</label>
+                                <input type="text" id="telUser" class="form-control" placeholder="(00) 00000-0000">
+                            </div>
+                            <div class="form-group">
+                                <label for="cargoUser">Função / Cargo</label>
+                                <select id="cargoUser" class="form-control">
+                                    <option value="admin" selected>Administrador</option>
+                                    <option value="operador">Operador de Estufa</option>
+                                    <option value="tecnico">Técnico Agrícola</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions" style="margin-top: 20px;">
+                            <button type="submit" class="btn-submit">
+                                <i class="fa-solid fa-save"></i> Salvar Alterações
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="widget card-big" style="flex: 1; min-width: 300px;">
+                    <h3 class="form-title">
+                        <i class="fa-solid fa-lock" style="color: #dd4b39;"></i> Segurança
+                    </h3>
+                    <hr class="divider">
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Atualize sua senha de acesso periodicamente.</p>
+                    
+                    <form id="formSenha">
+                        <div class="form-group">
+                            <label for="senhaAtual">Senha Atual</label>
+                            <input type="password" id="senhaAtual" class="form-control" placeholder="••••••••" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="novaSenha">Nova Senha</label>
+                            <input type="password" id="novaSenha" class="form-control" placeholder="Mínimo 8 caracteres" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmaSenha">Confirmar Nova Senha</label>
+                            <input type="password" id="confirmaSenha" class="form-control" placeholder="Repita a nova senha" required>
+                        </div>
+
+                        <div class="form-actions" style="margin-top: 20px;">
+                            <button type="button" class="btn-submit" style="background-color: #dd4b39;">
+                                <i class="fa-solid fa-key"></i> Atualizar Senha
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </main>
+    </div>
+<script src="https://unpkg.com/imask"></script>
+<script>
+    // Espera todo o HTML carregar antes de rodar o JS
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // 1. Puxa os elementos que a gente precisa (pegando pelos IDs que criamos no HTML)
+    const inputFoto = document.getElementById('uploadFoto'); // O input file escondido
+    const imgPreview = document.getElementById('fotoPreview'); // A tag <img> redonda
+
+    // 2. Cria um "escutador" pra quando o usuário escolher um arquivo
+    if (inputFoto && imgPreview) { // Boa prática pra evitar o erro que vimos antes ;)
+        inputFoto.addEventListener('change', function(event) {
+            
+            // Pega o arquivo que foi selecionado
+            const arquivo = event.target.files[0];
+
+            // Se tiver arquivo e ele for uma imagem...
+            if (arquivo && arquivo.type.startsWith('image/')) {
+                
+                // Cria o leitor de arquivos
+                const leitor = new FileReader();
+
+                // Define o que acontece quando o leitor terminar de ler
+                leitor.onload = function(e) {
+                    // Troca o 'src' da imagem redonda pelo resultado da leitura (base64)
+                    imgPreview.src = e.target.result;
+                };
+
+                // Manda o leitor ler o arquivo como uma URL de dados (DataURL)
+                leitor.readAsDataURL(arquivo);
+            }
+        });
+    }
+});
+
+const wppInput = document.getElementById("telUser");
+
+const wppMascara = IMask(wppInput, { mask: '(00) 00000-0000' });
+</script>
+</body>
+</html>

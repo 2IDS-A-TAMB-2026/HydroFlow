@@ -19,7 +19,10 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
             <ul class="nav-menu">
-                <li><a href="dashboard_admin.html"><i class="fa-solid fa-house"></i> Painel</a></li>
+                <li><a href="dashboard_usu.html"><i class="fa-solid fa-house"></i> Painel</a></li>
+                <li><a href="agendamento.html"><i class="fa-solid fa-calendar-days"></i> Agendamentos</a></li>
+                <li><a href="plantas.html"><i class="fa-solid fa-tree"></i> Plantas</a></li>
+                <li><a href="historico.html"><i class="fas fa-history"></i> Histórico</a></li>
                 <li><a href="cadastro_planta.html"><i class="fa-solid fa-seedling"></i> Cadastro de Plantas</a></li>
                 <li class="active"><a href="cadastro_equipamento.html"><i class="fa-solid fa-cart-shopping"></i>Cadastro de Equipamento</a></li>
             </ul>
@@ -140,6 +143,13 @@
                 </div>
         </main>
     </div>
+<script src="https://unpkg.com/imask"></script>
+<script>
+    const latitude = document.getElementById("lat");
+    const longitude = document.getElementById("long");
 
+    const mascaraLat = IMask(latitude, { mask: '-00.0000' });
+    const mascaraLong = IMask(longitude, { mask: '-00.0000' });
+</script>
 </body>
 </html>

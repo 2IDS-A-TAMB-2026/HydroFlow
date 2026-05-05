@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Usuários - HYDROFLOW</title>
+    
+    <link rel="stylesheet" href="style/style_dashboard.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-droplet" style="margin-left: 20px;"></i> HYDRO<span style="color: #4dd0e1;">FLOW</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Painel</a></li>
+                <li><a href="agendamento.html"><i class="fa-solid fa-calendar-days"></i> Agendamentos</a></li>
+                <li><a href="usuarios.html" style="background-color: rgba(255,255,255,0.1);"><i class="fa-solid fa-users"></i> Gestão de Usuários</a></li>
+                <li><a href="perfil.html"><i class="fa-solid fa-user-gear"></i> Meu Perfil</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content" style="flex: 1; padding: 30px; background-color: #f4f6f9; overflow-y: auto;">
+            
+            <div class="page-header">
+                <div>
+                    <h2 style="color: #1e3c72;"><i class="fa-solid fa-users-gear"></i> Gerenciamento de Usuários</h2>
+                    <p style="color: #666; margin-top: 5px;">Adicione, edite ou remova acessos ao sistema Hydroflow.</p>
+                </div>
+                <button class="btn-add-user">
+                    <i class="fa-solid fa-user-plus"></i> Novo Usuário
+                </button>
+            </div>
+
+            <div class="widget card-big" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                
+                <div class="search-filter">
+                    <input type="text" placeholder="Buscar por nome, e-mail ou cargo...">
+                    <button class="btn-add-user" style="background-color: #1e3c72;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                    </button>
+                </div>
+
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Cargo / Função</th>
+                            <th>Status</th>
+                            <th>Último Acesso</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">JS</div>
+                                    <div>
+                                        <strong style="display: block; color: #333;">João da Silva</strong>
+                                        <span style="font-size: 0.85rem; color: #777;">joao.admin@hydroflow.com</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-weight: 600; color: #1e3c72;">Administrador</td>
+                            <td><span class="badge-green" style="padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; background: #d4edda; color: #155724;">Ativo</span></td>
+                            <td style="color: #666; font-size: 0.9rem;">Hoje, 09:41</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon btn-edit" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar" style="background: #e3f2fd;">MA</div>
+                                    <div>
+                                        <strong style="display: block; color: #333;">Maria Almeida</strong>
+                                        <span style="font-size: 0.85rem; color: #777;">maria.op@hydroflow.com</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="color: #555;">Operadora de Estufa</td>
+                            <td><span class="badge-green" style="padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; background: #d4edda; color: #155724;">Ativo</span></td>
+                            <td style="color: #666; font-size: 0.9rem;">Ontem, 15:30</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon btn-edit" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="btn-icon btn-delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar" style="background: #f8d7da; color: #721c24;">PR</div>
+                                    <div>
+                                        <strong style="display: block; color: #333;">Pedro Rocha</strong>
+                                        <span style="font-size: 0.85rem; color: #777;">pedro.tec@hydroflow.com</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="color: #555;">Técnico Agrícola</td>
+                            <td><span class="badge-red" style="padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; background: #f8d7da; color: #721c24;">Inativo</span></td>
+                            <td style="color: #666; font-size: 0.9rem;">12/04/2026</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon btn-edit" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="btn-icon btn-delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

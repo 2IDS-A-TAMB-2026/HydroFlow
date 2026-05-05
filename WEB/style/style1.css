@@ -565,3 +565,9 @@ body.alto-contraste .audience-card span{
 body.alto-contraste .carousel-container{
     background-color: #000000;
 }
+
+body.alto-contraste .audience-tags span{
+    background-color: #000000c5;
+    color: yellow;
+}
+

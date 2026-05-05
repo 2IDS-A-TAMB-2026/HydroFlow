@@ -211,3 +211,6 @@ body {
         font-size: 2.2rem;
     }
 }
+body.alto-contraste .serices-hero .container{
+    background-color: #000000;
+}

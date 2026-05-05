@@ -6,6 +6,7 @@
     <title>Lista de Plantas - Gestão Online</title>
     <link rel="stylesheet" href="style/style_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 
@@ -23,6 +24,9 @@
                 <li><a href="agendamento.html"><i class="fa-solid fa-calendar-days"></i> Agendamentos</a></li>
                 <li class="active"><a href="plantas.html"><i class="fa-solid fa-tree"></i> Plantas</a></li>
                 <li><a href="historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+                <li><a href="cadastro_planta.html"><i class="fa-solid fa-seedling"></i> Cadastro de Plantas</a></li>
+                <li><a href="cadastro_equipamento.html"><i class="fa-solid fa-cart-shopping"></i>Cadastro de Equipamento</a></li>
+            </ul>
             </ul>
         </aside>
 
@@ -57,9 +61,10 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="text" class="form-control" placeholder="Buscar por nome ou cultura...">
                     </div>
+                    <button id="btn-exportar" class="btn-cancelar" style="margin: 0;"><i class="fa-solid fa-download"></i> Exportar PDF</button>
                 </div>
                 
-                <div class="table-responsive">
+                <div id="tabela-historico" class="table-responsive">
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -123,6 +128,38 @@
             </div>
         </main>
     </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const botaoExportar = document.getElementById("btn-exportar");
+        const areaParaExportar = document.getElementById("tabela-historico");
 
+
+        botaoExportar.addEventListener("click", function() {
+            
+
+            const textoOriginal = botaoExportar.innerHTML;
+            botaoExportar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gerando PDF...';
+
+
+            const opcoesPDF = {
+                margin:       10, 
+                filename:     'historico_irrigacao.pdf', 
+                image:        { type: 'jpeg', quality: 0.98 }, 
+                html2canvas:  { scale: 2 }, 
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } 
+            };
+
+            
+            html2pdf()
+                .set(opcoesPDF) 
+                .from(areaParaExportar) 
+                .save() 
+                .then(function() {
+                    botaoExportar.innerHTML = textoOriginal;
+                });
+        });
+    });
+</script>
 </body>
 </html>
