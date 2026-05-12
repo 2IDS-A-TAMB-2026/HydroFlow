@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class EquipamentosPage extends StatefulWidget {
   const EquipamentosPage({super.key});
@@ -9,42 +8,81 @@ class EquipamentosPage extends StatefulWidget {
 }
 
 class _EquipamentosPageState extends State<EquipamentosPage> {
-  final _formSensorKey = GlobalKey<FormState>();
-  final _formDispKey = GlobalKey<FormState>();
-  bool _isAdmin = false;
+  final _formKey = GlobalKey<FormState>();
+
+  // Controllers
+  final _nomeDispController = TextEditingController();
+  final _capacidadeController = TextEditingController();
+  final _descricaoController = TextEditingController();
+  final _latitudeController = TextEditingController();
+  final _longitudeController = TextEditingController();
+  final _ruaController = TextEditingController();
+  final _bairroController = TextEditingController();
+  final _cidadeController = TextEditingController();
+  final _numeroController = TextEditingController();
+  final _cepController = TextEditingController();
+
+  // Sensores vinculados
+  bool _sensorSolo = false;
+  bool _sensorTemperatura = false;
+  bool _sensorUmidadeAr = false;
+  bool _sensorChuva = false;
 
   @override
-  void initState() {
-    super.initState();
-    _checkPermissions();
+  void dispose() {
+    _nomeDispController.dispose();
+    _capacidadeController.dispose();
+    _descricaoController.dispose();
+    _latitudeController.dispose();
+    _longitudeController.dispose();
+    _ruaController.dispose();
+    _bairroController.dispose();
+    _cidadeController.dispose();
+    _numeroController.dispose();
+    _cepController.dispose();
+
+    super.dispose();
   }
 
-  Future<void> _checkPermissions() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _isAdmin = prefs.getBool('isAdmin') ?? false;
-    });
-  }
+  // Salvar dispositivo
+  void _salvarDispositivo() {
+    if (_formKey.currentState!.validate()) {
+      if (!_sensorSolo &&
+          !_sensorTemperatura &&
+          !_sensorUmidadeAr &&
+          !_sensorChuva) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Selecione pelo menos um sensor"),
+          ),
+        );
+        return;
+      }
 
-  // 🔥 Lógica de navegação inteligente para o Painel
-  void _navegarParaPainelCorreto() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool isAdmin = prefs.getBool('isAdmin') ?? false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Dispositivo salvo com sucesso!"),
+        ),
+      );
 
-    if (!mounted) return;
+      _nomeDispController.clear();
+      _capacidadeController.clear();
+      _descricaoController.clear();
+      _latitudeController.clear();
+      _longitudeController.clear();
+      _ruaController.clear();
+      _bairroController.clear();
+      _cidadeController.clear();
+      _numeroController.clear();
+      _cepController.clear();
 
-    if (isAdmin) {
-      Navigator.pushReplacementNamed(context, '/dashboard_admin');
-    } else {
-      Navigator.pushReplacementNamed(context, '/dashboard');
+      setState(() {
+        _sensorSolo = false;
+        _sensorTemperatura = false;
+        _sensorUmidadeAr = false;
+        _sensorChuva = false;
+      });
     }
-  }
-
-  Future<void> _logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    if (!mounted) return;
-    Navigator.pushReplacementNamed(context, '/login');
   }
 
   @override
@@ -56,169 +94,273 @@ class _EquipamentosPageState extends State<EquipamentosPage> {
         foregroundColor: const Color(0xFF002855),
         elevation: 0,
       ),
+
       drawer: _buildDrawer(context),
+
       body: Container(
         color: Colors.grey[100],
+
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              _buildSensorCard(),
-              const SizedBox(height: 20),
-              _buildDispositivoCard(),
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
-  // --- CARD 1: CADASTRO DE SENSORES ---
-  Widget _buildSensorCard() {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formSensorKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Row(
-                children: [
-                  Icon(Icons.sensors, color: Colors.blue),
-                  SizedBox(width: 10),
-                  Text("Cadastro de Sensores", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              const Divider(height: 30),
-              const Text("Registre novos sensores para monitoramento de campo.", style: TextStyle(color: Colors.grey)),
-              const SizedBox(height: 20),
-              
-              const Text("Sensor de Umidade do Solo", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF002855))),
-              const SizedBox(height: 10),
-              TextFormField(
-                decoration: const InputDecoration(labelText: "Nome do Sensor", border: OutlineInputBorder(), hintText: "Ex: Sensor Solo A1"),
-              ),
-              
-              const Divider(height: 40),
-              
-              const Text("Sensor de Umidade do Ar e Temperatura", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF002855))),
-              const SizedBox(height: 10),
-              TextFormField(
-                decoration: const InputDecoration(labelText: "Nome do Sensor", border: OutlineInputBorder(), hintText: "Ex: Sensor Temp A1"),
-              ),
-              
-              const SizedBox(height: 25),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add),
-                  label: const Text("Cadastrar Sensores"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, 
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 15)
-                  ),
+          child: Card(
+            elevation: 4,
+
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+
+              child: Form(
+                key: _formKey,
+
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.memory, color: Colors.orange),
+                        SizedBox(width: 10),
+                        Text(
+                          "Cadastro de Dispositivos",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const Divider(height: 30),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: _textField(
+                            "Nome do Dispositivo",
+                            "Ex: Controlador Central",
+                            controller: _nomeDispController,
+                          ),
+                        ),
+
+                        const SizedBox(width: 10),
+
+                        Expanded(
+                          child: _textField(
+                            "Capacidade",
+                            "Ex: 10L",
+                            controller: _capacidadeController,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    _textField(
+                      "Descrição",
+                      "Função do dispositivo...",
+                      controller: _descricaoController,
+                      maxLines: 2,
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    const Text(
+                      "Sensores Vinculados",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Color(0xFF002855),
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Card(
+                      elevation: 1,
+
+                      child: Column(
+                        children: [
+                          CheckboxListTile(
+                            value: _sensorSolo,
+                            onChanged: (value) {
+                              setState(() {
+                                _sensorSolo = value!;
+                              });
+                            },
+                            title:
+                                const Text("Sensor de Umidade do Solo"),
+                          ),
+
+                          CheckboxListTile(
+                            value: _sensorTemperatura,
+                            onChanged: (value) {
+                              setState(() {
+                                _sensorTemperatura = value!;
+                              });
+                            },
+                            title:
+                                const Text("Sensor de Temperatura"),
+                          ),
+
+                          CheckboxListTile(
+                            value: _sensorUmidadeAr,
+                            onChanged: (value) {
+                              setState(() {
+                                _sensorUmidadeAr = value!;
+                              });
+                            },
+                            title:
+                                const Text("Sensor de Umidade do Ar"),
+                          ),
+
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _textField(
+                            "Latitude",
+                            "-23.XXXX",
+                            controller: _latitudeController,
+                          ),
+                        ),
+
+                        const SizedBox(width: 10),
+
+                        Expanded(
+                          child: _textField(
+                            "Longitude",
+                            "-46.XXXX",
+                            controller: _longitudeController,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+
+                      child: Text(
+                        "Endereço de Instalação",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+
+                    _textField(
+                      "Rua",
+                      "Rua José Calipto...",
+                      controller: _ruaController,
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _textField(
+                            "Bairro",
+                            "Jardim...",
+                            controller: _bairroController,
+                          ),
+                        ),
+
+                        const SizedBox(width: 10),
+
+                        Expanded(
+                          child: _textField(
+                            "Cidade",
+                            "Tambaú",
+                            controller: _cidadeController,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _textField(
+                            "Número",
+                            "123",
+                            controller: _numeroController,
+                          ),
+                        ),
+
+                        const SizedBox(width: 10),
+
+                        Expanded(
+                          child: _textField(
+                            "CEP",
+                            "13712-46",
+                            controller: _cepController,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    SizedBox(
+                      width: double.infinity,
+
+                      child: ElevatedButton.icon(
+                        onPressed: _salvarDispositivo,
+
+                        icon: const Icon(Icons.save),
+
+                        label: const Text("Salvar Dispositivo"),
+
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange,
+                          foregroundColor: Colors.white,
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 15),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // --- CARD 2: CADASTRO DE DISPOSITIVOS ---
-  Widget _buildDispositivoCard() {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formDispKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Row(
-                children: [
-                  Icon(Icons.memory, color: Colors.orange),
-                  SizedBox(width: 10),
-                  Text("Cadastro de Dispositivos", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              const Divider(height: 30),
-              
-              Row(
-                children: [
-                  Expanded(flex: 2, child: _textField("Nome do Dispositivo", "Ex: Controlador Central")),
-                  const SizedBox(width: 10),
-                  Expanded(child: _textField("Capacidade", "Ex: 10L")),
-                ],
-              ),
-              const SizedBox(height: 15),
-              _textField("Descrição", "Função do dispositivo...", maxLines: 2),
-              const SizedBox(height: 15),
-              
-              Row(
-                children: [
-                  Expanded(child: _textField("Latitude", "-23.XXXX")),
-                  const SizedBox(width: 10),
-                  Expanded(child: _textField("Longitude", "-46.XXXX")),
-                ],
-              ),
-              
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Text("Endereço de Instalação", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              ),
-              
-              _textField("Rua", "Rua José Calipto..."),
-              const SizedBox(height: 15),
-              Row(
-                children: [
-                  Expanded(child: _textField("Bairro", "Jardim...")),
-                  const SizedBox(width: 10),
-                  Expanded(child: _textField("Cidade", "Tambaú")),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Row(
-                children: [
-                  Expanded(child: _textField("Número", "123")),
-                  const SizedBox(width: 10),
-                  Expanded(child: _textField("CEP", "13712-46")),
-                ],
-              ),
-              
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.save),
-                  label: const Text("Salvar Dispositivo"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange[800],
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _textField(String label, String hint, {int maxLines = 1}) {
+  // INPUT PADRÃO
+  Widget _textField(
+    String label,
+    String hint, {
+    int maxLines = 1,
+    TextEditingController? controller,
+  }) {
     return TextFormField(
+      controller: controller,
       maxLines: maxLines,
+
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Campo obrigatório";
+        }
+        return null;
+      },
+
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
@@ -228,43 +370,94 @@ class _EquipamentosPageState extends State<EquipamentosPage> {
     );
   }
 
-  // --- DRAWER UNIFICADO (Estilo Imagem) ---
+  // DRAWER
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: Container(
         color: const Color(0xFF002855),
+
         child: Column(
           children: [
             Container(
               height: 160,
               width: double.infinity,
               alignment: Alignment.center,
+
               child: const Text(
                 "HYDROFLOW",
                 style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2),
+                  color: Colors.white,
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
               ),
             ),
-            const Divider(color: Colors.white, thickness: 1.2, height: 1),
-            const SizedBox(height: 10),
-            
-            _drawerItem(Icons.home, "Painel", _navegarParaPainelCorreto),
-            _drawerItem(Icons.calendar_month, "Agendamentos", () => Navigator.pushNamed(context, '/agendamentos')),
-            _drawerItem(Icons.park, "Plantas", () => Navigator.pushNamed(context, '/plantas')),
-            _drawerItem(Icons.history, "Histórico", () => Navigator.pushNamed(context, '/historico')),
 
-            if (_isAdmin) ...[
-              const Divider(color: Colors.white24),
-              _drawerItem(Icons.eco, "Cadastro de Plantas", () => Navigator.pushNamed(context, '/cadastro_plantas')),
-              _drawerItem(Icons.shopping_cart, "Equipamentos", () => Navigator.pop(context), active: true),
-            ],
-            
+            const Divider(
+              color: Colors.white,
+              thickness: 1.2,
+              height: 1,
+            ),
+
+            const SizedBox(height: 10),
+
+            _drawerItem(
+              Icons.home,
+              "Painel",
+              () => Navigator
+                  .pushReplacementNamed(
+                context,
+                '/dashboard',
+              ),
+            ),
+
+            _drawerItem(
+              Icons.calendar_month,
+              "Agendamentos",
+              () => Navigator.pushNamed(
+                context,
+                '/agendamentos',
+              ),
+            ),
+
+            _drawerItem(
+              Icons.park,
+              "Plantas",
+              () => Navigator.pushNamed(
+                context,
+                '/plantas',
+              ),
+            ),
+
+            _drawerItem(
+              Icons.history,
+              "Histórico",
+              () => Navigator.pushNamed(
+                context,
+                '/historico',
+              ),
+            ),
+
+            _drawerItem(
+              Icons.shopping_cart,
+              "Equipamentos",
+              () => Navigator.pushNamed(
+                context,
+                '/equipamentos',
+              ),
+            ),
+
             const Spacer(),
+
             const Divider(color: Colors.white24),
-            _drawerItem(Icons.logout, "Sair", _logout),
+
+            _drawerItem(
+              Icons.logout,
+              "Sair",
+              () => Navigator.pushReplacementNamed(context, '/login'),
+            ),
+
             const SizedBox(height: 20),
           ],
         ),
@@ -272,13 +465,31 @@ class _EquipamentosPageState extends State<EquipamentosPage> {
     );
   }
 
-  Widget _drawerItem(IconData icon, String title, VoidCallback onTap, {bool active = false}) {
+  Widget _drawerItem(
+    IconData icon,
+    String title,
+    VoidCallback onTap, {
+    bool active = false,
+  }) {
     return ListTile(
-      leading: Icon(icon, color: Colors.white, size: 24),
-      title: Text(title,
-          style: const TextStyle(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400)),
-      tileColor: active ? Colors.white.withOpacity(0.15) : Colors.transparent,
+      leading: Icon(
+        icon,
+        color: Colors.white,
+        size: 24,
+      ),
+
+      title: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+
+      tileColor:
+          active ? Colors.white.withOpacity(0.15) : Colors.transparent,
+
       onTap: onTap,
     );
   }

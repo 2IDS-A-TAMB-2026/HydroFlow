@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tcc/dashboad_adm.dart';
-import 'package:tcc/login_admin.dart';
 
 // Importações originais
 import 'home.dart';
@@ -8,14 +6,13 @@ import 'login.dart';
 import 'sobre_nos.dart';
 import 'cadastro.dart';
 import 'dashboard.dart';
+import 'esqueci_senha.dart';
 
-// 🔥 Importações que você deve garantir que estão aqui
 import 'agendamento.dart';
 import 'cadastro_planta.dart';
 import 'plantas.dart';
 import 'equipamentos.dart';
-import 'historico.dart'; // Certifique-se de ter criado este arquivo também
-import 'dashboad_adm.dart';
+import 'historico.dart';
 
 void main() {
   runApp(const HydroflowApp());
@@ -45,15 +42,15 @@ class HydroflowApp extends StatelessWidget {
         '/sobre': (context) => const SobreNos(),
         '/cadastro': (context) => const CadastroPage(),
         '/dashboard': (context) => const DashboardPage(),
-        
-        // 🔥 ADICIONE ESTAS ROTAS PARA O MENU FUNCIONAR:
+
+        '/nova_senha': (context) => const NovaSenhaPage(),
+
+        // OUTRAS ROTAS
         '/agendamentos': (context) => const AgendamentoPage(),
         '/cadastro_plantas': (context) => const CadastroPlantaPage(),
         '/plantas': (context) => const PlantasPage(),
         '/equipamentos': (context) => const EquipamentosPage(),
-        '/historico': (context) => const HistoricoPage(),
-        '/login_admin': (context) => const LoginAdminPage(),
-        '/dashboard_admin': (context) => const DashboardAdminPage(),
+        '/historico': (context) => const HistoricoPage()
       },
     );
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SobreNos extends StatefulWidget {
   const SobreNos({super.key});
@@ -31,34 +30,48 @@ class _SobreNosState extends State<SobreNos> {
         backgroundColor: azulPrimario,
         title: const Text(
           "HYDROFLOW",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           IconButton(
-            icon: Icon(highContrast ? Icons.light_mode : Icons.contrast),
-            onPressed: () => setState(() => highContrast = !highContrast),
+            icon: Icon(
+              highContrast ? Icons.light_mode : Icons.contrast,
+            ),
+            onPressed: () {
+              setState(() {
+                highContrast = !highContrast;
+              });
+            },
           )
         ],
       ),
 
-      // 🍔 MENU PADRÃO (igual todas as telas)
+      // 🍔 MENU PADRÃO
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: azulPrimario),
+              decoration: BoxDecoration(
+                color: azulPrimario,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Hydroflow",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+
                   SizedBox(height: 8),
+
                   Text(
                     "Tecnologia no Campo",
                     style: TextStyle(color: azulCyan),
@@ -72,7 +85,7 @@ class _SobreNosState extends State<SobreNos> {
               title: const Text("Início"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushReplacementNamed(context, '/home');
               },
             ),
 
@@ -102,7 +115,6 @@ class _SobreNosState extends State<SobreNos> {
                 Navigator.pushReplacementNamed(context, '/cadastro');
               },
             ),
-            
           ],
         ),
       ),
@@ -119,15 +131,18 @@ class _SobreNosState extends State<SobreNos> {
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
+
                 Container(
                   height: 200,
                   color: Colors.black.withOpacity(0.6),
                 ),
+
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 60),
+
                       Text(
                         "Equipe Técnica",
                         style: TextStyle(
@@ -136,6 +151,7 @@ class _SobreNosState extends State<SobreNos> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
@@ -170,7 +186,7 @@ class _SobreNosState extends State<SobreNos> {
 
             const SizedBox(height: 20),
 
-            // 👥 GRID COM IMAGENS
+            // 👥 GRID DA EQUIPE
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: GridView.count(
@@ -181,12 +197,59 @@ class _SobreNosState extends State<SobreNos> {
                 mainAxisSpacing: 10,
                 childAspectRatio: 0.75,
                 children: [
-                  _buildTeamCard("Mariana Ribeiro", "PO / Back-End", "assets/images/mariana.jpeg", cardColor, textColor, subTextColor),
-                  _buildTeamCard("Ana Rita Boiago", "SM / Back-End", "assets/images/anarita.jpeg", cardColor, textColor, subTextColor),
-                  _buildTeamCard("Giulia Ribeiro", "Analista de Sistemas e Designer", "assets/images/giulia.jpeg", cardColor, textColor, subTextColor),
-                  _buildTeamCard("Rubens Neto", "Analista de Sistemas e Designer", "assets/images/rubens.jpeg", cardColor, textColor, subTextColor),
-                  _buildTeamCard("Diego Bortolotti", "Full-Stack", "assets/images/diego.jpeg", cardColor, textColor, subTextColor),
-                  _buildTeamCard("Felipe Ribeiro", "Full-Stack", "assets/images/felipe.jpeg", cardColor, textColor, subTextColor),
+                  _buildTeamCard(
+                    "Mariana Ribeiro",
+                    "PO / Back-End",
+                    "assets/images/mariana.jpeg",
+                    cardColor,
+                    textColor,
+                    subTextColor,
+                  ),
+
+                  _buildTeamCard(
+                    "Ana Rita Boiago",
+                    "SM / Back-End",
+                    "assets/images/anarita.jpeg",
+                    cardColor,
+                    textColor,
+                    subTextColor,
+                  ),
+
+                  _buildTeamCard(
+                    "Giulia Ribeiro",
+                    "Analista de Sistemas e Designer",
+                    "assets/images/giulia.jpeg",
+                    cardColor,
+                    textColor,
+                    subTextColor,
+                  ),
+
+                  _buildTeamCard(
+                    "Rubens Neto",
+                    "Analista de Sistemas e Designer",
+                    "assets/images/rubens.jpeg",
+                    cardColor,
+                    textColor,
+                    subTextColor,
+                  ),
+
+                  _buildTeamCard(
+                    "Diego Bortolotti",
+                    "Full-Stack",
+                    "assets/images/diego.jpeg",
+                    cardColor,
+                    textColor,
+                    subTextColor,
+                  ),
+
+                  _buildTeamCard(
+                    "Felipe Ribeiro",
+                    "Full-Stack",
+                    "assets/images/felipe.jpeg",
+                    cardColor,
+                    textColor,
+                    subTextColor,
+                  ),
                 ],
               ),
             ),
@@ -201,7 +264,10 @@ class _SobreNosState extends State<SobreNos> {
               child: Text(
                 "© 2026 Hydroflow - Gestão de Recursos Hídricos.",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: textColor),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: textColor,
+                ),
               ),
             ),
           ],
@@ -210,7 +276,6 @@ class _SobreNosState extends State<SobreNos> {
     );
   }
 
-  // 🔹 CARD COM IMAGEM
   Widget _buildTeamCard(
     String name,
     String role,
@@ -222,18 +287,24 @@ class _SobreNosState extends State<SobreNos> {
     return Card(
       color: cardColor,
       elevation: 4,
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: highContrast
-            ? const BorderSide(color: Colors.yellow, width: 2)
+            ? const BorderSide(
+                color: Colors.yellow,
+                width: 2,
+              )
             : BorderSide.none,
       ),
+
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 38,
             backgroundColor: azulRoyal,
+
             child: CircleAvatar(
               radius: 34,
               backgroundImage: AssetImage(imagePath),
@@ -255,7 +326,10 @@ class _SobreNosState extends State<SobreNos> {
           Text(
             role,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 11, color: roleColor),
+            style: TextStyle(
+              fontSize: 11,
+              color: roleColor,
+            ),
           ),
 
           const SizedBox(height: 12),
@@ -271,11 +345,13 @@ class _SobreNosState extends State<SobreNos> {
                 ),
                 onPressed: () {},
               ),
+
               IconButton(
                 icon: Icon(
                   Icons.code,
                   size: 18,
-                  color: highContrast ? Colors.white : Colors.black,
+                  color:
+                      highContrast ? Colors.white : Colors.black,
                 ),
                 onPressed: () {},
               ),

@@ -15,46 +15,108 @@ class _CadastroPageState extends State<CadastroPage> {
   final _nomeController = TextEditingController();
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
-  final _confirmarSenhaController = TextEditingController();
+  final _confirmarSenhaController =
+      TextEditingController();
 
-  static const Color azulPrimario = Color(0xFF002855);
-  static const Color azulRoyal = Color(0xFF0056B3);
-  static const Color azulCyan = Color(0xFF4DD0E1);
-  static const Color offWhite = Color(0xFFF2F2F2);
+  bool _obscureSenha = true;
+  bool _obscureConfirmar = true;
+
+  static const Color azulPrimario =
+      Color(0xFF002855);
+
+  static const Color azulRoyal =
+      Color(0xFF0056B3);
+
+  static const Color azulCyan =
+      Color(0xFF4DD0E1);
+
+  static const Color offWhite =
+      Color(0xFFF2F2F2);
+
+  @override
+  void dispose() {
+    _nomeController.dispose();
+    _emailController.dispose();
+    _senhaController.dispose();
+    _confirmarSenhaController.dispose();
+    super.dispose();
+  }
+
+  void _finalizarCadastro() {
+    if (_formKey.currentState!.validate()) {
+      if (_senhaController.text !=
+          _confirmarSenhaController.text) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text("As senhas não coincidem"),
+          ),
+        );
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text("Cadastro realizado com sucesso!"),
+        ),
+      );
+
+      Future.delayed(
+        const Duration(seconds: 2),
+        () {
+          if (!mounted) return;
+
+          Navigator.pushReplacementNamed(
+            context,
+            '/login',
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: azulPrimario,
 
-      // ✅ APPBAR PADRÃO
       appBar: AppBar(
         backgroundColor: azulPrimario,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme:
+            const IconThemeData(color: Colors.white),
       ),
 
-      // ✅ DRAWER PADRÃO
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: azulPrimario),
+              decoration: BoxDecoration(
+                color: azulPrimario,
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Hydroflow",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight:
+                          FontWeight.bold,
+                    ),
                   ),
+
                   SizedBox(height: 8),
+
                   Text(
                     "Tecnologia no Campo",
-                    style: TextStyle(color: azulCyan),
+                    style: TextStyle(
+                      color: azulCyan,
+                    ),
                   ),
                 ],
               ),
@@ -65,7 +127,11 @@ class _CadastroPageState extends State<CadastroPage> {
               title: const Text("Início"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/');
+
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/home',
+                );
               },
             ),
 
@@ -74,7 +140,11 @@ class _CadastroPageState extends State<CadastroPage> {
               title: const Text("Sobre"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/sobre');
+
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/sobre',
+                );
               },
             ),
 
@@ -83,16 +153,25 @@ class _CadastroPageState extends State<CadastroPage> {
               title: const Text("Login"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/login');
+
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/login',
+                );
               },
             ),
 
             ListTile(
-              leading: const Icon(Icons.person_add),
+              leading:
+                  const Icon(Icons.person_add),
               title: const Text("Cadastro"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/cadastro');
+
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/cadastro',
+                );
               },
             ),
           ],
@@ -105,39 +184,60 @@ class _CadastroPageState extends State<CadastroPage> {
             // HEADER
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 40, bottom: 30, left: 25),
+
+              padding: const EdgeInsets.only(
+                top: 40,
+                bottom: 30,
+                left: 25,
+              ),
+
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
+
                 children: [
                   RichText(
                     text: const TextSpan(
                       style: TextStyle(
+                        color: Colors.white,
                         fontSize: 30,
-                        fontWeight: FontWeight.bold,
+                        fontWeight:
+                            FontWeight.bold,
                         fontFamily: 'Poppins',
                       ),
                       children: [
-                        TextSpan(text: 'HydroFlow'),
+                        TextSpan(
+                          text: 'HydroFlow',
+                        ),
                         TextSpan(
                           text: '.',
-                          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 10),
+
                   const Text(
                     'Crie sua conta',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                      fontWeight:
+                          FontWeight.bold,
                     ),
                   ),
+
                   const SizedBox(height: 5),
+
                   Text(
                     'Comece agora sua jornada',
-                    style: TextStyle(color: azulCyan),
+                    style: TextStyle(
+                      color: azulCyan,
+                    ),
                   ),
                 ],
               ),
@@ -145,6 +245,8 @@ class _CadastroPageState extends State<CadastroPage> {
 
             // FORM
             Container(
+              padding: const EdgeInsets.all(25),
+
               decoration: const BoxDecoration(
                 color: offWhite,
                 borderRadius: BorderRadius.only(
@@ -152,14 +254,16 @@ class _CadastroPageState extends State<CadastroPage> {
                   topRight: Radius.circular(30),
                 ),
               ),
-              padding: const EdgeInsets.all(25),
+
               child: Form(
                 key: _formKey,
+
                 child: Column(
                   children: [
                     _buildInput(
                       hint: "Nome completo",
-                      controller: _nomeController,
+                      controller:
+                          _nomeController,
                     ),
 
                     const SizedBox(height: 15),
@@ -173,7 +277,9 @@ class _CadastroPageState extends State<CadastroPage> {
                             isCPF: true,
                           ),
                         ),
+
                         const SizedBox(width: 10),
+
                         Expanded(
                           child: _buildInput(
                             hint: "UF",
@@ -187,13 +293,18 @@ class _CadastroPageState extends State<CadastroPage> {
 
                     _buildInput(
                       hint: "E-mail",
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
+                      controller:
+                          _emailController,
+                      keyboardType:
+                          TextInputType
+                              .emailAddress,
                     ),
 
                     const SizedBox(height: 20),
 
-                    _buildSectionTitle("Endereço"),
+                    _buildSectionTitle(
+                      "Endereço",
+                    ),
 
                     Row(
                       children: [
@@ -203,10 +314,14 @@ class _CadastroPageState extends State<CadastroPage> {
                             isCEP: true,
                           ),
                         ),
+
                         const SizedBox(width: 10),
+
                         Expanded(
                           flex: 2,
-                          child: _buildInput(hint: "Rua"),
+                          child: _buildInput(
+                            hint: "Rua",
+                          ),
                         ),
                       ],
                     ),
@@ -217,31 +332,57 @@ class _CadastroPageState extends State<CadastroPage> {
                       children: [
                         Expanded(
                           flex: 2,
-                          child: _buildInput(hint: "Bairro"),
+                          child: _buildInput(
+                            hint: "Bairro",
+                          ),
                         ),
+
                         const SizedBox(width: 10),
+
                         Expanded(
-                          child: _buildInput(hint: "Nº"),
+                          child: _buildInput(
+                            hint: "Nº",
+                          ),
                         ),
                       ],
                     ),
 
                     const SizedBox(height: 20),
 
-                    _buildSectionTitle("Segurança"),
+                    _buildSectionTitle(
+                      "Segurança",
+                    ),
 
                     _buildInput(
                       hint: "Senha",
-                      controller: _senhaController,
+                      controller:
+                          _senhaController,
                       isPassword: true,
+                      obscureText:
+                          _obscureSenha,
+                      onTogglePassword: () {
+                        setState(() {
+                          _obscureSenha =
+                              !_obscureSenha;
+                        });
+                      },
                     ),
 
                     const SizedBox(height: 15),
 
                     _buildInput(
                       hint: "Confirmar senha",
-                      controller: _confirmarSenhaController,
+                      controller:
+                          _confirmarSenhaController,
                       isPassword: true,
+                      obscureText:
+                          _obscureConfirmar,
+                      onTogglePassword: () {
+                        setState(() {
+                          _obscureConfirmar =
+                              !_obscureConfirmar;
+                        });
+                      },
                     ),
 
                     const SizedBox(height: 30),
@@ -249,21 +390,33 @@ class _CadastroPageState extends State<CadastroPage> {
                     SizedBox(
                       width: double.infinity,
                       height: 55,
+
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: azulRoyal,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                        style:
+                            ElevatedButton.styleFrom(
+                          backgroundColor:
+                              azulRoyal,
+                          shape:
+                              RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius
+                                    .circular(
+                              12,
+                            ),
                           ),
                         ),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {}
-                        },
+
+                        onPressed:
+                            _finalizarCadastro,
+
                         child: const Text(
                           "Finalizar Cadastro",
                           style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                            color:
+                                Colors.white,
+                            fontWeight:
+                                FontWeight
+                                    .bold,
                           ),
                         ),
                       ),
@@ -272,10 +425,18 @@ class _CadastroPageState extends State<CadastroPage> {
                     const SizedBox(height: 15),
 
                     TextButton(
-                      onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
+                      onPressed: () {
+                        Navigator
+                            .pushReplacementNamed(
+                          context,
+                          '/login',
+                        );
+                      },
                       child: Text(
                         "Já tem uma conta? Faça login",
-                        style: TextStyle(color: azulRoyal),
+                        style: TextStyle(
+                          color: azulRoyal,
+                        ),
                       ),
                     ),
                   ],
@@ -295,38 +456,75 @@ class _CadastroPageState extends State<CadastroPage> {
     bool isCPF = false,
     bool isCEP = false,
     int? maxLength,
-    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    VoidCallback? onTogglePassword,
+    TextInputType keyboardType =
+        TextInputType.text,
   }) {
     return TextFormField(
       controller: controller,
-      obscureText: isPassword,
+      obscureText: obscureText,
       maxLength: maxLength,
       keyboardType: keyboardType,
+
       inputFormatters: [
-        if (isCPF) FilteringTextInputFormatter.digitsOnly,
+        if (isCPF)
+          FilteringTextInputFormatter
+              .digitsOnly,
+
         if (isCPF) CpfInputFormatter(),
-        if (isCEP) FilteringTextInputFormatter.digitsOnly,
+
+        if (isCEP)
+          FilteringTextInputFormatter
+              .digitsOnly,
+
         if (isCEP) CepInputFormatter(),
       ],
+
       decoration: InputDecoration(
         hintText: hint,
         counterText: "",
         filled: true,
         fillColor: Colors.white,
+
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  obscureText
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                ),
+                onPressed:
+                    onTogglePassword,
+              )
+            : null,
+
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius:
+              BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
+
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide:
-              BorderSide(color: Colors.grey.shade300),
+          borderRadius:
+              BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: Colors.grey.shade300,
+          ),
         ),
       ),
+
       validator: (value) {
-        if (value == null || value.isEmpty) return "Obrigatório";
+        if (value == null || value.isEmpty) {
+          return "Obrigatório";
+        }
+
         return null;
       },
     );
@@ -334,21 +532,27 @@ class _CadastroPageState extends State<CadastroPage> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15),
+      padding:
+          const EdgeInsets.symmetric(vertical: 15),
+
       child: Row(
         children: [
           Text(
             title,
             style: TextStyle(
               color: azulPrimario,
-              fontWeight: FontWeight.bold,
+              fontWeight:
+                  FontWeight.bold,
             ),
           ),
+
           const SizedBox(width: 10),
-          const Expanded(child: Divider()),
+
+          const Expanded(
+            child: Divider(),
+          ),
         ],
       ),
     );
   }
 }
-
