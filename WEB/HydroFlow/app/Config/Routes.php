@@ -1,16 +1,16 @@
 <?php
 
-use CodeIgniter\Router\RouteCollection;
-
-/**
- * @var RouteCollection $routes
- */
 $routes->get('/', 'Home::index');
 
-// COMEÇO DAS MINHAS ROTAS
+$routes->get('login', 'Home::irParaLoginUsu');
+$routes->post('login/autenticar', 'AuthController::autenticar');
+$routes->get('login_adm', 'Home::irParaLoginadm');
 
+$routes->get('cadastro', 'Home::irParaCadastro');
+
+$routes->get('sobre', 'Home::irParaSobre'); 
 // DASHBOARD
-$routes->get('dashboard', 'DashboardController::index');
+$routes->get('dashboard', 'DashBoardController::index');
 
 
 //ADM

@@ -22,7 +22,7 @@ class UsuarioController extends BaseController
             'usuarios' => $this->usuarioModel->findAll()
         ];
 
-        return view('usuarios/lista', $data);
+        return view('usuario/lista', $data);
     }
 
     // Página de Cadastro

@@ -14,7 +14,7 @@
 
     <table border="1" cellpadding="10" style="width: 100%; border-collapse: collapse; margin-top: 20px; border: 1px solid #ddd;">
         <thead>
-            <tr style="background-color: #f2f2f2; text-align: left;">
+            <tr style="background-color: #ffffff; text-align: left;">
                 <th>ID</th>
                 <th>Nome do Dispositivo</th>
                 <th>Status</th>

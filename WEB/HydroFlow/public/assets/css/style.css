@@ -57,7 +57,7 @@ body {
 }
 
 .logo span {
-    color: var(--azul-cyan);
+    color: #4DD0E1;
 }
 
 .left-content {
@@ -344,4 +344,46 @@ body {
     margin-top: 4px;
     font-weight: 600;
     min-height: 16px; /* Evita que o formulário fique "pulando" quando o texto aparece */
+}
+p { font-size: 1rem; }  /* Isso vai aumentar e diminuir com o botão */
+h1 { font-size: 2rem; } /* Isso também */
+
+/* Esconde a div de alertas para usuários visuais, mas mantém ativa para leitores de tela */
+#alerta-acessivel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Esconde o link de atalho inicialmente */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 10px;
+    background: #000000;
+    color: #ffffff;
+    padding: 15px;
+    font-family: sans-serif;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 0 0 5px 5px;
+    transition: top 0.2s;
+    z-index: 9999;
+}
+
+/* Faz o link aparecer no topo da tela quando recebe o foco do TAB */
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid #ffcc00;
+}
+
+/* Garante uma borda visível e nítida em qualquer elemento focado por teclado */
+*:focus {
+    outline: 3px solid #005fcc !important;
+    outline-offset: 2px;
 }

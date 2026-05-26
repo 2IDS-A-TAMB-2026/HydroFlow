@@ -312,7 +312,7 @@ body.alto-contraste .service-card,
 body.alto-contraste .problem-box, 
 body.alto-contraste .solution-box {
     background: #000000 !important;
-    border: 2px solid #FFFF00 !important;
+    border: 2px solid #ffffff !important;
     box-shadow: none !important;
 }
 
@@ -329,16 +329,16 @@ body.alto-contraste .icon {
 }
 
 body.alto-contraste .step-number {
-    background-color: #FFFF00 !important;
+    background-color: #ffffff !important;
     color: #000000 !important;
 }
 
-body.alto-contraste .step-arrow { color: #FFFF00 !important; opacity: 1; }
+body.alto-contraste .step-arrow { color: #ffffff !important; opacity: 1; }
 
 body.alto-contraste .logo, 
 body.alto-contraste .logo span,
 body.alto-contraste strong {
-    color: #FFFF00 !important;
+    color: #ffffff !important;
 }
 /* --- CARROSSEL DE PÚBLICO ALVO --- */
 .carousel-container {
@@ -498,10 +498,10 @@ body.alto-contraste strong {
    TEMA DE ALTO CONTRASTE (Ativado pelo JS)
 ========================================= */
 
-/* Fundo preto e texto branco/amarelo para máximo contraste */
+/* Fundo preto e texto branco para máximo contraste */
 body.alto-contraste {
     background-color: #000000 !important;
-    color: #ffffff !important;
+    color: white !important;
 }
 
 /* Ajusta o cabeçalho no modo alto contraste */
@@ -510,17 +510,17 @@ body.alto-contraste header {
     border-bottom: 2px solid #ffffff !important;
 }
 
-/* Ajusta a logo para ficar branca e amarela */
+/* Ajusta a logo para ficar branca  */
 body.alto-contraste header .logo {
     color: #ffffff !important;
 }
 body.alto-contraste header .logo span {
-    color: #ffcc00 !important; /* Amarelo grita bem no fundo preto */
+    color: #ffffff !important; 
 }
 
-/* Links do menu com cor de alto contraste (amarelo é padrão de acessibilidade) */
+/* Links do menu com cor de alto contraste */
 body.alto-contraste header nav a {
-    color: #ffff00 !important;
+    color: #ffffff !important;
     font-weight: bold;
 }
 
@@ -568,6 +568,26 @@ body.alto-contraste .carousel-container{
 
 body.alto-contraste .audience-tags span{
     background-color: #000000c5;
-    color: yellow;
+    color: #ffffff;
 }
 
+.img-container{
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 20px;
+    border: 5px solid var(--azul-cyan);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-container img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}

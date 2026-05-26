@@ -17,22 +17,22 @@ class UsuarioModel extends Model
     ];
 
     // --- CALLBACKS (Gatilhos Automáticos) ---
-    protected $beforeInsert = ['hashPassword', 'setInitialStatus'];
-    protected $beforeUpdate = ['hashPassword'];
+    //protected $beforeInsert = ['hashPassword', 'setInitialStatus'];
+    //protected $beforeUpdate = ['hashPassword'];
 
     /**
      * Criptografa a senha antes de salvar no banco
      */
-    protected function hashPassword(array $data)
-    {
-        if (!isset($data['data']['USU_SENHA'])) {
-            return $data;
-        }
-
-        $data['data']['USU_SENHA'] = password_hash($data['data']['USU_SENHA'], PASSWORD_DEFAULT);
-        return $data;
-    }
-
+    //protected function hashPassword(array $data)
+   // {
+    //    if (!isset($data['data']['USU_SENHA'])) {
+    //        return $data;
+    //    }
+//
+    //    $data['data']['USU_SENHA'] = password_hash($data['data']['USU_SENHA'], PASSWORD_DEFAULT);
+   //     return $data;
+   // }
+//
     /**
      * Garante que todo novo usuário comece como 'ATIVO'
      */
