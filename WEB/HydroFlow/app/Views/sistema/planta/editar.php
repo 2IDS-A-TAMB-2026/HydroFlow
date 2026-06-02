@@ -1,4 +1,4 @@
-<?= view("sistema/layout/dashboard/header") ?>
+<?= view("sistema/layout/dashboard/usuario/header") ?>
 <script src="<?= base_url('assets/css/') ?>"></script>
 <div class="container mt-4">
     <div class="row justify-content-center">

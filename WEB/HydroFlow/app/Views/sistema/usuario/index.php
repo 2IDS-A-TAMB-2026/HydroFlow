@@ -1,4 +1,4 @@
-<?= view("sistema/layout/dashboard/header") ?>
+<?= view("sistema/layout/dashboard/usuario/header") ?>
 
 <div class="container mt-5">
     <div class="card shadow-sm">

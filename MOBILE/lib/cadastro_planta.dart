@@ -1,33 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tcc/botao_acessibilidade.dart';
+import 'accessibility_provider.dart';
+import 'package:provider/provider.dart';
 
 class CadastroPlantaPage extends StatefulWidget {
   const CadastroPlantaPage({super.key});
 
   @override
-  State<CadastroPlantaPage> createState() =>
-      _CadastroPlantaPageState();
+  State<CadastroPlantaPage> createState() => _CadastroPlantaPageState();
 }
 
-class _CadastroPlantaPageState
-    extends State<CadastroPlantaPage> {
+class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers
-  final TextEditingController _nomeController =
-      TextEditingController();
-
-  final TextEditingController
-      _culturaController =
-      TextEditingController();
-
-  final TextEditingController
-      _qtdAguaController =
-      TextEditingController();
-
-  final TextEditingController
-      _periodoController =
-      TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _culturaController = TextEditingController();
+  final TextEditingController _qtdAguaController = TextEditingController();
+  final TextEditingController _periodoController = TextEditingController();
 
   String? _tipoSelecionado;
   String? _dispositivoSelecionado;
@@ -35,471 +25,305 @@ class _CadastroPlantaPageState
   String _unidadeAgua = 'Litros/dia';
   String _unidadeTempo = 'Horas';
 
-  @override
-  void dispose() {
-    _nomeController.dispose();
-    _culturaController.dispose();
-    _qtdAguaController.dispose();
-    _periodoController.dispose();
-    super.dispose();
-  }
+  static const azulPrimario = Color(0xFF002855);
 
   Future<void> _logout() async {
-    final prefs =
-        await SharedPreferences.getInstance();
-
+    final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
     if (!mounted) return;
+    Navigator.pushReplacementNamed(context, '/login');
+  }
 
-    Navigator.pushReplacementNamed(
-      context,
-      '/login',
+  // Função modificada para aceitar os parâmetros de acessibilidade dinamicamente
+  InputDecoration _input(String label, bool high, double f, {String? hint}) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: high ? Colors.white70 : Colors.black54, fontSize: 14 * f),
+      hintText: hint,
+      hintStyle: TextStyle(color: high ? Colors.white54 : Colors.black38, fontSize: 14 * f),
+      filled: true,
+      fillColor: high ? Colors.grey[900] : Colors.white,
+      errorStyle: TextStyle(fontSize: 12 * f, fontWeight: FontWeight.bold),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: high ? Colors.white54 : Colors.grey.withOpacity(0.5)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: high ? Colors.white : azulPrimario, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // Escutando as mudanças do Provider de Acessibilidade
+    final acc = Provider.of<AccessibilityProvider>(context);
+    final high = acc.isHighContrast;
+    final f = acc.fontSizeFactor;
+
+    final bgPage = high ? Colors.black : const Color(0xFFF4F6F9);
+    final bgCard = high ? Colors.black : Colors.white;
+    final appBarBg = high ? Colors.black : azulPrimario;
+    final txtPrincipal = high ? Colors.white : azulPrimario;
+    final appBarBorder = high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none;
+
     return Scaffold(
+      backgroundColor: bgPage,
+
       appBar: AppBar(
-        title:
-            const Text("Cadastro de Culturas"),
-
-        backgroundColor: Colors.white,
-
-        foregroundColor:
-            const Color(0xFF002855),
-
-        elevation: 0,
+        title: Text("Cadastro de Culturas", style: TextStyle(fontSize: 20 * f)),
+        backgroundColor: appBarBg,
+        foregroundColor: Colors.white,
+        shape: Border(bottom: appBarBorder),
+        actions: const [BotaoAcessibilidade()],
       ),
 
-      drawer: _buildDrawer(context),
+      drawer: _buildDrawer(context, high, f),
 
-      body: Container(
-        color: Colors.grey[100],
-
-        child: SingleChildScrollView(
-          padding:
-              const EdgeInsets.all(16.0),
-
-          child: Card(
-            elevation: 4,
-
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(12),
-            ),
-
-            child: Padding(
-              padding:
-                  const EdgeInsets.all(20.0),
-
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            /// CARD PRINCIPAL
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: bgCard,
+                borderRadius: BorderRadius.circular(14),
+                border: high ? Border.all(color: Colors.white, width: 2) : null,
+                boxShadow: high ? [] : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                  )
+                ],
+              ),
               child: Form(
                 key: _formKey,
-
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
-
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
+                    /// HEADER Interno
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment
-                              .spaceBetween,
-
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
+                        Row(
                           children: [
-                            Icon(
-                              Icons.eco,
-                              color:
-                                  Color(0xFF00a65a),
-                            ),
-
-                            SizedBox(width: 10),
-
+                            Icon(Icons.eco, color: high ? Colors.white : azulPrimario),
+                            const SizedBox(width: 10),
                             Text(
                               "Nova Planta",
                               style: TextStyle(
-                                fontSize: 20,
-                                fontWeight:
-                                    FontWeight.bold,
+                                fontSize: 20 * f,
+                                fontWeight: FontWeight.bold,
+                                color: txtPrincipal,
                               ),
                             ),
                           ],
                         ),
 
-                        OutlinedButton.icon(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/plantas',
-                            );
-                          },
-
-                          icon:
-                              const Icon(Icons.list),
-
-                          label: const Text(
-                            "Ver Cadastradas",
-                          ),
-
-                          style:
-                              OutlinedButton.styleFrom(
-                            foregroundColor:
-                                const Color(
-                              0xFF002855,
-                            ),
+                        TextButton.icon(
+                          onPressed: () => Navigator.pushReplacementNamed(context, '/plantas'),
+                          icon: const Icon(Icons.list),
+                          label: Text("Ver plantas", style: TextStyle(fontSize: 14 * f)),
+                          style: TextButton.styleFrom(
+                            foregroundColor: high ? Colors.white : azulPrimario,
                           ),
                         ),
                       ],
                     ),
 
-                    const Divider(height: 30),
+                    Divider(height: 30, color: high ? Colors.white24 : Colors.grey[300]),
 
-                    const Text(
-                      "Informações da Espécie",
+                    /// SEÇÃO 1
+                    Text(
+                      "Informações da Planta",
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight:
-                            FontWeight.w600,
-                        color:
-                            Colors.blueGrey,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14 * f,
+                        color: high ? Colors.white70 : Colors.grey,
                       ),
                     ),
 
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 12),
 
                     TextFormField(
-                      controller:
-                          _nomeController,
-
-                      decoration:
-                          const InputDecoration(
-                        labelText:
-                            "Nome da Planta",
-
-                        border:
-                            OutlineInputBorder(),
-
-                        hintText:
-                            "Ex: Tomate Carmem",
-                      ),
+                      controller: _nomeController,
+                      style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                      decoration: _input("Nome da planta", high, f, hint: "Ex: Tomate Carmem"),
                     ),
 
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 12),
 
                     Row(
                       children: [
                         Expanded(
-                          child:
-                              DropdownButtonFormField<
-                                  String>(
-                            decoration:
-                                const InputDecoration(
-                              labelText:
-                                  "Tipo",
-
-                              border:
-                                  OutlineInputBorder(),
-                            ),
-
-                            items: [
+                          child: DropdownButtonFormField<String>(
+                            dropdownColor: high ? Colors.grey[900] : Colors.white,
+                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            decoration: _input("Tipo", high, f),
+                            items: const [
                               "Hortaliça",
                               "Frutífera",
                               "Legume",
                               "Grão",
                               "Ornamental"
                             ]
-                                .map(
-                                  (t) =>
-                                      DropdownMenuItem(
-                                    value: t,
-                                    child:
-                                        Text(t),
-                                  ),
-                                )
+                                .map((e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e),
+                                    ))
                                 .toList(),
-
-                            onChanged: (val) {
-                              setState(() {
-                                _tipoSelecionado =
-                                    val;
-                              });
-                            },
+                            onChanged: (v) => _tipoSelecionado = v,
                           ),
                         ),
-
-                        const SizedBox(width: 10),
-
+                        const SizedBox(width: 12),
                         Expanded(
                           child: TextFormField(
-                            controller:
-                                _culturaController,
-
-                            decoration:
-                                const InputDecoration(
-                              labelText:
-                                  "Cultura",
-
-                              border:
-                                  OutlineInputBorder(),
-
-                              hintText:
-                                  "Ex: Solanáceas",
-                            ),
+                            controller: _culturaController,
+                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            decoration: _input("Cultura", high, f),
                           ),
                         ),
                       ],
                     ),
 
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
 
-                    const Text(
-                      "Parâmetros de Irrigação",
+                    /// SEÇÃO 2
+                    Text(
+                      "Irrigação",
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight:
-                            FontWeight.w600,
-                        color:
-                            Colors.blueGrey,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14 * f,
+                        color: high ? Colors.white70 : Colors.grey,
                       ),
                     ),
 
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 12),
 
                     Row(
                       children: [
                         Expanded(
                           flex: 2,
-
                           child: TextFormField(
-                            controller:
-                                _qtdAguaController,
-
-                            keyboardType:
-                                TextInputType
-                                    .number,
-
-                            decoration:
-                                const InputDecoration(
-                              labelText:
-                                  "Qtd. de Água",
-
-                              border:
-                                  OutlineInputBorder(),
-                            ),
+                            controller: _qtdAguaController,
+                            keyboardType: TextInputType.number,
+                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            decoration: _input("Quantidade de água", high, f),
                           ),
                         ),
-
-                        const SizedBox(width: 10),
-
+                        const SizedBox(width: 12),
                         Expanded(
-                          flex: 1,
-
-                          child:
-                              DropdownButtonFormField<
-                                  String>(
-                            initialValue:
-                                _unidadeAgua,
-
-                            decoration:
-                                const InputDecoration(
-                              border:
-                                  OutlineInputBorder(),
-                            ),
-
-                            items: [
-                              "Litros/dia",
-                              "mm/dia",
-                              "mL/dia"
-                            ]
-                                .map(
-                                  (u) =>
-                                      DropdownMenuItem(
-                                    value: u,
-                                    child:
-                                        Text(u),
-                                  ),
-                                )
+                          child: DropdownButtonFormField<String>(
+                            value: _unidadeAgua,
+                            dropdownColor: high ? Colors.grey[900] : Colors.white,
+                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            decoration: _input("Unidade", high, f),
+                            items: const ["Litros/dia", "mm/dia", "mL/dia"]
+                                .map((e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e),
+                                    ))
                                 .toList(),
-
-                            onChanged: (val) {
-                              setState(() {
-                                _unidadeAgua =
-                                    val!;
-                              });
-                            },
+                            onChanged: (v) => setState(() => _unidadeAgua = v!),
                           ),
                         ),
                       ],
                     ),
 
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 12),
 
-                    DropdownButtonFormField<
-                        String>(
-                      decoration:
-                          const InputDecoration(
-                        labelText:
-                            "Dispositivo Responsável",
-
-                        border:
-                            OutlineInputBorder(),
-                      ),
-
-                      items: [
+                    DropdownButtonFormField<String>(
+                      decoration: _input("Dispositivo", high, f),
+                      dropdownColor: high ? Colors.grey[900] : Colors.white,
+                      style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                      items: const [
                         "Irriga 1000",
                         "Hortas 03012",
                         "Irrigation PRO"
                       ]
-                          .map(
-                            (d) =>
-                                DropdownMenuItem(
-                              value: d,
-                              child: Text(d),
-                            ),
-                          )
+                          .map((e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e),
+                              ))
                           .toList(),
-
-                      onChanged: (val) {
-                        setState(() {
-                          _dispositivoSelecionado =
-                              val;
-                        });
-                      },
+                      onChanged: (v) => _dispositivoSelecionado = v,
                     ),
 
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 12),
 
                     Row(
                       children: [
                         Expanded(
-                          flex: 2,
-
                           child: TextFormField(
-                            controller:
-                                _periodoController,
-
-                            keyboardType:
-                                TextInputType
-                                    .number,
-
-                            decoration:
-                                const InputDecoration(
-                              labelText:
-                                  "Periodicidade",
-
-                              border:
-                                  OutlineInputBorder(),
-
-                              hintText:
-                                  "Ex: 12",
-                            ),
+                            controller: _periodoController,
+                            keyboardType: TextInputType.number,
+                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            decoration: _input("Periodicidade", high, f),
                           ),
                         ),
-
-                        const SizedBox(width: 10),
-
+                        const SizedBox(width: 12),
                         Expanded(
-                          flex: 1,
-
-                          child:
-                              DropdownButtonFormField<
-                                  String>(
-                            initialValue:
-                                _unidadeTempo,
-
-                            decoration:
-                                const InputDecoration(
-                              border:
-                                  OutlineInputBorder(),
-                            ),
-
-                            items: [
-                              "Horas",
-                              "Dias",
-                              "Semanas"
-                            ]
-                                .map(
-                                  (u) =>
-                                      DropdownMenuItem(
-                                    value: u,
-                                    child:
-                                        Text(u),
-                                  ),
-                                )
+                          child: DropdownButtonFormField<String>(
+                            value: _unidadeTempo,
+                            dropdownColor: high ? Colors.grey[900] : Colors.white,
+                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            decoration: _input("Unidade", high, f),
+                            items: const ["Horas", "Dias", "Semanas"]
+                                .map((e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e),
+                                    ))
                                 .toList(),
-
-                            onChanged: (val) {
-                              setState(() {
-                                _unidadeTempo =
-                                    val!;
-                              });
-                            },
+                            onChanged: (v) => setState(() => _unidadeTempo = v!),
                           ),
                         ),
                       ],
                     ),
 
-                    const Divider(height: 50),
+                    const SizedBox(height: 25),
 
+                    /// BOTÕES
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.end,
-
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TextButton(
-                          onPressed: () {
-                            _formKey.currentState
-                                ?.reset();
-                          },
-
-                          child:
-                              const Text("Limpar"),
+                        OutlinedButton(
+                          onPressed: () => _formKey.currentState?.reset(),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: high ? Colors.white : azulPrimario,
+                            side: BorderSide(color: high ? Colors.white54 : azulPrimario),
+                          ),
+                          child: Text("Limpar", style: TextStyle(fontSize: 14 * f)),
                         ),
-
-                        const SizedBox(width: 15),
-
+                        const SizedBox(width: 12),
                         ElevatedButton.icon(
                           onPressed: () {
-                            if (_formKey
-                                .currentState!
-                                .validate()) {
-                              ScaffoldMessenger.of(
-                                      context)
-                                  .showSnackBar(
+                            if (_formKey.currentState!.validate()) {
+                              ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text(
-                                    "Planta Salva com Sucesso!",
-                                  ),
+                                  content: Text("Planta cadastrada com sucesso!"),
                                 ),
                               );
                             }
                           },
-
-                          icon:
-                              const Icon(Icons.grass),
-
-                          label: const Text(
-                            "Salvar Planta",
-                          ),
-
-                          style:
-                              ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color(
-                              0xFF002855,
-                            ),
-
-                            foregroundColor:
-                                Colors.white,
-
-                            padding:
-                                const EdgeInsets.symmetric(
-                              horizontal: 30,
-                              vertical: 15,
-                            ),
+                          icon: const Icon(Icons.check),
+                          label: Text("Salvar", style: TextStyle(fontSize: 14 * f, fontWeight: FontWeight.bold)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: high ? Colors.black : azulPrimario,
+                            foregroundColor: Colors.white,
+                            side: high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none,
                           ),
                         ),
                       ],
@@ -508,104 +332,40 @@ class _CadastroPlantaPageState
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  // DRAWER
-  Widget _buildDrawer(
-      BuildContext context) {
+  /// DRAWER ATUALIZADO
+  Widget _buildDrawer(BuildContext context, bool high, double f) {
     return Drawer(
       child: Container(
-        color: const Color(0xFF002855),
-
+        color: high ? Colors.black : azulPrimario,
         child: Column(
           children: [
-            Container(
-              height: 160,
-              width: double.infinity,
-              alignment: Alignment.center,
-
-              child: const Text(
-                "HYDROFLOW",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
-                  fontWeight:
-                      FontWeight.bold,
-                  letterSpacing: 1.2,
+            SizedBox(
+              height: 180,
+              child: Center(
+                child: Text(
+                  "HYDROFLOW",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26 * f,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-
-            const Divider(
-              color: Colors.white,
-              thickness: 1.2,
-              height: 1,
-            ),
-
-            const SizedBox(height: 10),
-
-            _drawerItem(
-              Icons.home,
-              "Painel",
-              () => Navigator
-                  .pushReplacementNamed(
-                context,
-                '/dashboard',
-              ),
-            ),
-
-            _drawerItem(
-              Icons.calendar_month,
-              "Agendamentos",
-              () => Navigator.pushNamed(
-                context,
-                '/agendamentos',
-              ),
-            ),
-
-            _drawerItem(
-              Icons.park,
-              "Plantas",
-              () => Navigator.pushNamed(
-                context,
-                '/plantas',
-              ),
-            ),
-
-            _drawerItem(
-              Icons.history,
-              "Histórico",
-              () => Navigator.pushNamed(
-                context,
-                '/historico',
-              ),
-            ),
-
-            _drawerItem(
-              Icons.shopping_cart,
-              "Equipamentos",
-              () => Navigator.pushNamed(
-                context,
-                '/equipamentos',
-              ),
-            ),
-
+            const Divider(color: Colors.white24),
+            _drawerItem(Icons.home, "Painel", '/dashboard', f),
+            _drawerItem(Icons.eco, "Plantas", '/plantas', f),
+            _drawerItem(Icons.history, "Histórico", '/historico', f),
+            _drawerItem(Icons.memory, "Equipamentos", '/equipamentos', f),
             const Spacer(),
-
-            const Divider(
-              color: Colors.white24,
-            ),
-
-            _drawerItem(
-              Icons.logout,
-              "Sair",
-              _logout,
-            ),
-
+            const Divider(color: Colors.white24),
+            _drawerItem(Icons.logout, "Sair", '/login', f, isLogout: true),
             const SizedBox(height: 20),
           ],
         ),
@@ -613,34 +373,18 @@ class _CadastroPlantaPageState
     );
   }
 
-  Widget _drawerItem(
-    IconData icon,
-    String title,
-    VoidCallback onTap, {
-    bool active = false,
-  }) {
+  Widget _drawerItem(IconData icon, String title, String route, double f, {bool isLogout = false}) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: Colors.white,
-        size: 24,
-      ),
-
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight:
-              FontWeight.w400,
-        ),
-      ),
-
-      tileColor: active
-          ? Colors.white.withOpacity(0.15)
-          : Colors.transparent,
-
-      onTap: onTap,
+      leading: Icon(icon, color: Colors.white),
+      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
+      onTap: () {
+        Navigator.pop(context);
+        if (isLogout) {
+          _logout();
+        } else {
+          Navigator.pushReplacementNamed(context, route);
+        }
+      },
     );
   }
 }

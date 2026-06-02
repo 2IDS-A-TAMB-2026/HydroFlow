@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart';
-import 'package:brasil_fields/brasil_fields.dart';
 
 class LoginMobilePage extends StatefulWidget {
   const LoginMobilePage({super.key});
@@ -27,7 +25,7 @@ class _LoginMobilePageState
 
   bool _obscureText = true;
 
-  final TextEditingController _cpfController =
+  final TextEditingController _emailController =
       TextEditingController();
 
   final TextEditingController _senhaController =
@@ -35,19 +33,19 @@ class _LoginMobilePageState
 
   @override
   void dispose() {
-    _cpfController.dispose();
+    _emailController.dispose();
     _senhaController.dispose();
     super.dispose();
   }
 
   Future<void> _login() async {
-    String cpf =
-        _cpfController.text.replaceAll(RegExp(r'[^0-9]'), '');
+    String email =
+        _emailController.text.trim();
 
     String senha =
         _senhaController.text.trim();
 
-    if (cpf.isEmpty || senha.isEmpty) {
+    if (email.isEmpty || senha.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
@@ -57,9 +55,19 @@ class _LoginMobilePageState
       return;
     }
 
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+$')
+        .hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Digite um e-mail válido"),
+        ),
+      );
+      return;
+    }
+
     // Simulação de login
-    if (cpf == "12345678900" &&
-        senha == "1234") {
+    if (email == "ana.silva@email.com" &&
+        senha == "senha123") {
       final prefs =
           await SharedPreferences.getInstance();
 
@@ -78,7 +86,7 @@ class _LoginMobilePageState
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
-              Text("CPF ou senha inválidos"),
+              Text("Email ou senha inválidos"),
         ),
       );
     }
@@ -287,25 +295,19 @@ class _LoginMobilePageState
                         height: 30,
                       ),
 
-                      _buildLabel('CPF'),
+                      _buildLabel('Email'),
 
                       TextFormField(
                         controller:
-                            _cpfController,
+                            _emailController,
 
                         keyboardType:
                             TextInputType
-                                .number,
-
-                        inputFormatters: [
-                          FilteringTextInputFormatter
-                              .digitsOnly,
-                          CpfInputFormatter(),
-                        ],
+                                .emailAddress,
 
                         decoration:
                             _buildInputDecoration(
-                          '000.000.000-00',
+                          'email@email.com',
                         ),
                       ),
 

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tcc/botao_acessibilidade.dart';
+import 'accessibility_provider.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -10,8 +13,12 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accessibility = Provider.of<AccessibilityProvider>(context);
     return Scaffold(
-      backgroundColor: offWhite,
+      backgroundColor:
+        accessibility.isHighContrast
+          ? Colors.black
+          : offWhite,
 
       appBar: AppBar(
         backgroundColor: azulPrimario,
@@ -25,6 +32,7 @@ class Home extends StatelessWidget {
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
+        actions: [const BotaoAcessibilidade()],
       ),
 
       drawer: Drawer(
@@ -232,9 +240,14 @@ class Home extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                const Text(
+                Text(
                   "A HydroFlow utiliza ESP32, sensores capacitivos e integração IoT para automatizar processos agrícolas.",
-                  style: TextStyle(fontSize: 15),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: accessibility.isHighContrast
+                    ? Colors.white
+                    : Colors.black87,
+                  ),
                 ),
 
                 const SizedBox(height: 18),

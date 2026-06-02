@@ -10,6 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 //  ROTAS PÚBLICAS / INSTITUCIONAIS
 // ==========================================
 $routes->get('/', 'Home::index');
+$routes->get('index', 'Home::index');
 $routes->get('sobre', 'Home::irParaSobre');
 $routes->get('cadastro', 'Home::irParaCadastro');
 
@@ -21,18 +22,18 @@ $routes->get('login', 'Home::irParaLoginUsu');
 $routes->post('login/autenticar', 'AuthController::autenticar');
 
 // Autenticação de Administradores (ADM)
-$routes->get('admin/login', 'Home::irParaLoginadm'); // URL padronizada com o filtro
+$routes->get('admin/login', 'Home::irParaLoginadm'); 
 $routes->post('admin/auth/autenticar', 'AdmAuthController::autenticar');
 
 // ==========================================
 //  ÁREA LOGADA: USUÁRIO COMUM & OPERADOR
 // ==========================================
-$routes->get('dashboard', 'DashBoardController::index');
-$routes->get('agendamento', 'DashBoardController::agendamentos');
+// $routes->get('dashboard', 'DashBoardController::index');
+$routes->get('agendamentos', 'DashBoardController::agendamentos'); // CORRIGIDO: Plural para bater com o menu lateral
 $routes->get('historico', 'HistoricoController::index');
 
 // Módulo: Perfil do Usuário
-$routes->group('perfil', function($routes) {
+$routes->group('perfil', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'UsuarioController::index');
     $routes->get('dashboard', 'DashBoardController::index');
     $routes->get('editar', 'UsuarioController::editar');
@@ -42,7 +43,7 @@ $routes->group('perfil', function($routes) {
 });
 
 // Módulo: Dispositivos
-$routes->group('dispositivos', function($routes) {
+$routes->group('dispositivos', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'DispositivoController::index');
     $routes->get('listagem', 'DispositivoController::listagemDispositivos');
     $routes->get('gerenciamento', 'DispositivoController::gerenciamento');
@@ -51,7 +52,7 @@ $routes->group('dispositivos', function($routes) {
 });
 
 // Módulo: Plantas
-$routes->group('planta', function($routes) {
+$routes->group('planta', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'PlantaController::index');
     $routes->get('novo', 'PlantaController::novo');
     $routes->post('salvar', 'PlantaController::salvar');
@@ -62,7 +63,7 @@ $routes->group('planta', function($routes) {
 });
 
 // Módulo: Sensores (Visualização e Edição Geral)
-$routes->group('sensores', function($routes) {
+$routes->group('sensores', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'SensorController::index');
     $routes->get('novo', 'SensorController::novo');
     $routes->post('salvar', 'SensorController::salvar');
@@ -71,18 +72,25 @@ $routes->group('sensores', function($routes) {
 });
 
 // Módulo: Dados dos Sensores (Leituras de Telemetria)
-$routes->group('dados-sensores', function($routes) {
-    $routes->get('/', 'Dados_SenssoresController::index');
+$routes->group('dados-sensores', ['filter' => 'auth'], function($routes) {
+    $routes->get('/', 'Dados_SensoresController::index'); // CORRIGIDO: Removido o "s" duplo digitado errado
 });
 
 // ==========================================
 //  ÁREA LOGADA EXCLUSIVA: RESTRITA AO ADM
 // ==========================================
-// Protegido pelo prefixo 'admin' mapeado no seu AuthFilter
-$routes->group('admin', function($routes) {
+$routes->group('admin', ['filter' => 'auth'], function($routes) {
+    // URL: localhost/admin ou localhost/admin/dashboard -> Abre o Dashboard Geral do Admin
     $routes->get('/', 'AdmController::index');
-    $routes->get('usuarios', 'AdmController::listaUsuarios');
-    $routes->get('usuarios/gerenciar/(:num)', 'AdmController::gerenciarUsuario/$1');
+    $routes->get('dashboard', 'AdmController::index');
+    
+    // MODO 1 (Listagem): URL: localhost/admin/usuarios -> Mostra a tabela com todos
+    $routes->get('usuarios', 'AdmController::gerenciarUsuarios'); 
+    
+    $routes->get('usuarios/(:num)', 'AdmController::editarUsuario/$1');
+    $routes->post('usuarios/(:num)', 'AdmController::atualizarUsuario/$1');
+    
+    // Outras rotas do escopo de admin
     $routes->get('usuarios/editar-perfil', 'AdmController::editarPerfil');
     $routes->get('sensor/cadastro', 'AdmController::cadastroSensor');
 });

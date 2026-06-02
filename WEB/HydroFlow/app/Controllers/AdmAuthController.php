@@ -15,39 +15,42 @@ class AdmAuthController extends BaseController
         $admin = $model->where('ADM_EMAIL', $this->request->getPost('email'))->first();
 
         if ($admin) {
-            // 1. Verifica se a senha bate
-            // 2. Verifica se o administrador está ATIVO no sistema
+            // Verifica se a senha bate
             if ($this->request->getPost('senha') == $admin['ADM_SENHA']) {
                 
+                // Verifica se o administrador está ATIVO no sistema
                 if ($admin['ADM_STATUS'] === 'ATIVO') {
+                    
+                    // ⚠️ TRAVA DE SEGURANÇA: Limpa qualquer sessão de usuário comum anterior
+                    // para evitar que as credenciais se misturem no filtro
+                    session()->remove(['id', 'usuario_tipo', 'logado']);
                     
                     // Define a sessão específica para o administrador
                     session()->set([
                         'ADM_ID'     => $admin['ADM_ID'],
                         'ADM_NOME'   => $admin['ADM_NOME'],
-                        'logado_adm' => true // Identificador exclusivo para rotas protegidas de ADM
+                        'logado_adm' => true, // Identificador exclusivo lido pelo AuthFilter
+                        'logado'     => false  // Força o login comum a ser falso
                     ]);
 
-                    // Redireciona para o painel do administrador (mude para a sua rota de admin)
+                    // Redireciona para o painel do administrador
                     return redirect()->to('/admin/dashboard');
                     
                 } else {
-                    // Caso o administrador esteja INATIVO no banco
                     session()->setFlashdata('erro', 'Esta conta de administrador está desativada.');
                     return redirect()->to('/admin/login');
                 }
             }
         }
 
-        // Mensagem de erro padrão para e-mail ou senhas incorretas
         session()->setFlashdata('erro', 'E-mail ou senha de administrador inválidos.');
         return redirect()->to('/admin/login');
     }
 
     public function logout()
     {
-        // Destrói apenas os dados da sessão do administrador para não deslogar um usuário comum caso estejam no mesmo navegador testing
-        session()->remove(['ADM_ID', 'ADM_NOME', 'logado_adm']);
+        // Destrói totalmente a sessão atual para garantir segurança máxima
+        session()->destroy();
 
         return redirect()->to('/admin/login');
     }

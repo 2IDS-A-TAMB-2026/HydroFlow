@@ -18,13 +18,13 @@
                 <h1>Bem vindo!</h1>
                 <p>Entre e dê um passo à frente na eficiência</p>
             </div>
-            <span class="pequeno"><a class="log_adm" href="login_adm.html">Login de ADM</a></span>
+            <span class="pequeno"><a class="log_adm" href="<?= base_url('admin/login') ?>">Login de ADM</a></span>
         </div>
 
         <div class="login-right">
             
             <div class="login-card">
-                <h2>Login</h2>
+                <h2>Login Admin</h2>
                 
                 <form action="<?= base_url('/admin/auth/autenticar') ?>" id="form" method="POST">
                     <div class="input-group">

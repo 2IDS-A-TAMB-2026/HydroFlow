@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-// Importações originais
+// Importações dos arquivos de acessibilidade
+import 'accessibility_provider.dart';
+import 'botao_acessibilidade.dart';
+
+// Suas importações originais
 import 'home.dart';
 import 'login.dart';
 import 'sobre_nos.dart';
 import 'cadastro.dart';
 import 'dashboard.dart';
 import 'esqueci_senha.dart';
-
-import 'agendamento.dart';
 import 'cadastro_planta.dart';
 import 'plantas.dart';
 import 'equipamentos.dart';
 import 'historico.dart';
 
 void main() {
-  runApp(const HydroflowApp());
+  runApp(
+    // 1. Envolvemos o app com o Provider para gerenciar o estado global
+    ChangeNotifierProvider(
+      create: (_) => AccessibilityProvider(),
+      child: const HydroflowApp(),
+    ),
+  );
 }
 
 class HydroflowApp extends StatelessWidget {
@@ -23,17 +32,32 @@ class HydroflowApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 2. Escutamos as mudanças de acessibilidade
+    final accessibility = Provider.of<AccessibilityProvider>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Hydroflow',
-      theme: ThemeData(
-        fontFamily: 'Poppins',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF002855),
-        ),
-      ),
+      
+      // 3. Gerenciamento dinâmico de tema (Alto Contraste vs Padrão)
+      theme:  ThemeData(
+              fontFamily: 'Poppins',
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(0xFF002855),
+              ),
+            ),
 
-      // Tela inicial
+      // 4. O segredo para funcionar em TODAS as páginas:
+      // O builder aplica o fator de escala de texto globalmente.
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(accessibility.fontSizeFactor),
+          ),
+          child: child!,
+        );
+      },
+
       home: const Home(),
 
       routes: {
@@ -42,15 +66,11 @@ class HydroflowApp extends StatelessWidget {
         '/sobre': (context) => const SobreNos(),
         '/cadastro': (context) => const CadastroPage(),
         '/dashboard': (context) => const DashboardPage(),
-
         '/nova_senha': (context) => const NovaSenhaPage(),
-
-        // OUTRAS ROTAS
-        '/agendamentos': (context) => const AgendamentoPage(),
         '/cadastro_plantas': (context) => const CadastroPlantaPage(),
         '/plantas': (context) => const PlantasPage(),
         '/equipamentos': (context) => const EquipamentosPage(),
-        '/historico': (context) => const HistoricoPage()
+        '/historico': (context) => const HistoricoPage(),
       },
     );
   }

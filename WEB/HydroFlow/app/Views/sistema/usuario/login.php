@@ -18,7 +18,7 @@
                 <h1>Bem vindo!</h1>
                 <p>Entre e dê um passo à frente na eficiência</p>
             </div>
-            <span class="pequeno"><a class="log_adm" href="<?= base_url('login_adm') ?>">Login de ADM</a></span>
+            <span class="pequeno"><a class="log_adm" href="<?= base_url('admin/login') ?>">Login de ADM</a></span>
         </div>
 
         <div class="login-right">

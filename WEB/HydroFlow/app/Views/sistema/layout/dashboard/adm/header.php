@@ -48,48 +48,18 @@
     <ul class="nav-menu">
 
         <li>
-            <a href="<?= base_url('/dashboard') ?>" aria-label="Ir para painel">
+            <a href="<?= base_url('admin/dashboard') ?>" aria-label="Ir para painel">
                 <i class="fa-solid fa-house" aria-hidden="true"></i>
                 Painel
             </a>
         </li>
 
         <li>
-            <a href="<?= base_url('/agendamentos') ?>" aria-label="Ir para agendamentos">
-                <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
-                Agendamentos
+            <a href="<?= base_url('admin/usuarios') ?>" aria-label="Ir para painel">
+                <i class="fa-solid fa-users-gear" aria-hidden="true"></i>
+                Usuários
             </a>
         </li>
-
-        <li>
-            <a href="<?= base_url('/planta') ?>" aria-label="Ir para plantas">
-                <i class="fa-solid fa-tree" aria-hidden="true"></i>
-                Plantas
-            </a>
-        </li>
-
-        <li>
-            <a href="<?= base_url('/historico') ?>" aria-label="Ir para histórico">
-                <i class="fas fa-history" aria-hidden="true"></i>
-                Histórico
-            </a>
-        </li>
-
-        <?php if (session()->get('logado_adm')): ?>
-            <li>
-                <a href="cadastro_planta.html" aria-label="Ir para cadastro de plantas">
-                    <i class="fa-solid fa-seedling" aria-hidden="true"></i>
-                    Cadastro de Plantas
-                </a>
-            </li>
-
-            <li>
-                <a href="cadastro_equipamento.html" aria-label="Ir para cadastro de equipamento">
-                    <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
-                    Cadastro de Equipamento
-                </a>
-            </li>
-        <?php endif; ?>
 
         <li>
             <?php if (session()->get('logado_adm')): ?>

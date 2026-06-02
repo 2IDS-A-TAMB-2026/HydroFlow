@@ -1,4 +1,4 @@
-<?= view("sistema/layout/dashboard/header") ?>
+<?= view("sistema/layout/dashboard/usuario/header") ?>
 
     <section class="kpi-cards">
         <div class="card card-cyan">

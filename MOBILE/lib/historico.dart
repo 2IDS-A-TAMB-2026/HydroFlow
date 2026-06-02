@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tcc/botao_acessibilidade.dart';
+import 'accessibility_provider.dart';
+import 'package:provider/provider.dart';
 
 class HistoricoPage extends StatefulWidget {
   const HistoricoPage({super.key});
@@ -9,147 +12,148 @@ class HistoricoPage extends StatefulWidget {
 }
 
 class _HistoricoPageState extends State<HistoricoPage> {
+  final TextEditingController _searchController = TextEditingController();
 
-  Future<void> _logout() async {
+  final List<Map<String, dynamic>> _dados = [
+    {
+      "data": "14/04 - 06:00",
+      "setor": "Estufa 1 (Tomate)",
+      "duracao": "30 min",
+      "volume": "150L",
+      "icon": Icons.smart_toy,
+      "tipo": "Automático",
+      "status": "Concluído",
+      "color": Colors.green,
+    },
+    {
+      "data": "13/04 - 18:00",
+      "setor": "Campo (Milho)",
+      "duracao": "15 min",
+      "volume": "250L",
+      "icon": Icons.smart_toy,
+      "tipo": "Automático",
+      "status": "Falha",
+      "color": Colors.red,
+    },
+    {
+      "data": "13/04 - 14:30",
+      "setor": "Estufa 2 (Morango)",
+      "duracao": "45 min",
+      "volume": "80L",
+      "icon": Icons.touch_app,
+      "tipo": "Manual",
+      "status": "Concluído",
+      "color": Colors.green,
+    },
+  ];
+
+  String _query = "";
+  static const azul = Color(0xFF002855);
+
+  // ---------------- LOGOUT ----------------
+  Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
-    if (!mounted) return;
+    if (!context.mounted) return;
 
-    Navigator.pushReplacementNamed(context, '/login');
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+      (route) => false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    // Escutando as configurações do Provider de acessibilidade
+    final acc = Provider.of<AccessibilityProvider>(context);
+    final high = acc.isHighContrast;
+    final f = acc.fontSizeFactor;
+
+    final bgPage = high ? Colors.black : Colors.grey[100];
+    final appBarBg = high ? Colors.black : azul;
+    final appBarBorder = high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none;
+
     return Scaffold(
+      backgroundColor: bgPage,
+      
       appBar: AppBar(
-        title: const Text("Histórico de Ativações"),
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF002855),
+        title: Text("Histórico de Ativações", style: TextStyle(fontSize: 20 * f)),
+        backgroundColor: appBarBg,
+        foregroundColor: Colors.white,
         elevation: 0,
+        shape: Border(bottom: appBarBorder),
+        actions: const [BotaoAcessibilidade()],
       ),
 
-      drawer: _buildDrawer(context),
+      drawer: _buildDrawer(context, high, f),
 
-      body: Container(
-        color: Colors.grey[100],
-
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-
-          child: Column(
-            children: [
-              _buildFilterWidget(context),
-
-              const SizedBox(height: 20),
-
-              _buildHistoryTable(context),
-            ],
-          ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            _buildFilterWidget(high, f),
+            const SizedBox(height: 20),
+            _buildHistoryTable(high, f),
+          ],
         ),
       ),
     );
   }
 
   // ---------------- FILTROS ----------------
-
-  Widget _buildFilterWidget(BuildContext context) {
+  Widget _buildFilterWidget(bool high, double f) {
     return Card(
-      elevation: 3,
-
+      elevation: high ? 0 : 3,
+      color: high ? Colors.black : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
+        side: high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none,
       ),
-
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
-
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
-
-            const Row(
+            Row(
               children: [
-                Icon(
-                  Icons.filter_list,
-                  color: Color(0xFF002855),
-                ),
-
-                SizedBox(width: 8),
-
+                Icon(Icons.filter_list, color: high ? Colors.white : azul),
+                const SizedBox(width: 8),
                 Text(
                   "Filtros de Busca",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16 * f,
                     fontWeight: FontWeight.bold,
+                    color: high ? Colors.white : Colors.black87,
                   ),
                 ),
               ],
             ),
-
-            const SizedBox(height: 15),
-
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              crossAxisAlignment: WrapCrossAlignment.end,
-
-              children: [
-
-                _filterItem(
-                  "Data Inicial",
-                  "01/04/2026",
-                  context,
+            const SizedBox(height: 12),
+            TextField(
+              controller: _searchController,
+              onChanged: (value) {
+                setState(() {
+                  _query = value.toLowerCase();
+                });
+              },
+              style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+              decoration: InputDecoration(
+                hintText: "Buscar por setor, data ou status...",
+                hintStyle: TextStyle(color: high ? Colors.white54 : Colors.black38, fontSize: 14 * f),
+                prefixIcon: Icon(Icons.search, color: high ? Colors.white70 : Colors.black45),
+                filled: true,
+                fillColor: high ? Colors.grey[900] : const Color(0xFFF5F7FA),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: high ? Colors.white54 : Colors.grey.withOpacity(0.3)),
                 ),
-
-                _filterItem(
-                  "Data Final",
-                  "14/04/2026",
-                  context,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: high ? Colors.white : azul, width: 2),
                 ),
-
-                _filterDropdown(
-                  "Setor / Área",
-                  [
-                    "Todos os Setores",
-                    "Estufa 1",
-                    "Estufa 2",
-                    "Campo"
-                  ],
-                ),
-
-                _filterDropdown(
-                  "Status",
-                  [
-                    "Todos",
-                    "Concluído",
-                    "Falha",
-                    "Interrompido"
-                  ],
-                ),
-
-                SizedBox(
-                  height: 48,
-
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-
-                    icon: const Icon(Icons.search),
-
-                    label: const Text("Filtrar"),
-
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF002855),
-                      foregroundColor: Colors.white,
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
@@ -158,339 +162,77 @@ class _HistoricoPageState extends State<HistoricoPage> {
   }
 
   // ---------------- TABELA ----------------
+  Widget _buildHistoryTable(bool high, double f) {
+    final filtrados = _dados.where((item) {
+      return item["setor"].toLowerCase().contains(_query) ||
+          item["status"].toLowerCase().contains(_query) ||
+          item["data"].toLowerCase().contains(_query);
+    }).toList();
 
-  Widget _buildHistoryTable(BuildContext context) {
     return Card(
-      elevation: 3,
-
+      elevation: high ? 0 : 3,
+      color: high ? Colors.black : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
+        side: high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none,
       ),
-
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-
         child: Column(
           children: [
-
-            const Row(
+            Row(
               children: [
-                Icon(
-                  Icons.assignment,
-                  color: Color(0xFF002855),
-                ),
-
-                SizedBox(width: 8),
-
+                Icon(Icons.assignment, color: high ? Colors.white : azul),
+                const SizedBox(width: 8),
                 Text(
                   "Registros de Irrigação",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18 * f,
                     fontWeight: FontWeight.bold,
+                    color: high ? Colors.white : Colors.black87,
                   ),
                 ),
               ],
             ),
-
-            const Divider(),
-
+            Divider(color: high ? Colors.white24 : Colors.grey[300]),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-
               child: DataTable(
-                columns: const [
-
-                  DataColumn(
-                    label: Text(
-                      "Data e Hora",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  DataColumn(
-                    label: Text("Setor / Cultura"),
-                  ),
-
-                  DataColumn(
-                    label: Text("Duração"),
-                  ),
-
-                  DataColumn(
-                    label: Text("Volume"),
-                  ),
-
-                  DataColumn(
-                    label: Text("Acionamento"),
-                  ),
-
-                  DataColumn(
-                    label: Text("Status"),
-                  ),
-                ],
-
-                rows: [
-
-                  _historyRow(
-                    "14/04 - 06:00",
-                    "Estufa 1 (Tomate)",
-                    "30 min",
-                    "150L",
-                    Icons.smart_toy,
-                    "Automático",
-                    "Concluído",
-                    Colors.green,
-                  ),
-
-                  _historyRow(
-                    "13/04 - 18:00",
-                    "Campo (Milho)",
-                    "15 min",
-                    "250L",
-                    Icons.smart_toy,
-                    "Automático",
-                    "Falha",
-                    Colors.red,
-                  ),
-
-                  _historyRow(
-                    "13/04 - 14:30",
-                    "Estufa 2 (Morango)",
-                    "45 min",
-                    "80L",
-                    Icons.touch_app,
-                    "Manual",
-                    "Concluído",
-                    Colors.green,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ---------------- DRAWER ----------------
-
-  Widget _buildDrawer(BuildContext context) {
-    return Drawer(
-      child: Container(
-        color: const Color(0xFF002855),
-
-        child: Column(
-          children: [
-
-            Container(
-              height: 160,
-              width: double.infinity,
-              alignment: Alignment.center,
-
-              child: const Text(
-                "HYDROFLOW",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
+                headingTextStyle: TextStyle(
+                  color: high ? Colors.white : azul,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
+                  fontSize: 14 * f,
                 ),
+                dataTextStyle: TextStyle(
+                  color: high ? Colors.white70 : Colors.black87,
+                  fontSize: 13 * f,
+                ),
+                columns: const [
+                  DataColumn(label: Text("Data e Hora")),
+                  DataColumn(label: Text("Setor / Cultura")),
+                  DataColumn(label: Text("Duração")),
+                  DataColumn(label: Text("Volume")),
+                  DataColumn(label: Text("Acionamento")),
+                  DataColumn(label: Text("Status")),
+                ],
+                rows: filtrados.map((item) {
+                  return _historyRow(
+                    item["data"],
+                    item["setor"],
+                    item["duracao"],
+                    item["volume"],
+                    item["icon"],
+                    item["tipo"],
+                    item["status"],
+                    item["color"],
+                    high,
+                    f,
+                  );
+                }).toList(),
               ),
             ),
-
-            const Divider(
-              color: Colors.white,
-              thickness: 1.2,
-              height: 1,
-            ),
-
-            const SizedBox(height: 10),
-
-            _drawerItem(
-              Icons.home,
-              "Painel",
-              () => Navigator
-                  .pushReplacementNamed(
-                context,
-                '/dashboard',
-              ),
-            ),
-
-            _drawerItem(
-              Icons.calendar_month,
-              "Agendamentos",
-              () => Navigator.pushNamed(
-                context,
-                '/agendamentos',
-              ),
-            ),
-
-            _drawerItem(
-              Icons.park,
-              "Plantas",
-              () => Navigator.pushNamed(
-                context,
-                '/plantas',
-              ),
-            ),
-
-            _drawerItem(
-              Icons.history,
-              "Histórico",
-              () => Navigator.pushNamed(
-                context,
-                '/historico',
-              ),
-            ),
-
-            _drawerItem(
-              Icons.shopping_cart,
-              "Equipamentos",
-              () => Navigator.pushNamed(
-                context,
-                '/equipamentos',
-              ),
-            ),
-            const Spacer(),
-
-            const Divider(color: Colors.white24),
-
-            _drawerItem(
-              Icons.logout,
-              "Sair",
-              _logout,
-            ),
-
-            const SizedBox(height: 20),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _drawerItem(
-    IconData icon,
-    String title,
-    VoidCallback onTap, {
-    bool active = false,
-  }) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: Colors.white,
-        size: 24,
-      ),
-
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-
-      tileColor: active
-          ? Colors.white.withOpacity(0.15)
-          : Colors.transparent,
-
-      onTap: onTap,
-    );
-  }
-
-  // ---------------- COMPONENTES AUXILIARES ----------------
-
-  Widget _filterItem(
-    String label,
-    String value,
-    BuildContext context,
-  ) {
-    return SizedBox(
-      width: 150,
-
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-
-        children: [
-
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          TextFormField(
-            readOnly: true,
-
-            decoration: InputDecoration(
-              hintText: value,
-
-              suffixIcon: const Icon(
-                Icons.calendar_month,
-                size: 18,
-              ),
-
-              border: const OutlineInputBorder(),
-
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _filterDropdown(
-    String label,
-    List<String> options,
-  ) {
-    return SizedBox(
-      width: 180,
-
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-
-        children: [
-
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          DropdownButtonFormField<String>(
-            value: options[0],
-
-            items: options.map(
-              (o) => DropdownMenuItem(
-                value: o,
-                child: Text(
-                  o,
-                  style: const TextStyle(fontSize: 13),
-                ),
-              ),
-            ).toList(),
-
-            onChanged: (val) {},
-
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 10),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -504,52 +246,35 @@ class _HistoricoPageState extends State<HistoricoPage> {
     String tipo,
     String status,
     Color statusColor,
+    bool high,
+    double f,
   ) {
     return DataRow(
       cells: [
-
-        DataCell(
-          Text(
-            data,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-
+        DataCell(Text(data, style: TextStyle(fontWeight: FontWeight.bold, color: high ? Colors.white : Colors.black))),
         DataCell(Text(setor)),
         DataCell(Text(duracao)),
         DataCell(Text(vol)),
-
-        DataCell(
-          Row(
-            children: [
-              Icon(icon, size: 16),
-
-              const SizedBox(width: 5),
-
-              Text(tipo),
-            ],
-          ),
-        ),
-
+        DataCell(Row(
+          children: [
+            Icon(icon, size: 16, color: high ? Colors.white70 : Colors.black54),
+            const SizedBox(width: 5),
+            Text(tipo),
+          ],
+        )),
         DataCell(
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 4,
-            ),
-
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: statusColor,
+              color: high ? Colors.transparent : statusColor,
               borderRadius: BorderRadius.circular(20),
+              border: high ? Border.all(color: Colors.white, width: 1.5) : null,
             ),
-
             child: Text(
               status,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 11,
+              style: TextStyle(
+                color: high ? Colors.white : Colors.white,
+                fontSize: 11 * f,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -557,5 +282,72 @@ class _HistoricoPageState extends State<HistoricoPage> {
         ),
       ],
     );
+  }
+
+  // ---------------- DRAWER ----------------
+  Widget _buildDrawer(BuildContext context, bool high, double f) {
+    return Drawer(
+      child: Container(
+        color: high ? Colors.black : azul,
+        child: Column(
+          children: [
+            const SizedBox(height: 80),
+            Text(
+              "HYDROFLOW",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24 * f,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Divider(color: Colors.white24),
+
+            _drawerItem(context, Icons.home, "Painel", f, () {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            }),
+            _drawerItem(context, Icons.park, "Plantas", f, () {
+              Navigator.pushReplacementNamed(context, '/plantas');
+            }),
+            _drawerItem(context, Icons.history, "Histórico", f, () {
+              Navigator.pushReplacementNamed(context, '/historico');
+            }),
+            _drawerItem(context, Icons.memory, "Equipamentos", f, () {
+              Navigator.pushReplacementNamed(context, '/equipamentos');
+            }),
+
+            const Spacer(),
+            const Divider(color: Colors.white24),
+
+            _drawerItem(context, Icons.logout, "Sair", f, () {
+              _logout(context);
+            }),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    double f,
+    VoidCallback onTap,
+  ) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
+    );
+  }
+
+  // Correção do nome interno do método auxiliar chamado pelo drawer
+  Widget _drawerItem(BuildContext context, IconData icon, String title, double f, VoidCallback onTap) {
+    return _buildDrawerItem(context, icon, title, f, onTap);
   }
 }

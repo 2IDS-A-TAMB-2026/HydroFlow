@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tcc/botao_acessibilidade.dart';
+import 'accessibility_provider.dart';
+import 'package:provider/provider.dart';
 
 class SobreNos extends StatefulWidget {
   const SobreNos({super.key});
@@ -8,7 +11,6 @@ class SobreNos extends StatefulWidget {
 }
 
 class _SobreNosState extends State<SobreNos> {
-  bool highContrast = false;
 
   static const Color azulPrimario = Color(0xFF002855);
   static const Color azulRoyal = Color(0xFF0056B3);
@@ -16,11 +18,23 @@ class _SobreNosState extends State<SobreNos> {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = highContrast ? Colors.black : const Color(0xFFF2F2F2);
-    final cardColor = highContrast ? Colors.black : Colors.white;
-    final textColor = highContrast ? Colors.yellow : azulPrimario;
+    final accessibility =
+      Provider.of<AccessibilityProvider>(context);
+
+    final highContrast = accessibility.isHighContrast;
+    final fontFactor = accessibility.fontSizeFactor;
+
+    final bgColor =
+      highContrast ? Colors.black : const Color(0xFFF2F2F2);
+
+    final cardColor =
+      highContrast ? Colors.black : Colors.white;
+
+    final textColor =
+    highContrast ? Colors.white : azulPrimario;
+
     final subTextColor =
-        highContrast ? Colors.white : Colors.grey.shade600;
+      highContrast ? Colors.white : Colors.grey.shade600;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -28,6 +42,7 @@ class _SobreNosState extends State<SobreNos> {
       // 🔷 APPBAR PADRÃO
       appBar: AppBar(
         backgroundColor: azulPrimario,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "HYDROFLOW",
           style: TextStyle(
@@ -36,16 +51,7 @@ class _SobreNosState extends State<SobreNos> {
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(
-              highContrast ? Icons.light_mode : Icons.contrast,
-            ),
-            onPressed: () {
-              setState(() {
-                highContrast = !highContrast;
-              });
-            },
-          )
+            const BotaoAcessibilidade(),
         ],
       ),
 
@@ -204,6 +210,8 @@ class _SobreNosState extends State<SobreNos> {
                     cardColor,
                     textColor,
                     subTextColor,
+                    fontFactor,
+                    highContrast,
                   ),
 
                   _buildTeamCard(
@@ -213,6 +221,8 @@ class _SobreNosState extends State<SobreNos> {
                     cardColor,
                     textColor,
                     subTextColor,
+                    fontFactor,
+                    highContrast,
                   ),
 
                   _buildTeamCard(
@@ -222,6 +232,8 @@ class _SobreNosState extends State<SobreNos> {
                     cardColor,
                     textColor,
                     subTextColor,
+                    fontFactor,
+                    highContrast,
                   ),
 
                   _buildTeamCard(
@@ -231,6 +243,8 @@ class _SobreNosState extends State<SobreNos> {
                     cardColor,
                     textColor,
                     subTextColor,
+                    fontFactor,
+                    highContrast,
                   ),
 
                   _buildTeamCard(
@@ -240,6 +254,8 @@ class _SobreNosState extends State<SobreNos> {
                     cardColor,
                     textColor,
                     subTextColor,
+                    fontFactor,
+                    highContrast,
                   ),
 
                   _buildTeamCard(
@@ -249,6 +265,8 @@ class _SobreNosState extends State<SobreNos> {
                     cardColor,
                     textColor,
                     subTextColor,
+                    fontFactor,
+                    highContrast,
                   ),
                 ],
               ),
@@ -283,6 +301,8 @@ class _SobreNosState extends State<SobreNos> {
     Color cardColor,
     Color nameColor,
     Color roleColor,
+    double fontFactor,
+    bool highContrast,
   ) {
     return Card(
       color: cardColor,
@@ -292,7 +312,7 @@ class _SobreNosState extends State<SobreNos> {
         borderRadius: BorderRadius.circular(12),
         side: highContrast
             ? const BorderSide(
-                color: Colors.yellow,
+                color: Colors.white,
                 width: 2,
               )
             : BorderSide.none,

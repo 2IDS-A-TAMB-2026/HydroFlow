@@ -39,7 +39,7 @@ class DashboardController extends BaseController
             ->join('DISPOSITIVO', 'DISPOSITIVO.DIS_ID = HISTORICO_IRRIGACAO.FK_DIS_ID')
             ->where('HISTORICO_IRRIGACAO.FK_USU_ID', $idUsuarioLogado)
             ->orderBy('IRR_DATA DESC', 'IRR_HORA DESC')
-            ->limit(5)
+            ->limit(8)
             ->findAll();
 
         // 4. PREPARAÇÃO DOS DADOS DO GRÁFICO (Volume Consumido por Dia nos últimos 7 dias)

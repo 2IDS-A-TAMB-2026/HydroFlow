@@ -1,4 +1,4 @@
-<?= view("sistema/layout/dashboard/header") ?>
+<?= view("sistema/layout/dashboard/usuario/header") ?>
 
 <main class="main-content">
     <header class="top-nav">

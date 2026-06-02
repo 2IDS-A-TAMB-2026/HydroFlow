@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc/botao_acessibilidade.dart';
 
 class NovaSenhaPage extends StatefulWidget {
   const NovaSenhaPage({super.key});
@@ -84,6 +85,7 @@ class _NovaSenhaPageState extends State<NovaSenhaPage> {
       appBar: AppBar(
         backgroundColor: azulPrimario,
         elevation: 0,
+        actions: [const BotaoAcessibilidade()],
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
