@@ -1,58 +1,141 @@
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">🌿 Cadastrar Nova Planta/Cultura</h4>
+<?= view("sistema/layout/dashboard/header") ?>
+
+<main class="main-content">
+    <header class="top-nav">
+        <div class="nav-left">
+            <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <h2>Cadastro de Culturas e Plantas</h2>
+        </div>
+        <div class="nav-right">
+            <span>Manual Sistema Gestão Online</span>
+            <i class="fa-solid fa-user"></i>
+            <i class="fa-solid fa-bell"></i>
+        </div>
+    </header>
+
+    <div class="widget form-widget full-width-form">
+        <div class="form-header-flex">
+            <h3 class="form-title">
+                <i class="fa-solid fa-leaf" style="color: #00a65a;"></i> Nova Planta
+            </h3>
+            <a href="<?= base_url('planta') ?>" style="text-decoration: none;">
+                <button class="btn-voltar" type="button"><i class="fa-solid fa-list"></i> Ver Cadastradas</button>
+            </a>
+        </div>
+        <hr class="divider">
+        
+        <form action="<?= base_url('planta/salvar') ?>" method="post" id="formPlanta">
+            <?= csrf_field() ?>
+            
+            <h4 class="section-title">Informações da Espécie</h4>
+            
+            <div class="form-row">
+                <div class="form-group" style="flex: 2;">
+                    <label for="PLANTA_NOME">Nome da Planta</label>
+                    <input type="text" id="PLANTA_NOME" name="PLANTA_NOME" class="form-control" placeholder="Ex: Tomate Carmem, Alface Crespa..." required>
                 </div>
-                <div class="card-body">
-                    <form action="<?= base_url('plantas/salvar') ?>" method="post">
-                        <?= csrf_field() ?>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="PLANTA_NOME" class="form-label">Nome da Planta</label>
-                                <input type="text" class="form-control" id="PLANTA_NOME" name="PLANTA_NOME" required placeholder="Ex: Canteiro Alface Sul">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="PLANTA_TIPO" class="form-label">Tipo de Solo/Planta</label>
-                                <input type="text" class="form-control" id="PLANTA_TIPO" name="PLANTA_TIPO" required placeholder="Ex: Hortaliça, Frutífera">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="PLANTA_CULTURA" class="form-label">Cultura (Opcional)</label>
-                                <input type="text" class="form-control" id="PLANTA_CULTURA" name="PLANTA_CULTURA" placeholder="Ex: Hidropônica, Orgânica">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="PLANTA_QTD_AGUA" class="form-label">Qtd. Água (ml)</label>
-                                <input type="number" class="form-control" id="PLANTA_QTD_AGUA" name="PLANTA_QTD_AGUA" placeholder="Ex: 500">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="PLANTA_PERIDIOCIDADE" class="form-label">Periodicidade (Dias)</label>
-                                <input type="number" class="form-control" id="PLANTA_PERIDIOCIDADE" name="PLANTA_PERIDIOCIDADE" required placeholder="Ex: 1">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="FK_USU_ID" class="form-label">ID do Usuário Responsável</label>
-                                <input type="number" class="form-control" id="FK_USU_ID" name="FK_USU_ID" required placeholder="ID do usuário">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="FK_DIS_ID" class="form-label">ID do Dispositivo Vinculado</label>
-                                <input type="number" class="form-control" id="FK_DIS_ID" name="FK_DIS_ID" required placeholder="ID da placa/hardware">
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2 mt-3">
-                            <a href="<?= base_url('plantas') ?>" class="btn btn-secondary">Cancelar</a>
-                            <button type="submit" class="btn btn-success">Salvar Planta</button>
-                        </div>
-                    </form>
+                
+                <div class="form-group" style="flex: 1;">
+                    <label for="PLANTA_TIPO">Tipo da Planta</label>
+                    <select id="PLANTA_TIPO" name="PLANTA_TIPO" class="form-control" required>
+                        <option value="">Selecione...</option>
+                        <option value="Hortaliça">Hortaliça</option>
+                        <option value="Frutífera">Frutífera</option>
+                        <option value="Legume">Legume</option>
+                        <option value="Grão / Cereal">Grão / Cereal</option>
+                        <option value="Ornamental">Ornamental</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" style="flex: 1.5;">
+                    <label for="PLANTA_CULTURA">Cultura</label>
+                    <input type="text" id="PLANTA_CULTURA" name="PLANTA_CULTURA" class="form-control" placeholder="Ex: Solanáceas, Hortifruti..." required>
                 </div>
             </div>
-        </div>
+
+            <h4 class="section-title" style="margin-top: 15px;">Parâmetros de Irrigação e Vínculos</h4>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="PLANTA_QTD_AGUA">Quantidade de Água Necessária (ml)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="PLANTA_QTD_AGUA" name="PLANTA_QTD_AGUA" class="form-control" step="0.1" placeholder="Ex: 500" required>
+                        <select class="form-control" style="width: 120px;" disabled>
+                            <option value="ml_dia" selected>mL/dia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="FK_DIS_ID">Dispositivo Responsável</label>
+                    <select id="FK_DIS_ID" name="FK_DIS_ID" class="form-control" required>
+                        <option value="">Selecione o Dispositivo...</option>
+                        <?php if (!empty($dispositivos) && is_array($dispositivos)): ?>
+                            <?php foreach ($dispositivos as $dispositivo): ?>
+                                <option value="<?= $dispositivo['DIS_ID'] ?>">
+                                    <?= esc($dispositivo['DIS_NOME'] ?? 'Dispositivo ' . $dispositivo['DIS_ID']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="PLANTA_PERIDIOCIDADE">Periodicidade (Tempo entre irrigações)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="PLANTA_PERIDIOCIDADE" name="PLANTA_PERIDIOCIDADE" class="form-control" min="1" placeholder="Ex: 2" required>
+                        <select class="form-control" style="width: 120px;">
+                            <option value="dias">Dias</option>
+                            <option value="horas">Horas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="form-actions">
+                <button type="reset" class="btn-cancelar">Limpar</button>
+                <button type="submit" class="btn-submit" style="width: auto; padding: 12px 30px; margin-top: 0;">
+                    <i class="fa-solid fa-seedling"></i> Salvar Planta
+                </button>
+            </div>
+        </form>
     </div>
-</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("formPlanta");
+
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Confirmar Cadastro?',
+                text: "Deseja salvar esta nova planta no sistema?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#1e3c72',
+                cancelButtonColor: '#6e7881',
+                confirmButtonText: 'Sim, salvar!',
+                cancelButtonText: 'Revisar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Enviando dados...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    form.submit();
+                }
+            });
+        });
+    }
+});
+</script>

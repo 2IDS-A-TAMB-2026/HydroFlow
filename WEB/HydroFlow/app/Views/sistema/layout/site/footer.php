@@ -145,7 +145,7 @@
             </p>
 
         </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </footer>
 
 </div>
@@ -188,5 +188,6 @@
         <div class="footer-bottom">
             <p>&copy; 2026 Hydroflow - Irrigação Inteligente e Tecnologia.</p>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </footer>
     </div>

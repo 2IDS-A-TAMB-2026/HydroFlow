@@ -3,10 +3,10 @@
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">🔌 Cadastrar Novo Sensor</h4>
+                    <h4 class="mb-0">Cadastrar Novo Sensor</h4>
                 </div>
                 <div class="card-body">
-                    <form action="<?= base_url('sensores/salvar') ?>" method="post">
+                    <form id="form-cadastro" action="<?= base_url('sensores/salvar') ?>" method="post">
                         <?= csrf_field() ?>
 
                         <div class="mb-3">
@@ -45,3 +45,40 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.getElementById('form-cadastro').addEventListener('submit', function(e) {
+    // Impede o envio imediato para rodar a animação do SweetAlert
+    e.preventDefault();
+    
+    const form = this;
+
+    Swal.fire({
+        title: 'Confirmar Cadastro?',
+        text: "Deseja incluir este novo sensor no sistema?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0d6efd', // Azul padrão do Bootstrap (primary)
+        cancelButtonColor: '#6c757d',  // Cinza do botão cancelar
+        confirmButtonText: 'Sim, cadastrar!',
+        cancelButtonText: 'Voltar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Animação visual de "carregando" enquanto envia para o CodeIgniter
+            Swal.fire({
+                title: 'Cadastrando hardware...',
+                text: 'Enviando informações ao banco de dados.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Envia o formulário de fato
+            form.submit();
+        }
+    });
+});
+</script>

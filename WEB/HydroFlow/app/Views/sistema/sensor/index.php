@@ -39,6 +39,12 @@
                                     </td>
                                     <td>
                                         <a href="<?= base_url('sensores/editar/' . $sensor['SEN_ID']) ?>" class="btn btn-sm btn-warning">Editar</a>
+                                        
+                                        <button type="button" 
+                                                class="btn btn-sm btn-danger" 
+                                                onclick="confirmarExclusao('<?= $sensor['SEN_ID'] ?>', '<?= esc($sensor['SEN_NOME']) ?>')">
+                                            Excluir
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -53,3 +59,26 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmarExclusao(id, nome) {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: `Você deseja excluir o sensor "${nome}"? Esta ação não pode ser desfeita.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33', // Vermelho para deletar
+        cancelButtonColor: '#3085d6', // Azul para cancelar
+        confirmButtonText: 'Sim, excluir!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        // Se o usuário clicou em "Sim, excluir!"
+        if (result.isConfirmed) {
+            // Redireciona para a rota de exclusão do seu Controller do CodeIgniter
+            window.location.href = "<?= base_url('sensores/excluir/') ?>/" + id;
+        }
+    });
+}
+</script>

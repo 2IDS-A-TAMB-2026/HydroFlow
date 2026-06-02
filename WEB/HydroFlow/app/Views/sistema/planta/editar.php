@@ -1,12 +1,14 @@
+<?= view("sistema/layout/dashboard/header") ?>
+<script src="<?= base_url('assets/css/') ?>"></script>
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-warning text-dark">
-                    <h4 class="mb-0">✏️ Editar Planta: <?= esc($planta['PLANTA_NOME']) ?></h4>
+                    <h4 class="mb-0">Editar Planta: <?= esc($planta['PLANTA_NOME']) ?></h4>
                 </div>
                 <div class="card-body">
-                    <form action="<?= base_url('plantas/atualizar/' . $planta['PLANTA_ID']) ?>" method="post">
+                    <form action="<?= base_url('plantas/atualizar/' . $planta['PLANTA_ID']) ?>" method="post" id="formEditar">
                         <?= csrf_field() ?>
 
                         <div class="row">
@@ -56,3 +58,41 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("formEditar");
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault(); // Impede o envio imediato
+
+        Swal.fire({
+            title: 'Salvar Alterações?',
+            text: "Os dados antigos serão substituídos pelas novas informações.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ffc107', 
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sim, atualizar!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true 
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                Swal.fire({
+                    title: 'Atualizando...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                
+                form.submit();
+            }
+        });
+    });
+});
+</script>

@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-
     const form = document.getElementById("form");
 
     form.addEventListener("submit", function (e) {
@@ -13,13 +12,22 @@ document.addEventListener("DOMContentLoaded", function () {
         const senhaCorreta = "Hydroflow";
 
         if (email === emailCorreto && senha === senhaCorreta) {
-            window.location.href = "dashboard_usu.html";
+            // Alerta de sucesso antes de redirecionar
+            Swal.fire({
+                icon: 'success',
+                title: 'Login realizado!',
+                text: 'Redirecionando para o dashboard...',
+                showConfirmButton: false
+            });
+
         } else {
-            const erro = document.createElement("p");
-            erro.innerText = "Email ou senha incorretos!";
-            erro.style.color = "red";
-            form.appendChild(erro);
+            // Alerta de erro amigável
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Email ou senha incorretos!',
+                confirmButtonColor: '#d33'
+            });
         }
     });
-
 });

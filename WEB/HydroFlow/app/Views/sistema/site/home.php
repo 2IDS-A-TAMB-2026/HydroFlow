@@ -530,6 +530,30 @@
                         <span>Jardinagem Profissional</span>
                     </div>
 
+                    <div class="audience-card">
+                        <span>Microempresas Agrícolas</span>
+                    </div>
+
+                    <div class="audience-card">
+                        <span>Pequenos Produtores</span>
+                    </div>
+
+                    <div class="audience-card">
+                        <span>Hortas Comunitárias</span>
+                    </div>
+
+                    <div class="audience-card">
+                        <span>Condomínios</span>
+                    </div>
+
+                    <div class="audience-card">
+                        <span>Escolas & Hotéis</span>
+                    </div>
+
+                    <div class="audience-card">
+                        <span>Jardinagem Profissional</span>
+                    </div>
+
                 </div>
 
             </div>
@@ -650,7 +674,7 @@
                         ></i>
 
                         <span aria-label="Localização">
-                            São Paulo, SP
+                            Tambaú, SP
                         </span>
                     </p>
 
@@ -663,17 +687,7 @@
                     <div class="social-icons">
 
                         <a 
-                            href="#"
-                            aria-label="LinkedIn da HydroFlow"
-                        >
-                            <i 
-                                class="fa-brands fa-linkedin"
-                                aria-hidden="true"
-                            ></i>
-                        </a>
-
-                        <a 
-                            href="#"
+                            href="https://github.com/2IDS-A-TAMB-2026/HydroFlow"
                             aria-label="GitHub da HydroFlow"
                         >
                             <i 
@@ -683,7 +697,7 @@
                         </a>
 
                         <a 
-                            href="#"
+                            href="https://www.instagram.com/hydroflow.senai?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                             aria-label="Instagram da HydroFlow"
                         >
                             <i 
@@ -712,6 +726,6 @@
 
     <!-- Script -->
     <script src="<?= base_url('assets/js/alto_contraste.js') ?>"></script>
-
+    <script src="<?= base_url('assets/js/acessibilidade.js') ?>"></script>
 </body>
 </html>

@@ -2,6 +2,11 @@ let form = document.querySelector("#form");
 
 form.addEventListener("submit", function(e){
 
+    // 1. Pegamos os ELEMENTOS do DOM para poder manipular classes e spans depois
+    let inputSenha = document.getElementById("senha");
+    let inputConfirmarSenha = document.getElementById("confirmar-senha");
+
+    // 2. Pegamos os VALORES para checagem rápida
     let nome = document.getElementById("nome").value;
     let cpf = document.getElementById("cpf").value;
     let email = document.getElementById("email").value;
@@ -11,8 +16,8 @@ form.addEventListener("submit", function(e){
     let numero = document.getElementById("numero").value;
     let cidade = document.getElementById("cidade").value;
     let uf = document.getElementById("uf").value;
-    let senha = document.getElementById("senha").value;
-    let confirmarSenha = document.getElementById("confirmar-senha").value;
+    let senha = inputSenha.value;
+    let confirmarSenha = inputConfirmarSenha.value;
 
     // Impede o formulário de enviar imediatamente
     e.preventDefault(); 
@@ -22,7 +27,7 @@ form.addEventListener("submit", function(e){
     // Pega todos os inputs
     let inputs = form.querySelectorAll("input");
 
-    // 1. vê se tem algum vazio nesse bglh
+    // 1. Vê se tem algum vazio nesse bglh
     inputs.forEach(function(input) {
         // Pega o elemento <span> que está exatamente abaixo do input atual no HTML
         let spanErro = input.nextElementSibling; 
@@ -30,30 +35,45 @@ form.addEventListener("submit", function(e){
         // Verifica se está vazio
         if (input.value.trim() === "") {
             input.classList.add("erro-borda"); // Pinta a borda de vermelho
-            if (spanErro) {
+            if (spanErro && spanErro.tagName === "SPAN") {
                 spanErro.innerText = "Preencha este campo para poder enviar";
+                
             }
+            Swal.fire({
+                    title: "Erro de formulário...",
+                    text: "Preencha todos os campos antes de confirmar o cadastro.",
+                    icon: "error",
+                    confirmButtonColor: "#d33"
+                    });
             isValid = false; // Bloqueia o envio
         } else {
             input.classList.remove("erro-borda"); // Remove a borda vermelha se estiver preenchido
-            if (spanErro) {
+            if (spanErro && spanErro.tagName === "SPAN") {
                 spanErro.innerText = ""; // Limpa a mensagem
             }
         }
     });
 
     // 2. VERIFICA SE AS SENHAS BATEM
-    
-    // Só faz essa checagem se as senhas não estiverem vazias
+    // Ajustado para aplicar o erro no elemento correto (inputConfirmarSenha)
     if (senha !== "" && confirmarSenha !== "" && senha !== confirmarSenha) {
-        confirmarSenha.classList.add("erro-borda");
-        confirmarSenha.nextElementSibling.innerText = "Ambas as senhas devem ser iguais!";
+        inputConfirmarSenha.classList.add("erro-borda");
+        if (inputConfirmarSenha.nextElementSibling && inputConfirmarSenha.nextElementSibling.tagName === "SPAN") {
+            inputConfirmarSenha.nextElementSibling.innerText = "Ambas as senhas devem ser iguais!";
+        }
         isValid = false;
     }
 
     // 3. SE TUDO ESTIVER CERTO, ENVIA!
     if (isValid) {
-        alert("Show! Cadastro validado com sucesso.");
+        // SweetAlert de Sucesso 🎉
+        Swal.fire({
+            title: "Show!",
+            text: "Cadastro validado com sucesso.",
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Legal!"
+        });
         
         let cpfLimpo = mascaraCpf.unmaskedValue; 
         let cepLimpo = mascaraCep.unmaskedValue;
@@ -67,11 +87,14 @@ form.addEventListener("submit", function(e){
         console.log(bairro);
         console.log(cidade);
         console.log(uf);
+        
+        // Se precisar limpar o formulário após o sucesso:
+        // form.reset();
+        // [Opcional] SweetAlert de Erro se o usuário tentar enviar com campos inválidos
     }
 });
 
-// máscara pros bglh do cpf e pro CEP
-
+// Máscara pros bglh do cpf e pro CEP
 const inputCpf = document.getElementById('cpf');
 const inputCep = document.getElementById('cep');
 

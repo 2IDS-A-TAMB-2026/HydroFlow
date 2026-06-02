@@ -196,7 +196,7 @@ nav a:hover { color: var(--azul-cyan); }
     padding: 40px;
     border-radius: 15px;
     transition: all 0.3s ease;
-    border: 1px solid #eee;
+    border: 1px solid #ffffff;
     text-align: center;
 }
 
@@ -351,7 +351,7 @@ body.alto-contraste strong {
 
 .carousel-track {
     display: flex;
-    width: calc(250px * 10); /* Ajuste baseado no número de cards */
+    width: max-content; 
     animation: scroll 20s linear infinite;
 }
 
@@ -382,7 +382,7 @@ body.alto-contraste strong {
 
 @keyframes scroll {
     0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-250px * 5)); } /* Metade do track para loop perfeito */
+    100% { transform: translateX(-50%); } 
 }
 
 /* --- NOVO RODAPÉ --- */

@@ -171,34 +171,86 @@ body {
 .card-green { background-color: #00a65a; }
 .card-red { background-color: #dd4b39; }
 
-/* Grade Inferior */
+/* ==================== GRADE INFERIOR (DASHBOARD) ==================== */
+
+/* Controla o alinhamento em duas colunas (Tabela na esquerda, Gráfico na direita) */
 .bottom-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr; /* 1 parte para tabela, 2 partes para o gráfico */
     gap: 20px;
+    align-items: stretch; /* Força os dois blocos a terem exatamente a mesma altura */
+    margin-top: 20px;
 }
 
+/* Base de todos os Widgets da página */
 .widget {
     background-color: white;
-    border-radius: 5px;
+    border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-sizing: border-box;
 }
 
-/* Tabela */
-.table-widget table { width: 100%; border-collapse: collapse; text-align: center; }
-.table-widget th { border-bottom: 2px solid #eee; padding-bottom: 10px; color: #555; }
-.table-widget td { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-.badge-green { background-color: #00a65a; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: bold; }
-.badge-red { background-color: #ce2222; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: bold; }
+/* Modificação específica para os Widgets que ficam dentro da Bottom Grid */
+.bottom-grid .widget {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 
-/* Gráfico */
-.chart-title { text-align: center; font-weight: normal; color: #333; margin-bottom: 20px; }
+/* ==================== COMPONENTE: TABELA ==================== */
+/* Força o widget da tabela a se comportar como um contêiner Flexbox */
+.table-widget {
+    display: flex;
+    flex-direction: column;
+}
 
-/* Correção do bug de altura infinita do Chart.js */
+/* Faz a tabela ocupar toda a altura restante dentro do widget */
+.table-widget table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    text-align: center; 
+    margin-top: 10px;
+    flex: 1; /* O segredo está aqui! Força a tabela a esticar verticalmente */
+}
+
+.table-widget th { 
+    border-bottom: 2px solid #eee; 
+    padding-bottom: 10px; 
+    color: #555; 
+}
+
+/* Faz as linhas (tr) dividirem o espaço vertical disponível por igual */
+.table-widget tbody tr {
+    height: calc(100% / 5); /* Divide a altura total de forma perfeita entre as 5 linhas */
+}
+
+.table-widget td { 
+    padding: 12px 0; 
+    border-bottom: 1px solid #eee; 
+    font-size: 0.9rem; 
+    vertical-align: middle; /* Garante que os textos continuem centralizados verticalmente */
+}
+
+/* Badges da Tabela */
+.badge-green { background-color: #00a65a; color: white; padding: 3px 8px; border-radius: 1px; font-size: 0.7rem; font-weight: bold; }
+.badge-red { background-color: #ce2222; color: white; padding: 3px 8px; border-radius: 1px; font-size: 0.7rem; font-weight: bold; }
+/* Adicionado caso precise do Alerta */
+.badge-yellow { background-color: #f39c12; color: white; padding: 3px 8px; border-radius: 1px; font-size: 0.7rem; font-weight: bold; }
+
+/* ==================== COMPONENTE: GRÁFICO ==================== */
+.chart-title { 
+    text-align: center; 
+    font-weight: normal; 
+    color: #333; 
+    margin-bottom: 20px; 
+}
+
+/* Container responsivo que evita o bug de altura infinita do Chart.js */
 .chart-container {
     position: relative;
-    height: 300px; /* Você pode aumentar ou diminuir essa altura se preferir */
+    flex: 1;            /* Faz a div crescer verticalmente ocupando o espaço disponível */
+    min-height: 340px;  /* Controla o tamanho mínimo ideal na tela */
     width: 100%;
 }
 
@@ -526,7 +578,7 @@ body {
 /* Etiquetas de Status (Badges) da Tabela */
 .status-badge {
     padding: 6px 12px;
-    border-radius: 20px; /* Estilo pílula */
+    border-radius: 3px; /* Estilo pílula */
     font-size: 0.85rem;
     font-weight: bold;
     display: inline-block;
@@ -768,4 +820,13 @@ textarea.form-control {
     margin: 5px 0 0 0;
     color: #777;
     font-size: 0.95rem;
+}
+.logout-btn {
+    color: #ff4d4d !important;
+    font-weight: bold;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 77, 77, 0.1);
+    border-radius: 8px;
 }

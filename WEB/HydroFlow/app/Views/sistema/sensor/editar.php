@@ -6,7 +6,7 @@
                     <h4 class="mb-0">✏️ Editar Sensor: <?= esc($sensor['SEN_NOME']) ?></h4>
                 </div>
                 <div class="card-body">
-                    <form action="<?= base_url('sensores/atualizar/' . $sensor['SEN_ID']) ?>" method="post">
+                    <form id="form-editar" action="<?= base_url('sensores/atualizar/' . $sensor['SEN_ID']) ?>" method="post">
                         <?= csrf_field() ?>
 
                         <div class="mb-3">
@@ -44,3 +44,41 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.getElementById('form-editar').addEventListener('submit', function(e) {
+    // Impede o envio imediato do formulário para podermos mostrar o SweetAlert
+    e.preventDefault();
+    
+    const form = this;
+
+    Swal.fire({
+        title: 'Atualizar dados?',
+        text: "Deseja salvar as alterações feitas neste sensor?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ffc107', // Cor amarela do Bootstrap warning
+        cancelButtonColor: '#6c757d',  // Cor cinza do Bootstrap secondary
+        confirmButtonText: 'Sim, salvar!',
+        cancelButtonText: 'Cancelar',
+        textColor: '#000'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Mostra um alerta de carregamento enquanto o backend processa
+            Swal.fire({
+                title: 'Salvando...',
+                text: 'Por favor, aguarde um momento.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Envia o formulário de verdade para o servidor/controller
+            form.submit();
+        }
+    });
+});
+</script>

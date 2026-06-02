@@ -3,20 +3,6 @@
 <?= $this->section('conteudo') ?>
 <div class="container mt-4">
     
-    <?php if (session()->getFlashdata('success')) : ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i><?= session()->getFlashdata('success') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php endif; ?>
-
-    <?php if (session()->getFlashdata('error')) : ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i><?= session()->getFlashdata('error') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php endif; ?>
-
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="fas fa-microchip me-2"></i><?= esc($titulo) ?></h2>
         <div class="d-flex gap-2">
@@ -61,8 +47,10 @@
                                     <a href="<?= base_url('sensores/editar/' . $sensor['SEN_ID']) ?>" class="btn btn-warning" title="Editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="<?= base_url('sensores/excluir/' . $sensor['SEN_ID']) ?>" class="btn btn-danger" 
-                                       onclick="return confirm('Tem certeza que deseja remover este sensor?')" title="Excluir">
+                                    <a href="<?= base_url('sensores/excluir/' . $sensor['SEN_ID']) ?>" 
+                                       class="btn btn-danger btn-excluir" 
+                                       data-nome="<?= esc($sensor['SEN_NOME']) ?>" 
+                                       title="Excluir">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
@@ -81,4 +69,62 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    const flashSuccess = "<?= session()->getFlashdata('success') ?>";
+    const flashError = "<?= session()->getFlashdata('error') ?>";
+
+    if (flashSuccess) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Sucesso!',
+            text: flashSuccess,
+            timer: 3000,
+            showConfirmButton: false
+        });
+    }
+
+    if (flashError) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro!',
+            text: flashError,
+            confirmButtonColor: '#dc3545'
+        });
+    }
+
+    
+    const botoesExcluir = document.querySelectorAll('.btn-excluir');
+    
+    botoesExcluir.forEach(botao => {
+        botao.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            
+            const url = this.getAttribute('href');
+            const nomeSensor = this.getAttribute('data-nome');
+
+            Swal.fire({
+                title: 'Tem certeza?',
+                html: `Você está prestes a excluir o sensor: <b>${nomeSensor}</b>.<br>Isso pode afetar o histórico de leituras!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url; 
+                }
+            });
+        });
+    });
+});
+</script>
+
 <?= $this->endSection() ?>

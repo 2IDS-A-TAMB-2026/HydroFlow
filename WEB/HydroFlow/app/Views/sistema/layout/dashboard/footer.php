@@ -1,5 +1,7 @@
 <footer class="main-footer" aria-label="Rodapé do site">
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <div class="footer-content">
 
         <div class="footer-brand">

@@ -16,6 +16,9 @@
     >
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="<?= base_url('assets/js/imprime.js') ?>"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -24,73 +27,84 @@
 
         <aside class="sidebar" aria-label="Menu lateral">
 
-            <div class="logo" aria-label="Logo HydroFlow">
-                <i class="fa-solid fa-droplet" aria-hidden="true"></i>
-                <span class="logos">HYDRO</span>FLOW
-            </div>
+    <div class="logo" aria-label="Logo HydroFlow">
+        <i class="fa-solid fa-droplet" aria-hidden="true"></i>
+        <span class="logos">HYDRO</span>FLOW
+    </div>
 
-            <div class="search-bar">
-                <label for="busca-menu" class="sr-only">
-                    Procurar opção do menu
-                </label>
+    <div class="search-bar">
+        <label for="busca-menu" class="sr-only">
+            Procurar opção do menu
+        </label>
+        <input 
+            type="text"
+            id="busca-menu"
+            placeholder="Procurar opção do menu..."
+            aria-label="Procurar opção do menu"
+        >
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+    </div>
 
-                <input 
-                    type="text"
-                    id="busca-menu"
-                    placeholder="Procurar opção do menu..."
-                    aria-label="Procurar opção do menu"
-                >
+    <ul class="nav-menu">
 
-                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-            </div>
+        <li>
+            <a href="<?= base_url('/dashboard') ?>" aria-label="Ir para painel">
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
+                Painel
+            </a>
+        </li>
 
-            <ul class="nav-menu">
+        <li>
+            <a href="<?= base_url('/agendamentos') ?>" aria-label="Ir para agendamentos">
+                <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+                Agendamentos
+            </a>
+        </li>
 
-                <li class="active">
-                    <a href="#" aria-label="Ir para painel">
-                        <i class="fa-solid fa-house" aria-hidden="true"></i>
-                        Painel
-                    </a>
-                </li>
+        <li>
+            <a href="<?= base_url('/planta') ?>" aria-label="Ir para plantas">
+                <i class="fa-solid fa-tree" aria-hidden="true"></i>
+                Plantas
+            </a>
+        </li>
 
-                <li>
-                    <a href="agendamento.html" aria-label="Ir para agendamentos">
-                        <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
-                        Agendamentos
-                    </a>
-                </li>
+        <li>
+            <a href="<?= base_url('/historico') ?>" aria-label="Ir para histórico">
+                <i class="fas fa-history" aria-hidden="true"></i>
+                Histórico
+            </a>
+        </li>
 
-                <li>
-                    <a href="plantas.html" aria-label="Ir para plantas">
-                        <i class="fa-solid fa-tree" aria-hidden="true"></i>
-                        Plantas
-                    </a>
-                </li>
+        <?php if (session()->get('logado_adm')): ?>
+            <li>
+                <a href="cadastro_planta.html" aria-label="Ir para cadastro de plantas">
+                    <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                    Cadastro de Plantas
+                </a>
+            </li>
 
-                <li>
-                    <a href="historico.html" aria-label="Ir para histórico">
-                        <i class="fas fa-history" aria-hidden="true"></i>
-                        Histórico
-                    </a>
-                </li>
+            <li>
+                <a href="cadastro_equipamento.html" aria-label="Ir para cadastro de equipamento">
+                    <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                    Cadastro de Equipamento
+                </a>
+            </li>
+        <?php endif; ?>
 
-                <li>
-                    <a href="cadastro_planta.html" aria-label="Ir para cadastro de plantas">
-                        <i class="fa-solid fa-seedling" aria-hidden="true"></i>
-                        Cadastro de Plantas
-                    </a>
-                </li>
+        <li>
+            <?php if (session()->get('logado_adm')): ?>
+                <a href="<?= base_url('/logout_adm') ?>" aria-label="Sair do sistema como admin" class="logout-btn">
+            <?php else: ?>
+                <a href="<?= base_url('/logout') ?>" aria-label="Sair do sistema" class="logout-btn">
+            <?php endif; ?>
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                Logout
+            </a>
+        </li>
 
-                <li>
-                    <a href="cadastro_equipamento.html" aria-label="Ir para cadastro de equipamento">
-                        <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
-                        Cadastro de Equipamento
-                    </a>
-                </li>
+    </ul>
 
-            </ul>
-
-        </aside>
+</aside>
 
         <main class="main-content">
 

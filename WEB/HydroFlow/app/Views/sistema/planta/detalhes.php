@@ -1,7 +1,7 @@
 <div class="container mt-4">
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-info text-white">
-            <h4 class="mb-0">📋 Detalhes do Canteiro: <?= esc($planta['PLANTA_NOME']) ?></h4>
+            <h4 class="mb-0">Detalhes do Canteiro: <?= esc($planta['PLANTA_NOME']) ?></h4>
         </div>
         <div class="card-body">
             <div class="row">

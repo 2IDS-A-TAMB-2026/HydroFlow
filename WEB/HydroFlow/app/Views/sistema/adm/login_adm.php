@@ -26,7 +26,7 @@
             <div class="login-card">
                 <h2>Login</h2>
                 
-                <form action id="form">
+                <form action="<?= base_url('/admin/auth/autenticar') ?>" id="form" method="POST">
                     <div class="input-group">
                         <label for="email">Email</label>
                         <input type="email" id="email" placeholder="exemplo@email.com" required name="email">
@@ -42,12 +42,12 @@
                 </form>
 
                 <div class="divider">ou</div>
-                <p class="signup-link">Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
+                <p class="signup-link">Não tem uma conta? <a href="<?= base_url('cadastro') ?>">Cadastre-se</a></p>
             </div>
         </div>
         
     </div>
     <script src="https://unpkg.com/imask"></script>
-    <script src="<?= base_url('assets/js/valida_login_adm.js') ?>"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
