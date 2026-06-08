@@ -1,17 +1,6 @@
 <?= view("sistema/layout/dashboard/usuario/header") ?>
-
 <main class="main-content">
-    <header class="top-nav">
-        <div class="nav-left">
-            <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
-            <h2>Listagem de Culturas e Plantas</h2>
-        </div>
-        <div class="nav-right">
-            <span>Manual Sistema Gestão Online</span>
-            <i class="fa-solid fa-user"></i>
-            <i class="fa-solid fa-bell"></i>
-        </div>
-    </header>
+    
 
     <div class="widget form-widget full-width-form">
         <div class="form-header-flex">

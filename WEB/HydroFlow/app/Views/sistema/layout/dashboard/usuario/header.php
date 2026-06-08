@@ -55,13 +55,6 @@
         </li>
 
         <li>
-            <a href="<?= base_url('/agendamentos') ?>" aria-label="Ir para agendamentos">
-                <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
-                Agendamentos
-            </a>
-        </li>
-
-        <li>
             <a href="<?= base_url('/planta') ?>" aria-label="Ir para plantas">
                 <i class="fa-solid fa-tree" aria-hidden="true"></i>
                 Plantas
@@ -107,22 +100,5 @@
 
                 </div>
 
-                <div class="nav-right">
-
-                    <span></span>
-
-                    <i 
-                        class="fa-solid fa-user"
-                        aria-label="Perfil do usuário"
-                        role="img"
-                    ></i>
-
-                    <i 
-                        class="fa-solid fa-bell"
-                        aria-label="Notificações"
-                        role="img"
-                    ></i>
-
-                </div>
-
+                
             </header>

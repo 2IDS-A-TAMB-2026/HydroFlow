@@ -20,16 +20,18 @@ $routes->get('cadastro', 'Home::irParaCadastro');
 // Autenticação de Usuários Comuns
 $routes->get('login', 'Home::irParaLoginUsu');
 $routes->post('login/autenticar', 'AuthController::autenticar');
+$routes->get('logout', 'AuthController::logout');
 
 // Autenticação de Administradores (ADM)
 $routes->get('admin/login', 'Home::irParaLoginadm'); 
 $routes->post('admin/auth/autenticar', 'AdmAuthController::autenticar');
+$routes->get('logout_adm', 'AuthController::logout');
 
 // ==========================================
 //  ÁREA LOGADA: USUÁRIO COMUM & OPERADOR
 // ==========================================
-// $routes->get('dashboard', 'DashBoardController::index');
-$routes->get('agendamentos', 'DashBoardController::agendamentos'); // CORRIGIDO: Plural para bater com o menu lateral
+$routes->get('dashboard', 'DashBoardController::index');
+//$routes->get('agendamentos', 'DashBoardController::agendamentos'); // CORRIGIDO: Plural para bater com o menu lateral
 $routes->get('historico', 'HistoricoController::index');
 
 // Módulo: Perfil do Usuário
@@ -40,15 +42,6 @@ $routes->group('perfil', ['filter' => 'auth'], function($routes) {
     $routes->post('atualizar', 'UsuarioController::atualizar');
     $routes->get('alterar-senha', 'UsuarioController::alterarSenha');
     $routes->post('salvar-senha', 'UsuarioController::salvarSenha');
-});
-
-// Módulo: Dispositivos
-$routes->group('dispositivos', ['filter' => 'auth'], function($routes) {
-    $routes->get('/', 'DispositivoController::index');
-    $routes->get('listagem', 'DispositivoController::listagemDispositivos');
-    $routes->get('gerenciamento', 'DispositivoController::gerenciamento');
-    $routes->get('novo', 'DispositivoController::novo');
-    $routes->post('salvar', 'DispositivoController::salvar');
 });
 
 // Módulo: Plantas
@@ -92,5 +85,24 @@ $routes->group('admin', ['filter' => 'auth'], function($routes) {
     
     // Outras rotas do escopo de admin
     $routes->get('usuarios/editar-perfil', 'AdmController::editarPerfil');
-    $routes->get('sensor/cadastro', 'AdmController::cadastroSensor');
+    $routes->get('excluirUsuario/(:num)', 'AdmController::excluirUsuario/$1');
+    
+    // ============================================================
+    // ROTA ADICIONADA: Resolve o erro 404 do botão "Perfil" do ADM
+    // ============================================================
+    $routes->get('perfil', 'AdmController::editarPerfil');
+
+    // Módulo: Dispositivos
+    $routes->group('dispositivos', ['filter' => 'auth'], function($routes) {
+    $routes->get('/', 'DispositivoController::index');
+    $routes->get('listagem', 'DispositivoController::listagemDispositivos');
+    $routes->get('gerenciamento', 'DispositivoController::gerenciamento');
+    
+    // CORRIGIDO: Agora aceita tanto "novo" quanto "novo/38" de forma opcional
+    $routes->get('novo', 'DispositivoController::cadastrarDispositivo');
+    $routes->get('novo/(:num)', 'DispositivoController::cadastrarDispositivo/$1');
+    
+    $routes->get('excluir/(:num)', 'DispositivoController::excluir/$1');
+    $routes->post('salvar', 'DispositivoController::salvar'); // Removido (:num) daqui pois o ID vai por POST oculto
+});
 });

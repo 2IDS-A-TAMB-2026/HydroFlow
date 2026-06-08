@@ -1,17 +1,7 @@
 <?= view("sistema/layout/dashboard/usuario/header") ?>
 
 <main class="main-content">
-    <header class="top-nav">
-        <div class="nav-left">
-            <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
-            <h2>Cadastro de Culturas e Plantas</h2>
-        </div>
-        <div class="nav-right">
-            <span>Manual Sistema Gestão Online</span>
-            <i class="fa-solid fa-user"></i>
-            <i class="fa-solid fa-bell"></i>
-        </div>
-    </header>
+    
 
     <div class="widget form-widget full-width-form">
         <div class="form-header-flex">
@@ -60,8 +50,9 @@
                     <label for="PLANTA_QTD_AGUA">Quantidade de Água Necessária (ml)</label>
                     <div style="display: flex; gap: 10px;">
                         <input type="number" id="PLANTA_QTD_AGUA" name="PLANTA_QTD_AGUA" class="form-control" step="0.1" placeholder="Ex: 500" required>
-                        <select class="form-control" style="width: 120px;" disabled>
-                            <option value="ml_dia" selected>mL/dia</option>
+                        <select class="form-control" style="width: 120px;" >
+                            <option value="ml_dia" >mL</option>
+                            <option value="ml_dia" >L</option>
                         </select>
                     </div>
                 </div>

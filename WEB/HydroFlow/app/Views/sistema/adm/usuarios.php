@@ -60,9 +60,6 @@
                 <h2><i class="fa-solid fa-users-gear"></i> Gerenciamento de Usuários</h2>
                 <p style="color: #666; margin-top: 5px;">Adicione, edite ou remova acessos ao sistema Hydroflow.</p>
             </div>
-            <button class="btn-add-user">
-                <i class="fa-solid fa-user-plus"></i> Novo Usuário
-            </button>
         </div>
 
         <div class="widget card-big">
@@ -146,11 +143,21 @@
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <div class="action-btns">
+                                    <div class="action-btns" style="display:flex; gap:8px;">
+
                                         <a href="<?= base_url('admin/usuarios/' . ($user['USU_ID'] ?? '')) ?>" 
-                                           class="btn-icon btn-edit" title="Editar">
+                                        class="btn-icon btn-edit"
+                                        title="Editar">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
+
+                                        <a href="<?= base_url('admin/excluirUsuario/' . ($user['USU_ID'] ?? '')) ?>"
+                                        class="btn-icon btn-delete btnExcluirUsuario"
+                                        data-nome="<?= esc($user['USU_NOME'] ?? '') ?>"
+                                        title="Excluir">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+
                                     </div>
                                 </td>
                             </tr>
@@ -168,3 +175,44 @@
     <?php endif; ?>
 
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.btnExcluirUsuario').forEach(function(botao) {
+
+        botao.addEventListener('click', function(e) {
+
+            e.preventDefault();
+
+            const url = this.href;
+            const nome = this.dataset.nome;
+
+            Swal.fire({
+                title: 'Tem certeza?',
+                html: `
+                    Deseja excluir o usuário:<br>
+                    <strong>${nome}</strong>?
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sim, excluir',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+
+            });
+
+        });
+
+    });
+
+});
+</script>

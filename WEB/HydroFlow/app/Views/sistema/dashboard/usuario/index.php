@@ -86,7 +86,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // PASSO DE MÁGICA: O PHP renderiza as arrays do banco em formato JSON válido para o JavaScript ler
+    //  O PHP renderiza as arrays do banco em formato JSON válido para o JavaScript ler
     const labelsDoBanco = <?= json_encode($grafico_labels) ?>;
     const valoresDoBanco = <?= json_encode($grafico_valores) ?>;
 

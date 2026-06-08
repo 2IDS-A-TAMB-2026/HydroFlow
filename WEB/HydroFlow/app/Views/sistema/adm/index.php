@@ -91,7 +91,7 @@
                 <h3 style="color: #333; font-size: 1.2rem; margin: 0 0 10px 0; font-weight: 600;">Malha de Sensores</h3>
                 <p style="color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">Integre novos dispositivos físicos de leitura de umidade e fluxo de água ao ecossistema HydroFlow.</p>
             </div>
-            <a href="<?= base_url('admin/sensor/cadastro') ?>" style="display: block; text-align: center; background: #28a745; color: white; padding: 12px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(40,167,69,0.15);">
+            <a href="<?= base_url('admin/dispositivos/') ?>" style="display: block; text-align: center; background: #28a745; color: white; padding: 12px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(40,167,69,0.15);">
                 Novo Sensor
             </a>
         </div>

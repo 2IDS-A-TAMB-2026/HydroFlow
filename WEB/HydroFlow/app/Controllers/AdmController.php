@@ -211,4 +211,24 @@ class AdmController extends BaseController
         return redirect()->to(base_url('admin/usuarios'))->with('error', 'Erro ao tentar excluir o usuário.');
     }
     }
+
+    // =========================================================
+    // MÉTODO DEFINITIVO: Caminho corrigido com base nas Views
+    // =========================================================
+    public function editarPerfil()
+    {
+        // Certifica de que o usuário está logado como admin
+        if (!session()->get('logado_adm')) {
+            return redirect()->to(base_url('admin/login'));
+        }
+
+        // Define o título da página
+        $dados['titulo'] = "Configurações do Perfil - HydroFlow";
+
+        // Carrega o cabeçalho e a sua view correta: sistema/adm/editar_perfil
+        $html  = view('sistema/layout/dashboard/adm/header', $dados);
+        $html .= view('sistema/adm/editar_perfil', $dados); 
+
+        return $html;
+    }
 }

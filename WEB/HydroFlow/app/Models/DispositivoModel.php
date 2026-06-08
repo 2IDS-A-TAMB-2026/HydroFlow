@@ -40,16 +40,20 @@ class DispositivoModel extends Model
     /**
      * BÔNUS: Método para buscar o dispositivo e os dados do usuário dono
      */
-    public function getDispositivoComDono($id = null)
-    {
-        $builder = $this->builder();
-        $builder->select('DISPOSITIVO.*, USUARIO.USU_NOME as dono_nome, USUARIO.USU_EMAIL as dono_email');
-        $builder->join('USUARIO', 'USUARIO.USU_ID = DISPOSITIVO.FK_USU_ID');
-        
-        if ($id !== null) {
-            return $builder->where('DIS_ID', $id)->get()->getRowArray();
-        }
-
-        return $builder->get()->getResultArray();
+public function getDispositivoComDono($id = null)
+{
+    // 1. Definimos o select trazendo o apelido 'dono_nome' que você já usava
+    $this->select('DISPOSITIVO.*, USUARIO.USU_NOME as dono_nome, USUARIO.USU_EMAIL as dono_email');
+    $this->join('USUARIO', 'USUARIO.USU_ID = DISPOSITIVO.FK_USU_ID', 'left'); // left join evita sumir dispositivos sem dono
+    
+    // 2. Se passar o ID, busca um só (para a tela de edição)
+    if ($id !== null) {
+        return $this->where('DIS_ID', $id)->first();
     }
+
+    // 3. ATENÇÃO: Retornamos apenas o $this (sem fechar com find/findAll). 
+    // Isso permite que o Controller coloque os filtros de busca antes de dar o findAll().
+    return $this;
+}
+
 }
