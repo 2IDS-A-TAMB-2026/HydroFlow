@@ -28,25 +28,28 @@ class SensorController extends BaseController
             'sensores' => $this->sensorModel->getSensoresComDispositivo()
         ];
 
-        return view('sensores/index', $data);
+        return view('sistema/sensor/index', $data);
     }
 
     /**
-     * Exibe o formulário de cadastro de sensor
+     * Exibe o formulário de cadastro de sensor (Layout sequencial/duplo)
      */
     public function novo()
     {
-        // Precisamos listar os dispositivos para o usuário escolher onde instalar o sensor
+        // Listando os dispositivos para o usuário escolher onde instalar o sensor
         $data = [
             'titulo'       => 'Cadastrar Novo Sensor',
             'dispositivos' => $this->dispositivoModel->findAll()
         ];
 
-        return view('sensores/form', $data);
+        return view('sistema/sensor/cadastro', $data);
     }
 
     /**
-     * Processa a criação ou atualização do sensor
+     * Processa a criação individual ou atualização do sensor (Método original)
+     */
+    /**
+     * Processa a criação individual ou atualização do sensor
      */
     public function salvar()
     {
@@ -59,19 +62,64 @@ class SensorController extends BaseController
             'FK_DIS_ID'  => $this->request->getPost('FK_DIS_ID'),
         ];
 
-        // Se houver ID, estamos editando, caso contrário, inserindo
         if ($id) {
             $dados['SEN_ID'] = $id;
         }
 
         if ($this->sensorModel->save($dados)) {
-            return redirect()->to('/sensores')->with('success', 'Sensor configurado com sucesso!');
+            // CORREÇÃO: Redireciona para a rota correta com o prefixo admin
+            return redirect()->to('admin/sensores')->with('sucesso', 'Sensor atualizado com sucesso!');
         } else {
-            // Retorna para o formulário com os erros de validação da Model
             return redirect()->back()->withInput()->with('errors', $this->sensorModel->errors());
         }
     }
 
+    public function salvarDuplo()
+    {
+        $nomeSolo  = $this->request->getPost('NOME_SOLO');
+        $nomeAr    = $this->request->getPost('NOME_AR');
+        $fkDisId   = $this->request->getPost('FK_DIS_ID');
+        $status    = $this->request->getPost('SEN_STATUS') ?? 'ATIVO';
+
+        $dadosSolo = [
+            'SEN_NOME'   => $nomeSolo,
+            'SEN_TIPO'   => 'Umidade do Solo',
+            'FK_DIS_ID'  => $fkDisId,
+            'SEN_STATUS' => $status
+        ];
+
+        $dadosAr = [
+            'SEN_NOME'   => $nomeAr,
+            'SEN_TIPO'   => 'Umidade do Ar/Temp',
+            'FK_DIS_ID'  => $fkDisId,
+            'SEN_STATUS' => $status
+        ];
+
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        $this->sensorModel->insert($dadosSolo);
+        $this->sensorModel->insert($dadosAr);
+
+        $db->transComplete();
+
+        if ($db->transStatus() === FALSE || !empty($this->sensorModel->errors())) {
+            $errosValidacao = $this->sensorModel->errors() ?: ['Não foi possível cadastrar os sensores.'];
+            return redirect()->back()->withInput()->with('errors', $errosValidacao);
+        }
+
+        // CORREÇÃO: Redireciona para a rota correta com o prefixo admin
+        return redirect()->to('admin/sensores')->with('sucesso', 'Sensores configurados juntos com sucesso!');
+    }
+
+    public function excluir($id)
+    {
+        if ($this->sensorModel->delete($id)) {
+            return redirect()->to('admin/sensores')->with('sucesso', 'Sensor removido.');
+        }
+
+        return redirect()->to('admin/sensores')->with('erro', 'Não foi possível excluir o sensor.');
+    }
     /**
      * Exibe o formulário de edição
      */
@@ -89,18 +137,6 @@ class SensorController extends BaseController
             'dispositivos' => $this->dispositivoModel->findAll()
         ];
 
-        return view('sensores/form', $data);
-    }
-
-    /**
-     * Remove um sensor do sistema
-     */
-    public function excluir($id)
-    {
-        if ($this->sensorModel->delete($id)) {
-            return redirect()->to('/sensores')->with('success', 'Sensor removido.');
-        }
-
-        return redirect()->to('/sensores')->with('error', 'Não foi possível excluir o sensor.');
+        return view('sistema/sensor/cadastro', $data);
     }
 }

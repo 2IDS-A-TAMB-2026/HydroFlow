@@ -151,10 +151,12 @@
 
         <div class="card">
 
-            <i 
-                class="fa-solid fa-droplet"
-                aria-hidden="true"
-            ></i>
+        <div 
+                class="card-icon"
+                aria-label="Ícone representando automação fluida"
+            >
+                ⚙️
+            </div>
 
             <h3>Automação Fluida</h3>
 
@@ -185,10 +187,12 @@
 
         <div class="card">
 
-            <i 
-                class="fa-solid fa-shield"
-                aria-hidden="true"
-            ></i>
+            <div 
+                class="card-icon"
+                aria-label="Ícone representando confiança"
+            >
+                🤝
+            </div>
 
             <h3>Solidez e Confiança</h3>
 

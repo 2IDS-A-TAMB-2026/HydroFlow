@@ -1339,7 +1339,7 @@ body.alto-contraste .adm-card-container,
 body.alto-contraste .profile-card-container {
     background-color: #000000 !important;
     background: #000000 !important;
-    border: 2px solid #ffffff !important;
+    border: none !important;
     box-shadow: none !important;
 }
 
@@ -1357,7 +1357,7 @@ body.alto-contraste .main-content div[style*="background"],
 body.alto-contraste .main-content .widget {
     background-color: #000000 !important;
     background: #000000 !important;
-    border: 2px solid #ffffff !important;
+    border: none!important;
 }
 
 /* Força as descrições longas e títulos internos desses cards a aparecerem em branco */
@@ -1372,7 +1372,7 @@ body.alto-contraste .main-content [class*="btn-"] {
     background-color: #000000 !important;
     background: #000000 !important;
     color: #ffffff !important;
-    border: 2px solid #ffffff !important;
+    border: none !important;
 }
 
 /* Efeito invertido ao passar o mouse nesses botões no alto contraste */
@@ -1393,6 +1393,6 @@ body.alto-contraste .data-table td [class*="status"] {
     background-color: #000000 !important;
     background: #000000 !important;
     color: #ffffff !important;
-    border: 2px solid #ffffff !important;
+    border: none !important;
     opacity: 1 !important;
 }

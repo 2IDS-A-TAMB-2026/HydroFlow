@@ -15,6 +15,8 @@ $routes->get('sobre', 'Home::irParaSobre');
 $routes->get('cadastro', 'Home::irParaCadastro');
 $routes->post('cadastro/salvar', 'UsuarioController::salvar');
 
+
+
 // ==========================================
 //  SISTEMA DE AUTENTICAÇÃO (LOGIN / LOGOUT)
 // ==========================================
@@ -34,6 +36,8 @@ $routes->get('logout_adm', 'AuthController::logout');
 $routes->get('dashboard', 'DashBoardController::index');
 //$routes->get('agendamentos', 'DashBoardController::agendamentos'); // CORRIGIDO: Plural para bater com o menu lateral
 $routes->get('historico', 'HistoricoController::index');
+
+$routes->get('dados_sensores', 'Dados_SensoresController::index');
 
 // Módulo: Perfil do Usuário
 $routes->group('perfil', ['filter' => 'auth'], function($routes) {
@@ -56,14 +60,7 @@ $routes->group('planta', ['filter' => 'auth'], function($routes) {
     $routes->get('excluir/(:num)', 'PlantaController::excluir/$1');
 });
 
-// Módulo: Sensores (Visualização e Edição Geral)
-$routes->group('sensores', ['filter' => 'auth'], function($routes) {
-    $routes->get('/', 'SensorController::index');
-    $routes->get('novo', 'SensorController::novo');
-    $routes->post('salvar', 'SensorController::salvar');
-    $routes->get('editar/(:num)', 'SensorController::editar/$1');
-    $routes->post('atualizar/(:num)', 'SensorController::atualizar/$1');
-});
+
 
 // Módulo: Dados dos Sensores (Leituras de Telemetria)
 $routes->group('dados-sensores', ['filter' => 'auth'], function($routes) {
@@ -105,6 +102,18 @@ $routes->group('admin', ['filter' => 'auth'], function($routes) {
     $routes->get('novo/(:num)', 'DispositivoController::cadastrarDispositivo/$1');
     
     $routes->get('excluir/(:num)', 'DispositivoController::excluir/$1');
-    $routes->post('salvar', 'DispositivoController::salvar'); // Removido (:num) daqui pois o ID vai por POST oculto
-});
+    $routes->post('salvar', 'DispositivoController::salvar'); 
+
+
+    });
+    // Módulo: Sensores (Visualização e Edição Geral)
+        $routes->group('sensores', ['filter' => 'auth'], function($routes) {
+        $routes->get('/', 'SensorController::index');
+        $routes->get('novo', 'SensorController::novo');
+        $routes->post('salvar', 'SensorController::salvar');
+        $routes->get('editar/(:num)', 'SensorController::editar/$1');
+        $routes->post('atualizar/(:num)', 'SensorController::atualizar/$1');
+        $routes->post('salvar-duplo', 'SensorController::salvarDuplo');
+        $routes->get('excluir/(:num)', 'SensorController::excluir/$1');
+    });
 });

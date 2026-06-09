@@ -1,4 +1,4 @@
-<?= $this->extend('sistema/layout/main') ?>
+<?= view('sistema/layout/dashboard/usuario/header') ?>
 
 <?= $this->section('conteudo') ?>
 <div class="container mt-4">

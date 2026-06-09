@@ -68,6 +68,13 @@
                 <li>
                     <a href="<?= base_url('admin/dispositivos') ?>" aria-label="Ir para malha de sensores">
                         <i class="fa-solid fa-microchip" aria-hidden="true"></i>
+                        Malha de Dispositivos
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= base_url('admin/sensores') ?>" aria-label="Ir para malha de sensores">
+                        <i class="fa-solid fa-circle-nodes" aria-hidden="true"></i>
                         Malha de Sensores
                     </a>
                 </li>

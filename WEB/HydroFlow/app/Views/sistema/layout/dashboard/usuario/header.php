@@ -63,8 +63,15 @@
 
         <li>
             <a href="<?= base_url('/historico') ?>" aria-label="Ir para histórico">
+                <i class="fa-solid fa-faucet" aria-hidden="true"></i>
+                Irrigações
+            </a>
+        </li>
+
+        <li>
+            <a href="<?= base_url('dados_sensores') ?>" aria-label="Ir para histórico">
                 <i class="fas fa-history" aria-hidden="true"></i>
-                Histórico
+                Medições
             </a>
         </li>
 
@@ -140,5 +147,35 @@
                 
             </header>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const logoutBtn = document.querySelector('.logout-btn');
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = this.href;
+
+                Swal.fire({
+                    title: 'Deseja sair?',
+                    text: 'Sua sessão será encerrada.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0056b3',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sim, sair',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        }
+
+    });
+    </script>
     <script src="<?= base_url('assets/js/acessibilidade.js') ?>"></script>
     <script src="<?= base_url('assets/js/alto_contraste.js') ?>"></script>

@@ -6,7 +6,7 @@
     <title>Página de Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght=0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= base_url('assets/css/login.css') ?>">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- CDN do SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -14,39 +14,53 @@
 
     <div class="login-container">
         
-        <div class="login-left">
-            <div class="logo">Hydro<span class="logo">Flow</span></div>
-            
+    <div class="login-left">
+
+            <div class="top-brand">
+                <a href="<?= base_url('/') ?>" class="voltar-home">←</a>
+                <div class="logo">Hydro<span class="logo">Flow</span></div>
+            </div>
+
             <div class="left-content">
                 <h1>Bem vindo!</h1>
                 <p>Entre e dê um passo à frente na eficiência</p>
             </div>
-            <span class="pequeno"><a class="log_adm" href="<?= base_url('admin/login') ?>">Login de ADM</a></span>
-        </div>
 
-        <div class="login-right">
-            
-            <div class="login-card">
-                <h2>Login</h2>
-                
-                <form action="<?= base_url('login/autenticar') ?>" id="form" method="POST">
-                    <div class="input-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="exemplo@email.com" required name="email">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="password">Senha</label>
-                        <input type="password" id="password" placeholder="••••••••" required name="senha">
-                    </div>
-                    
-                    <button type="submit" class="btn-main">Entrar</button>
-                </form>
+            <span class="pequeno">
+                <a class="log_adm" href="<?= base_url('admin/login') ?>">Login de ADM</a>
+            </span>
 
-                <div class="divider">ou</div>
-                <p class="signup-link">Não tem uma conta? <a href="<?= base_url('cadastro') ?>">Cadastre-se</a></p>
+    </div>
+
+    <div class="login-right">
+
+        <div class="login-card">
+
+
+        <h2>Login</h2>
+        
+        <form action="<?= base_url('login/autenticar') ?>" id="form" method="POST">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="exemplo@email.com" required name="email">
             </div>
+
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" placeholder="••••••••" required name="senha">
+            </div>
+
+            <button type="submit" class="btn-main">Entrar</button>
+        </form>
+
+        <div class="divider">ou</div>
+        <p class="signup-link">
+            Não tem uma conta?
+            <a href="<?= base_url('cadastro') ?>">Cadastre-se</a>
+        </p>
+
         </div>
+    </div>
         
     </div>
 

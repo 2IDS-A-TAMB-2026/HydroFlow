@@ -13,16 +13,17 @@
     <div class="login-container">
 
         <div class="login-left">
-            <div class="logo">Hydro<span class="logo">Flow</span></div>
+
+            <div class="top-brand">
+                <a href="<?= base_url('/') ?>" class="voltar-home">←</a>
+                <div class="logo">Hydro<span class="logo">Flow</span></div>
+            </div>
 
             <div class="left-content">
                 <h1>Bem vindo!</h1>
                 <p>Entre e dê um passo à frente na eficiência</p>
             </div>
-
-            <span class="pequeno">
-                <a class="log_adm" href="<?= base_url('admin/login') ?>">Login de ADM</a>
-            </span>
+            
         </div>
 
         <div class="login-right">

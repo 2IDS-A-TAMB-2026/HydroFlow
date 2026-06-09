@@ -267,3 +267,21 @@ body {
         padding: 40px 25px;
     }
 }
+
+.top-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.voltar-home {
+    color: white;
+    text-decoration: none;
+    font-size: 28px;
+    font-weight: bold;
+    transition: 0.2s ease;
+}
+
+.voltar-home:hover {
+    transform: translateX(-4px);
+}
