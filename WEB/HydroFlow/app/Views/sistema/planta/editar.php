@@ -9,7 +9,7 @@
                 <i class="fa-solid fa-leaf" style="color:#f39c12;"></i> Editar Planta
             </h3>
 
-            <a href="<?= base_url('plantas') ?>" style="text-decoration:none;">
+            <a href="<?= base_url('planta') ?>" style="text-decoration:none;">
                 <button class="btn-voltar" type="button">
                     <i class="fa-solid fa-list"></i> Ver Cadastradas
                 </button>
@@ -106,7 +106,7 @@
             <hr class="divider">
 
             <div class="form-actions">
-                <a href="<?= base_url('plantas') ?>">
+                <a href="<?= base_url('planta') ?>">
                     <button type="button" class="btn-cancelar">
                         Cancelar
                     </button>

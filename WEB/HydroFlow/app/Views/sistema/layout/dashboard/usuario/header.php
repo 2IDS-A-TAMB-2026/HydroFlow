@@ -100,5 +100,45 @@
 
                 </div>
 
+                <div class="acessibilidade-group">
+
+                    <!-- Botão contraste -->
+                    <button
+                        id="btn-contraste"
+                        class="btn-acessibilidade"
+                        aria-label="Ativar ou desativar alto contraste"
+                        title="Contraste"
+                        
+                    >
+                        ◐
+                    </button>
+
+                    <!-- Aumentar fonte -->
+                    <button
+                        id="aumentar-fonte"
+                        class="btn-acessibilidade"
+                        aria-label="Aumentar tamanho da fonte"
+                        title="Aumentar fonte"
+                    
+                    >
+                        +
+                    </button>
+
+                    <!-- Diminuir fonte -->
+                    <button
+                        id="diminuir-fonte"
+                        class="btn-acessibilidade"
+                        aria-label="Diminuir tamanho da fonte"
+                        title="Diminuir fonte"
+                        
+                    >
+                        -
+                    </button>
+                
+                </div>
+
                 
             </header>
+
+    <script src="<?= base_url('assets/js/acessibilidade.js') ?>"></script>
+    <script src="<?= base_url('assets/js/alto_contraste.js') ?>"></script>

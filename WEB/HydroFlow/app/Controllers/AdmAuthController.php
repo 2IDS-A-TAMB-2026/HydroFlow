@@ -37,13 +37,13 @@ class AdmAuthController extends BaseController
                     return redirect()->to('/admin/dashboard');
                     
                 } else {
-                    session()->setFlashdata('erro', 'Esta conta de administrador está desativada.');
+                    session()->setFlashdata('error', 'Esta conta de administrador está desativada.');
                     return redirect()->to('/admin/login');
                 }
             }
         }
 
-        session()->setFlashdata('erro', 'E-mail ou senha de administrador inválidos.');
+        session()->setFlashdata('error', 'E-mail ou senha de administrador inválidos.');
         return redirect()->to('/admin/login');
     }
 

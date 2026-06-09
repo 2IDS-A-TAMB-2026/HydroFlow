@@ -13,28 +13,14 @@ class UsuarioModel extends Model
     protected $allowedFields = [
         'USU_BAIRRO', 'USU_NUM', 'USU_NOME', 'USU_STATUS', 
         'USU_CPF', 'USU_EMAIL', 'USU_SENHA', 'USU_CIDADE', 
-        'USU_UF', 'USU_CEP'
+        'USU_UF', 'USU_CEP', 'USU_RUA'
     ];
 
-    // --- CALLBACKS (Gatilhos Automáticos) ---
-    //protected $beforeInsert = ['hashPassword', 'setInitialStatus'];
-    //protected $beforeUpdate = ['hashPassword'];
+    // Mantido apenas o gatilho para definir o status inicial como ATIVO
+    protected $beforeInsert = ['setInitialStatus'];
 
     /**
-     * Criptografa a senha antes de salvar no banco
-     */
-    //protected function hashPassword(array $data)
-   // {
-    //    if (!isset($data['data']['USU_SENHA'])) {
-    //        return $data;
-    //    }
-//
-    //    $data['data']['USU_SENHA'] = password_hash($data['data']['USU_SENHA'], PASSWORD_DEFAULT);
-   //     return $data;
-   // }
-//
-    /**
-     * Garante que todo novo usuário comece como 'ATIVO'
+     * Garante que todo novo usuário comece como 'ATIVO' por padrão
      */
     protected function setInitialStatus(array $data)
     {

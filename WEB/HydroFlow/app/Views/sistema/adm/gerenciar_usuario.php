@@ -38,7 +38,7 @@ $nomeUsuario = $user['USU_NOME'] ?? $user['nome'] ?? '';
 
     <div class="adm-card-container">
         
-        <form action="<?= base_url('admin/atualizarUsuario/' . $idUsuario) ?>" method="POST" id="form">
+        <form action="<?= base_url('admin/usuarios/' . $idUsuario) ?>" method="POST" id="formGerenciarUsuario">
             <?= csrf_field() ?>
 
             <div class="adm-form-row">
@@ -128,7 +128,7 @@ $nomeUsuario = $user['USU_NOME'] ?? $user['nome'] ?? '';
             </div>
             
             <div style="margin-top: 25px;">
-                <button type="submit" class="adm-btn-submit">
+                <button type="submit" id="btnSalvarAlteracoes" class="adm-btn-submit">
                     <i class="fa-solid fa-floppy-disk"></i> Salvar Alterações
                 </button>
             </div>
@@ -143,8 +143,10 @@ $nomeUsuario = $user['USU_NOME'] ?? $user['nome'] ?? '';
             A exclusão da conta removerá permanentemente o usuário do sistema Hydroflow. Esta ação não pode ser desfeita.
         </p>
         
-        <a href="<?= base_url('admin/excluirUsuario/' . $idUsuario) ?>" 
-           onclick="return confirm('Tem certeza absoluta que deseja excluir permanentemente o usuário <?= esc($nomeUsuario) ?>? Todos os logs e acessos vinculados serão deletados.');" 
+        <a href="#" 
+           class="btnExcluirUsuario"
+           data-url="<?= base_url('admin/excluirUsuario/' . $idUsuario) ?>" 
+           data-nome="<?= esc($nomeUsuario) ?>"
            style="display: inline-flex; align-items: center; gap: 8px; background-color: #dc3545; color: white; text-decoration: none; padding: 12px 22px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; border: none; transition: background 0.2s;">
             <i class="fa-solid fa-trash-can"></i> Excluir Conta Permanentemente
         </a>
@@ -157,3 +159,83 @@ $nomeUsuario = $user['USU_NOME'] ?? $user['nome'] ?? '';
     </div>
 
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/imask"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ==========================================
+    // MÁSCARAS DE INPUT (IMask)
+    // ==========================================
+    const elementCpf = document.getElementById('cpf');
+    if (elementCpf) IMask(elementCpf, { mask: '000.000.000-00' });
+
+    const elementCep = document.getElementById('cep');
+    if (elementCep) IMask(elementCep, { mask: '00000-000' });
+
+
+    // ==========================================
+    // CONFIRMAÇÃO DE EDIÇÃO (SALVAR ALTERAÇÕES)
+    // ==========================================
+    const form = document.getElementById('formGerenciarUsuario');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Impede o envio imediato do formulário HTML
+            e.preventDefault(); 
+
+            Swal.fire({
+                title: 'Confirmar alterações?',
+                text: 'Os dados cadastrais deste usuário serão atualizados no sistema.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#1e3c72',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fa-solid fa-check"></i> Sim, salvar!',
+                cancelButtonText: 'Cancelar',
+                background: '#ffffff',
+                borderRadius: '8px'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Dispara o envio real do formulário nativo
+                    form.submit();
+                }
+            });
+        });
+    }
+
+
+    // ==========================================
+    // CONFIRMAÇÃO DE EXCLUSÃO PERMANENTE
+    // ==========================================
+    const botaoExcluir = document.querySelector('.btnExcluirUsuario');
+
+    if (botaoExcluir) {
+        botaoExcluir.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const urlExclusao = this.getAttribute('data-url');
+            const nomeUsuario = this.getAttribute('data-nome');
+
+            Swal.fire({
+                title: 'Tem certeza absoluta?',
+                html: `Você está prestes a remover permanentemente o usuário <strong>"${nomeUsuario}"</strong>.<br><br><span style="color:#d33; font-weight:bold;">Todos os logs e acessos vinculados serão deletados. Esta ação não é revertível!</span>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '<i class="fa-solid fa-trash"></i> Sim, excluir permanentemente!',
+                cancelButtonText: 'Cancelar',
+                background: '#ffffff',
+                borderRadius: '8px'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redireciona para a URL de exclusão do controller
+                    window.location.href = urlExclusao;
+                }
+            });
+        });
+    }
+});
+</script>

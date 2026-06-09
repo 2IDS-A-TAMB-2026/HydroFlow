@@ -2,7 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\PlantaModel; // Importa a model certa
+use App\Models\PlantaModel;
+use App\Models\DispositivoModel; // Importa o model de dispositivos para o filtro dinâmico
 use CodeIgniter\Controller;
 
 class PlantaController extends BaseController
@@ -11,82 +12,101 @@ class PlantaController extends BaseController
 
     public function __construct()
     {
-        // Instancia a model de planta
         $this->plantaModel = new PlantaModel();
     }
 
-    // Listar todas as plantas :o
-   public function index()
-{
-    // 1. Pega o ID do usuário que está logado direto da Session do sistema
-    // (Ajuste o termo 'id' ou 'USU_ID' para o nome exato que você usou na hora de salvar o login)
-    $idUsuarioLogado = session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID');
+    // Listar todas as plantas com filtros aplicados
+    public function index()
+    {
+        // 1. Pega o ID do usuário que está logado direto da Session
+        $idUsuarioLogado = session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID');
 
-    // 2. Se por acaso a sessão expirou ou o cara não está logado, manda pro login
-    if (!$idUsuarioLogado) {
-        return redirect()->to(base_url('login'))->with('error', 'Por favor, faça login para acessar suas plantas.');
+        if (!$idUsuarioLogado) {
+            return redirect()->to(base_url('login'))->with('erro', 'Por favor, faça login para acessar suas plantas.');
+        }
+
+        // 2. Instancia o model de dispositivos para alimentar o select da View
+        $dispositivoModel = new DispositivoModel();
+        $dispositivos = $dispositivoModel->where('FK_USU_ID', $idUsuarioLogado)->findAll();
+
+        // 3. Captura os dados enviados pelo formulário de filtro via GET
+        $filtroTipo        = $this->request->getGet('filtro_tipo');
+        $filtroParametro   = $this->request->getGet('filtro_parametro');
+        $filtroDispositivo = $this->request->getGet('filtro_dispositivo');
+
+        // 4. Inicia a construção da Query filtrando sempre pelo usuário logado
+        $query = $this->plantaModel->where('FK_USU_ID', $idUsuarioLogado);
+
+        // Se escolheu um Tipo específico
+        if (!empty($filtroTipo)) {
+            $query->where('PLANTA_TIPO', $filtroTipo);
+        }
+
+        // Se escolheu uma Periodicidade de irrigação específica
+        if (!empty($filtroParametro)) {
+            $query->where('PLANTA_PERIDIOCIDADE', $filtroParametro);
+        }
+
+        // Se escolheu um Dispositivo responsável específico
+        if (!empty($filtroDispositivo)) {
+            $query->where('FK_DIS_ID', $filtroDispositivo);
+        }
+
+        // Busca os resultados finais com os filtros ativos aplicados
+        $plantas = $query->findAll();
+
+        $data = [
+            'titulo'             => 'Minhas Plantas',
+            'plantas'            => $plantas,
+            'dispositivos'       => $dispositivos, // Passa a lista para o select da view
+            'filtroTipo'         => $filtroTipo,        // Mantém o valor selecionado após o submit
+            'filtroParametro'    => $filtroParametro,   // Mantém o valor selecionado após o submit
+            'filtroDispositivo'  => $filtroDispositivo  // Mantém o valor selecionado após o submit
+        ];
+
+        return view('sistema/planta/index', $data);
     }
 
-    $data = [
-        'titulo'  => 'Minhas Plantas',
-        // 3. O filtro "where" mágico: procura na coluna FK_USU_ID apenas o ID de quem está logado
-        'plantas' => $this->plantaModel->where('FK_USU_ID', $idUsuarioLogado)->findAll()
-    ];
-
-    return view('sistema/planta/index', $data);
-}
     // Página de Cadastro de Planta
     public function novo()
-{
-    // 1. Pega o ID do usuário logado direto da Session do sistema
-    // (Caso sua session use outra chave, mude o texto de dentro do get)
-    $idUsuarioLogado = session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID');
+    {
+        $idUsuarioLogado = session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID');
 
-    // 2. Se a sessão tiver caído ou o usuário não estiver logado, barra ele e manda pro login
-    if (!$idUsuarioLogado) {
-        return redirect()->to(base_url('login'))->with('error', 'Sessão expirada. Faça login novamente.');
+        if (!$idUsuarioLogado) {
+            return redirect()->to(base_url('login'))->with('erro', 'Sessão expirada. Faça login novamente.');
+        }
+
+        $dispositivoModel = new \App\Models\DispositivoModel();
+        $data['dispositivos'] = $dispositivoModel->where('FK_USU_ID', $idUsuarioLogado)->findAll();
+
+        return view('sistema/planta/cadastro', $data);
     }
 
-    // 3. Instancia apenas o model de Dispositivos (não precisa mais do de Usuários)
-    $dispositivoModel = new \App\Models\DispositivoModel();
-
-    // 4. Busca apenas os dispositivos vinculados ao ID do usuário logado
-    // (Ajuste 'FK_USU_ID' para o nome exato da coluna da tabela de dispositivos se for diferente)
-    $data['dispositivos'] = $dispositivoModel->where('FK_USU_ID', $idUsuarioLogado)->findAll();
-
-    // 5. Passa os dispositivos filtrados para a sua view de cadastro
-    return view('sistema/planta/cadastro', $data);
-}
     // Salvar Planta (Insert ou Update)
     public function salvar()
-{
-    // 1. Pega o ID do usuário logado direto da Session
-    $idUsuarioLogado = session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID');
+    {
+        $idUsuarioLogado = session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID');
 
-    if (!$idUsuarioLogado) {
-        return redirect()->to(base_url('login'))->with('error', 'Sessão expirada. Faça login novamente.');
+        if (!$idUsuarioLogado) {
+            return redirect()->to(base_url('login'))->with('erro', 'Sessão expirada. Faça login novamente.');
+        }
+
+        $dadosPlanta = [
+            'PLANTA_NOME'          => $this->request->getPost('PLANTA_NOME'),
+            'PLANTA_TIPO'          => $this->request->getPost('PLANTA_TIPO'),
+            'PLANTA_CULTURA'       => $this->request->getPost('PLANTA_CULTURA'),
+            'PLANTA_QTD_AGUA'      => $this->request->getPost('PLANTA_QTD_AGUA'),
+            'PLANTA_PERIDIOCIDADE' => $this->request->getPost('PLANTA_PERIDIOCIDADE'),
+            'FK_DIS_ID'            => $this->request->getPost('FK_DIS_ID'),
+            'FK_USU_ID'            => $idUsuarioLogado 
+        ];
+
+        if ($this->plantaModel->save($dadosPlanta)) {
+            return redirect()->to(base_url('planta'))->with('sucesso', 'Planta cadastrada com sucesso!');
+        }
+
+        return redirect()->back()->with('erro', 'Erro ao salvar a planta. Tente novamente.')->withInput();
     }
-
-    // 2. Pega os dados que vieram do formulário HTML
-    $dadosPlanta = [
-        'PLANTA_NOME'          => $this->request->getPost('PLANTA_NOME'),
-        'PLANTA_TIPO'          => $this->request->getPost('PLANTA_TIPO'),
-        'PLANTA_CULTURA'       => $this->request->getPost('PLANTA_CULTURA'),
-        'PLANTA_QTD_AGUA'      => $this->request->getPost('PLANTA_QTD_AGUA'),
-        'PLANTA_PERIDIOCIDADE' => $this->request->getPost('PLANTA_PERIDIOCIDADE'),
-        'FK_DIS_ID'            => $this->request->getPost('FK_DIS_ID'),
-        
-        // 3. A MÁGICA: O ID do usuário vai aqui, direto da sessão, sem passar pela tela!
-        'FK_USU_ID'            => $idUsuarioLogado 
-    ];
-
-    // 4. Salva no banco de dados usando o Model
-    if ($this->plantaModel->save($dadosPlanta)) {
-        return redirect()->to(base_url('planta'))->with('success', 'Planta cadastrada com sucesso!');
-    }
-
-    return redirect()->back()->with('error', 'Erro ao salvar a planta. Tente novamente.')->withInput();
-}
 
     // Formulário de Edição da Planta
     public function editar($id)
@@ -101,15 +121,12 @@ class PlantaController extends BaseController
     }
 
     // Excluindo a planta
-   // Excluindo a planta
-public function excluir($id)
-{
-    if ($this->plantaModel->delete($id)) {
-        // Ajustado de '/plantas' para 'planta'
-        return redirect()->to(base_url('planta'))->with('success', 'Planta removida!');
+    public function excluir($id)
+    {
+        if ($this->plantaModel->delete($id)) {
+            return redirect()->to(base_url('planta'))->with('sucesso', 'Planta removida!');
+        }
+        
+        return redirect()->to(base_url('planta'))->with('erro', 'Erro ao remover planta.');
     }
-    
-    // Ajustado de '/plantas' para 'planta'
-    return redirect()->to(base_url('planta'))->with('error', 'Erro ao remover planta.');
-}
 }

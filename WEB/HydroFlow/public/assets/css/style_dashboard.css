@@ -1081,3 +1081,318 @@ textarea.form-control {
     background-color: #152b52;
 }
 
+.btn-acessibilidade {
+    background-color: transparent; /* Tira o fundo cinza padrão */
+    color: #1e3c72; /* Usa o azul escuro do seu tema */
+    border: 2px solid #1e3c72; /* Cria uma borda da mesma cor */
+    padding: 6px 15px; /* Espaçamento interno pra não ficar espremido */
+    border-radius: 20px; /* Deixa as pontas bem arredondadas (estilo pílula) */
+    font-size: 0.9rem; /* Tamanho combinando com os links do menu */
+    font-weight: 600; /* Deixa a letra um pouco mais forte */
+    cursor: pointer; /* Fica com a mãozinha de clique */
+    transition: all 0.3s ease; /* Faz a mudança de cor ser suave */
+    display: inline-flex; /* Ajuda a alinhar o ícone de meia-lua com o texto */
+    align-items: center;
+    gap: 6px; /* Espaço entre o ícone e o texto */
+}
+
+/* Efeito ao passar o mouse em cima (Modo Normal) */
+.btn-acessibilidade:hover {
+    background-color: #1e3c72; /* O fundo vira azul */
+    color: #ffffff; /* O texto e o ícone ficam brancos */
+}
+
+
+/* ==========================================================================
+   HYDROFLOW - SISTEMA DE ALTO CONTRASTE (CORRIGIDO)
+   ========================================================================== */
+
+/* Fundo preto geral */
+body.alto-contraste {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+/* --- FORÇAR VISIBILIDADE DE TEXTOS (Ganha de seletores com !important antigos) --- */
+body.alto-contraste p,
+body.alto-contraste span,
+body.alto-contraste h1,
+body.alto-contraste h2,
+body.alto-contraste h3,
+body.alto-contraste h4,
+body.alto-contraste h5,
+body.alto-contraste h6,
+body.alto-contraste label,
+body.alto-contraste th,
+body.alto-contraste td,
+body.alto-contraste .card h3,
+body.alto-contraste .card p,
+body.alto-contraste .nav-right,
+body.alto-contraste .photo-info h4,
+body.alto-contraste .photo-info p {
+    color: #ffffff !important;
+    background-color: transparent !important;
+}
+
+/* --- BARRA SUPERIOR / CABEÇALHO --- */
+body.alto-contraste header,
+body.alto-contraste .top-nav,
+body.alto-contraste .top-bar {
+    background-color: #000000 !important;
+    background: #000000 !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Botão de abrir menu (hambúrguer) */
+body.alto-contraste .menu-btn {
+    color: #ffffff !important;
+}
+
+/* --- BOTOES DE ACESSIBILIDADE (+, -, ◐) --- */
+body.alto-contraste .btn-acessibilidade {
+    border-color: #ffffff !important;
+    color: #ffffff !important;
+    background-color: transparent !important;
+}
+body.alto-contraste .btn-acessibilidade:hover {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* --- BARRA LATERAL (SIDEBAR) --- */
+body.alto-contraste .sidebar,
+body.alto-contraste aside { 
+    background-color: #000000 !important;
+    background: #000000 !important; 
+    border-right: 2px solid #ffffff !important;
+}
+
+/* Links do menu lateral */
+body.alto-contraste .sidebar a,
+body.alto-contraste .nav-menu li a {
+    color: #ffffff !important;
+    background-color: transparent !important;
+}
+
+/* Hover no menu lateral em Alto Contraste */
+body.alto-contraste .nav-menu li a:hover, 
+body.alto-contraste .nav-menu li.active a {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-left: 4px solid #ffffff !important;
+}
+body.alto-contraste .nav-menu li a:hover i {
+    color: #000000 !important;
+}
+
+/* Caixa de pesquisa da Sidebar e tabelas */
+body.alto-contraste .sidebar input,
+body.alto-contraste .search-bar input,
+body.alto-contraste .search-table input {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+}
+body.alto-contraste .search-bar input::placeholder,
+body.alto-contraste .search-table input::placeholder {
+    color: #aaaaaa !important;
+}
+
+/* --- CARDS KPI, WIDGETS E PAINÉIS --- */
+body.alto-contraste .card,
+body.alto-contraste .widget,
+body.alto-contraste .adm-card-container,
+body.alto-contraste .profile-card-container { 
+    background-color: #000000 !important;
+    background: #000000 !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Ícones decorativos e marcas d'água dentro dos Cards */
+body.alto-contraste .card i,
+body.alto-contraste .card svg,
+body.alto-contraste .card-icon {
+    color: #ffffff !important;
+    opacity: 1 !important; /* Remove a transparência antiga de 0.15 para ficar totalmente visível */
+}
+
+/* --- FORMULÁRIOS E INPUTS GERAIS --- */
+body.alto-contraste input,
+body.alto-contraste select,
+body.alto-contraste textarea {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+}
+body.alto-contraste input:focus,
+body.alto-contraste select:focus {
+    border-color: #ffff00 !important; /* Borda amarela no foco para destacar */
+}
+
+/* Divisores de seção */
+body.alto-contraste .adm-section-divider,
+body.alto-contraste .profile-section-divider,
+body.alto-contraste .section-title {
+    border-bottom: 2px solid #ffffff !important;
+}
+body.alto-contraste .adm-section-divider span,
+body.alto-contraste .profile-section-divider span {
+    color: #ffffff !important;
+}
+
+/* --- TABELAS --- */
+body.alto-contraste table,
+body.alto-contraste .data-table,
+body.alto-contraste .users-table {
+    background-color: #000000 !important;
+    border: 2px solid #ffffff !important;
+}
+
+body.alto-contraste table thead {
+    background-color: #ffffff !important;
+}
+body.alto-contraste table th {
+    color: #000000 !important; /* Texto do cabeçalho preto já que o fundo da linha vira branco */
+}
+
+body.alto-contraste table tr,
+body.alto-contraste table td,
+body.alto-contraste .users-table td {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid #ffffff !important;
+}
+body.alto-contraste table tbody tr:hover {
+    background-color: #222222 !important; /* Linha levemente cinza ao passar o mouse */
+}
+
+/* --- BADGES E STATUS NA TABELA --- */
+body.alto-contraste .badge-green,
+body.alto-contraste .badge-red,
+body.alto-contraste .badge-yellow,
+body.alto-contraste .badge-orange,
+body.alto-contraste .status-badge {
+    background-color: #000000 !important;
+    font-weight: bold !important;
+    border: 2px solid #ffffff !important;
+}
+
+/* Cores específicas de acessibilidade para alertas */
+body.alto-contraste .badge-red, 
+body.alto-contraste [class*="badge-red"],
+body.alto-contraste [class*="falha"] { border-color: #ff5555 !important; color: #ff5555 !important; }
+
+body.alto-contraste .badge-green, 
+body.alto-contraste [class*="badge-green"],
+body.alto-contraste [class*="irrigado"] { border-color: #55ff55 !important; color: #55ff55 !important; }
+
+body.alto-contraste .badge-yellow, 
+body.alto-contraste .badge-orange,
+body.alto-contraste [class*="badge-yellow"],
+body.alto-contraste [class*="alerta"] { border-color: #ffff00 !important; color: #ffff00 !important; }
+
+/* --- GRÁFICOS --- */
+body.alto-contraste .chart-container,
+body.alto-contraste .grafico-container {
+    background-color: #000000 !important;
+    border: 2px solid #ffffff !important;
+}
+
+/* --- BOTÕES GERAIS DE AÇÃO (Salvar, Cadastrar, etc) --- */
+body.alto-contraste .btn-submit,
+body.alto-contraste .adm-btn-submit,
+body.alto-contraste .profile-btn-submit,
+body.alto-contraste .btn-add-user {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #ffffff !important;
+    font-weight: bold !important;
+}
+body.alto-contraste .btn-submit:hover,
+body.alto-contraste .adm-btn-submit:hover {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+body.alto-contraste .btn-voltar,
+body.alto-contraste .btn-cancelar {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+}
+
+/* Logout */
+body.alto-contraste .logout-btn {
+    color: #ff5555 !important;
+}
+/* Força a área de conteúdo principal a ficar preta */
+body.alto-contraste .main-content {
+    background-color: #000000 !important;
+}
+
+/* Força o container branco de trás do "Painel do Administrador" a ficar preto com borda branca */
+body.alto-contraste .main-content > div,
+body.alto-contraste .widget,
+body.alto-contraste .adm-card-container,
+body.alto-contraste .profile-card-container {
+    background-color: #000000 !important;
+    background: #000000 !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Garante que o ícone de cadeado do "Painel do Administrador" também fique branco */
+body.alto-contraste .main-content i,
+body.alto-contraste .main-content .fa-solid {
+    color: #ffffff !important;
+}
+/* --- COMPLEMENTO PARA OS CARDS DE ATALHOS / ACESSOS --- */
+
+/* Força os 3 cards brancos novos a ficarem pretos com borda branca */
+body.alto-contraste .main-content .card-big,
+body.alto-contraste .main-content [class*="-card"], 
+body.alto-contraste .main-content div[style*="background"],
+body.alto-contraste .main-content .widget {
+    background-color: #000000 !important;
+    background: #000000 !important;
+    border: 2px solid #ffffff !important;
+}
+
+/* Força as descrições longas e títulos internos desses cards a aparecerem em branco */
+body.alto-contraste .main-content div {
+    color: #ffffff !important;
+}
+
+/* Ajusta os botões coloridos de baixo (Gerenciar Acessos, Novo Sensor, Editar Dados) */
+body.alto-contraste .main-content button,
+body.alto-contraste .main-content a.btn,
+body.alto-contraste .main-content [class*="btn-"] {
+    background-color: #000000 !important;
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+}
+
+/* Efeito invertido ao passar o mouse nesses botões no alto contraste */
+body.alto-contraste .main-content button:hover,
+body.alto-contraste .main-content [class*="btn-"]:hover {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+/* --- MATAR O B.O. DO SENSOR ALPHA (FUNDO BRANCO/TEXTO BRANCO) --- */
+
+/* Força absolutamente QUALQUER tag interna da tabela a inverter a cor */
+body.alto-contraste table td *,
+body.alto-contraste table td span,
+body.alto-contraste table td div,
+body.alto-contraste table td button,
+body.alto-contraste .data-table td [class*="badge"],
+body.alto-contraste .data-table td [class*="status"] {
+    background-color: #000000 !important;
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    opacity: 1 !important;
+}

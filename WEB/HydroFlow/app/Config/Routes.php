@@ -13,6 +13,7 @@ $routes->get('/', 'Home::index');
 $routes->get('index', 'Home::index');
 $routes->get('sobre', 'Home::irParaSobre');
 $routes->get('cadastro', 'Home::irParaCadastro');
+$routes->post('cadastro/salvar', 'UsuarioController::salvar');
 
 // ==========================================
 //  SISTEMA DE AUTENTICAÇÃO (LOGIN / LOGOUT)
@@ -91,6 +92,7 @@ $routes->group('admin', ['filter' => 'auth'], function($routes) {
     // ROTA ADICIONADA: Resolve o erro 404 do botão "Perfil" do ADM
     // ============================================================
     $routes->get('perfil', 'AdmController::editarPerfil');
+    $routes->post('perfil/salvar', 'AdmController::salvarPerfil');
 
     // Módulo: Dispositivos
     $routes->group('dispositivos', ['filter' => 'auth'], function($routes) {

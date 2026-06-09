@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página de Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght=0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= base_url('assets/css/login.css') ?>">
+    
+    <!-- CDN do SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -35,7 +38,6 @@
                     <div class="input-group">
                         <label for="password">Senha</label>
                         <input type="password" id="password" placeholder="••••••••" required name="senha">
-                        <a href="recupera_senha.html" class="forgot-password">Esqueceu a senha?</a>
                     </div>
                     
                     <button type="submit" class="btn-main">Entrar</button>
@@ -47,7 +49,29 @@
         </div>
         
     </div>
+
     <script src="https://unpkg.com/imask"></script>
     <script src="<?= base_url('assets/js/valida_login_usu.js') ?>"></script>
+
+    <!-- Script de Validação com SweetAlert2 -->
+    <script>
+        document.getElementById('form').addEventListener('submit', function(event) {
+            // Impede o envio imediato apenas para mostrar um feedback visual de carregamento
+            event.preventDefault(); 
+
+            // Mostra o SweetAlert de "Carregando" enquanto o PHP processa no banco
+            Swal.fire({
+                title: 'Verificando credenciais...',
+                text: 'Aguarde um momento.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Envia o formulário de verdade para o PHP (login/autenticar) fazer a mágica no banco!
+            event.target.submit();
+        });
+    </script>
 </body>
 </html>

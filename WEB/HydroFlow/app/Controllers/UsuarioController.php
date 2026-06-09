@@ -14,7 +14,7 @@ class UsuarioController extends BaseController
         $this->usuarioModel = new UsuarioModel();
     }
 
-    // Listar todos os usuários :o
+    // Listar todos os usuários
     public function index()
     {
         $data = [
@@ -31,24 +31,22 @@ class UsuarioController extends BaseController
         return view('usuarios/cadastro');
     }
 
-    // Salvar (entra em novo ou em edição ?)
+    // Salvar Dados do Formulário
     public function salvar()
-    {
-        // Pegando os bglh do psot
-        $postData = $this->request->getPost();
+{
+    $postData = $this->request->getPost();
 
-        // Tenta salvar (o save() escolhe entre o Insert ou Update baseado no ID)
-        if ($this->usuarioModel->save($postData)) {
-            return redirect()->to('/usuarios')->with('success', 'Usuário salvo com sucesso!');
-        } else {
-            // Se a validação da Model falhar, volta para o formulário com os erros
-            return redirect()->back()
-                             ->withInput()
-                             ->with('errors', $this->usuarioModel->errors());
-        }
+    if ($this->usuarioModel->save($postData)) {
+        // Redireciona o novo usuário direto para a tela de login com uma mensagem!
+        return redirect()->to('/login')->with('sucesso', 'Cadastro realizado com sucesso! Faça seu login.');
+    } else {
+        return redirect()->back()
+                         ->withInput()
+                         ->with('errors', $this->usuarioModel->errors());
     }
+}
 
-    // Formulário de Edição com base nos dados que já tinha do mano
+    // Formulário de Edição
     public function editar($id)
     {
         $usuario = $this->usuarioModel->find($id);
@@ -60,11 +58,11 @@ class UsuarioController extends BaseController
         return view('usuarios/perfil', ['usuario' => $usuario]);
     }
 
-    // Excluindo o mano :o
+    // Excluindo o mano
     public function excluir($id)
     {
         if ($this->usuarioModel->delete($id)) {
-            return redirect()->to('/usuarios')->with('success', 'Usuário removido!');
+            return redirect()->to('/usuarios')->with('sucesso', 'Usuário removido!');
         }
         
         return redirect()->to('/usuarios')->with('error', 'Erro ao remover usuário.');

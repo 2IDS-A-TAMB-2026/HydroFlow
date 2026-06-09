@@ -47,12 +47,11 @@
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="PLANTA_QTD_AGUA">Quantidade de Água Necessária (ml)</label>
+                    <label for="PLANTA_QTD_AGUA">Quantidade de Água Necessária (L)</label>
                     <div style="display: flex; gap: 10px;">
                         <input type="number" id="PLANTA_QTD_AGUA" name="PLANTA_QTD_AGUA" class="form-control" step="0.1" placeholder="Ex: 500" required>
-                        <select class="form-control" style="width: 120px;" >
-                            <option value="ml_dia" >mL</option>
-                            <option value="ml_dia" >L</option>
+                        <select class="form-control" style="width: 120px;" disabled>
+                            <option selected>L</option>
                         </select>
                     </div>
                 </div>
@@ -71,12 +70,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="PLANTA_PERIDIOCIDADE">Periodicidade (Tempo entre irrigações)</label>
+                    <label for="PLANTA_PERIDIOCIDADE">Periodicidade entre irrigações (tempo em dias)</label>
                     <div style="display: flex; gap: 10px;">
                         <input type="number" id="PLANTA_PERIDIOCIDADE" name="PLANTA_PERIDIOCIDADE" class="form-control" min="1" placeholder="Ex: 2" required>
-                        <select class="form-control" style="width: 120px;">
-                            <option value="dias">Dias</option>
-                            <option value="horas">Horas</option>
+                        <select class="form-control" style="width: 120px;" disabled>
+                            <option selected>Dias</option>
                         </select>
                     </div>
                 </div>

@@ -23,13 +23,15 @@ form.addEventListener("submit", function(e){
     e.preventDefault(); 
 
     let isValid = true;
+    let temCampoVazio = false; // Variável auxiliar para não inundar a tela de alertas
     
     // Pega todos os inputs
     let inputs = form.querySelectorAll("input");
 
     // 1. Vê se tem algum vazio nesse bglh
     inputs.forEach(function(input) {
-        // Pega o elemento <span> que está exatamente abaixo do input atual no HTML
+        // Ignora o campo de confirmar senha no loop de vazios se quiser, 
+        // mas vamos validar todos os que forem obrigatórios
         let spanErro = input.nextElementSibling; 
         
         // Verifica se está vazio
@@ -37,14 +39,8 @@ form.addEventListener("submit", function(e){
             input.classList.add("erro-borda"); // Pinta a borda de vermelho
             if (spanErro && spanErro.tagName === "SPAN") {
                 spanErro.innerText = "Preencha este campo para poder enviar";
-                
             }
-            Swal.fire({
-                    title: "Erro de formulário...",
-                    text: "Preencha todos os campos antes de confirmar o cadastro.",
-                    icon: "error",
-                    confirmButtonColor: "#d33"
-                    });
+            temCampoVazio = true;
             isValid = false; // Bloqueia o envio
         } else {
             input.classList.remove("erro-borda"); // Remove a borda vermelha se estiver preenchido
@@ -54,43 +50,54 @@ form.addEventListener("submit", function(e){
         }
     });
 
+    // Se teve algum campo vazio, mostra APENAS UM alerta na tela
+    if (temCampoVazio) {
+        Swal.fire({
+            title: "Erro de formulário...",
+            text: "Preencha todos os campos antes de confirmar o cadastro.",
+            icon: "error",
+            confirmButtonColor: "#d33"
+        });
+        return; // Para a execução aqui
+    }
+
     // 2. VERIFICA SE AS SENHAS BATEM
-    // Ajustado para aplicar o erro no elemento correto (inputConfirmarSenha)
     if (senha !== "" && confirmarSenha !== "" && senha !== confirmarSenha) {
         inputConfirmarSenha.classList.add("erro-borda");
         if (inputConfirmarSenha.nextElementSibling && inputConfirmarSenha.nextElementSibling.tagName === "SPAN") {
             inputConfirmarSenha.nextElementSibling.innerText = "Ambas as senhas devem ser iguais!";
         }
-        isValid = false;
-    }
-
-    // 3. SE TUDO ESTIVER CERTO, ENVIA!
-    if (isValid) {
-        // SweetAlert de Sucesso 🎉
+        
         Swal.fire({
-            title: "Show!",
-            text: "Cadastro validado com sucesso.",
-            icon: "success",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "Legal!"
+            title: "Erro nas senhas",
+            text: "A senha e a confirmação de senha não são iguais.",
+            icon: "error",
+            confirmButtonColor: "#d33"
         });
         
+        isValid = false;
+        return;
+    }
+
+    // 3. SE TUDO ESTIVER CERTO, DISPARA PRO PHP!
+    if (isValid) {
+        // Limpa as máscaras para enviar os dados limpos se necessário (opcional, o PHP recebe do jeito que for enviado)
         let cpfLimpo = mascaraCpf.unmaskedValue; 
         let cepLimpo = mascaraCep.unmaskedValue;
         
-        console.log(nome);
-        console.log(cpfLimpo);
-        console.log(email);
-        console.log(cepLimpo);
-        console.log(rua);
-        console.log(numero);
-        console.log(bairro);
-        console.log(cidade);
-        console.log(uf);
-        
-        // Se precisar limpar o formulário após o sucesso:
-        // form.reset();
-        // [Opcional] SweetAlert de Erro se o usuário tentar enviar com campos inválidos
+        // SweetAlert de Sucesso 🎉
+        Swal.fire({
+            title: "Show!",
+            text: "Cadastro validado com sucesso. Enviando dados...",
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Legal!"
+        }).then((result) => {
+            // CORREÇÃO CRÍTICA: Quando o usuário clicar em "Legal!", o formulário é enviado de verdade para o CodeIgniter!
+            if (result.isConfirmed) {
+                form.submit(); 
+            }
+        });
     }
 });
 
