@@ -21,15 +21,46 @@ class SensorController extends BaseController
      * Lista todos os sensores e seus respectivos dispositivos
      */
     public function index()
-    {
-        // Usando o método join que você criou na Model
-        $data = [
-            'titulo'   => 'Gerenciar Sensores',
-            'sensores' => $this->sensorModel->getSensoresComDispositivo()
-        ];
+{
+    $sensores = $this->sensorModel->getSensoresComDispositivo();
 
-        return view('sistema/sensor/index', $data);
+    // Inicializa os contadores para os gráficos
+    $statusAtivo = 0;
+    $statusInativo = 0;
+    $tipoSolo = 0;
+    $tipoAr = 0;
+
+    // Processa os dados da própria listagem para economizar consultas ao banco
+    foreach ($sensores as $sensor) {
+        // Contagem de Status
+        if (strtoupper($sensor['SEN_STATUS'] ?? '') === 'ATIVO') {
+            $statusAtivo++;
+        } else {
+            $statusInativo++;
+        }
+
+        // Contagem de Tipo/Grandeza
+        if (strpos(strtolower($sensor['SEN_TIPO']), 'solo') !== false) {
+            $tipoSolo++;
+        } else {
+            $tipoAr++;
+        }
     }
+
+    $data = [
+        'titulo'   => 'Gerenciar Sensores',
+        'sensores' => $sensores,
+        // Injeta os dados prontos para o JavaScript ler na View
+        'grafico_status' => [
+            'valores' => [$statusAtivo, $statusInativo]
+        ],
+        'grafico_tipos' => [
+            'valores' => [$tipoSolo, $tipoAr]
+        ]
+    ];
+
+    return view('sistema/sensor/index', $data);
+}
 
     /**
      * Exibe o formulário de cadastro de sensor (Layout sequencial/duplo)

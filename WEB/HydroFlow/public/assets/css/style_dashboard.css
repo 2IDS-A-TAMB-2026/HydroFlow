@@ -15,8 +15,9 @@ body {
     min-height: 100vh;
 }
 
-/* --- SIDEBAR --- */
-/* --- SIDEBAR --- */
+/* ==========================================================================
+   --- SIDEBAR PREMIUM (ATUALIZADA) ---
+   ========================================================================== */
 .sidebar {
     width: 250px;
     background: linear-gradient(to bottom, #1e3c72, #2a5298); /* Fundo azul escuro */
@@ -31,16 +32,7 @@ body {
     overflow-y: auto; /* Se a tela do PC for muito baixa, cria rolagem só pro menu */
 }
 
-.nav-menu {
-    list-style: none;
-    
-    /* --- PARA CENTRALIZAR NO MEIO DO AZUL --- */
-    /* Se quiser empurrar os botões pro meio da tela, descomente as duas linhas abaixo: */
-    /* margin-top: auto; */
-    /* margin-bottom: auto; */
-}
-
-/* Opcional: Esconder a barra de rolagem do menu caso ela apareça, mas mantendo a função */
+/* Esconder a barra de rolagem do menu caso ela apareça, mas mantendo a função */
 .sidebar::-webkit-scrollbar {
     width: 0px; 
 }
@@ -52,35 +44,67 @@ body {
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.search-bar {
-    padding: 15px;
-    position: relative;
+/* --- NOVO: Card de Perfil do Usuário --- */
+.sidebar-user-card {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.05);
 }
 
-.search-bar input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 4px;
-    border: none;
-    background-color: rgba(255,255,255,0.2);
-    color: white;
+.sidebar-user-avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-.search-bar input::placeholder { color: #ccc; }
-.search-bar i {
-    position: absolute;
-    right: 25px;
-    top: 25px;
-    color: white;
+.sidebar-user-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
+.sidebar-user-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.sidebar-user-role {
+    font-size: 0.75rem;
+    color: #b0bec5;
+}
+
+/* --- NOVO: Separadores de Menu (Títulos de Seção) --- */
+.menu-section-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 18px 20px 6px 20px;
+    font-weight: 700;
+}
+
+/* --- LINKS DO MENU --- */
 .nav-menu {
     list-style: none;
 }
 
 .nav-menu li a {
     display: block;
-    padding: 15px 20px;
+    padding: 12px 20px; /* Reduzido levemente de 15px para equilibrar o espaçamento com os títulos */
     color: #cfd8dc;
     text-decoration: none;
     font-size: 0.95rem;
@@ -98,6 +122,65 @@ body {
     border-left: 4px solid #1e3c72;
 }
 
+/* --- NOVO: Widget de Rodapé (Status IoT) --- */
+.sidebar-footer-widget {
+    margin-top: auto; /* Força o widget a grudar no final da sidebar */
+    padding: 15px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.status-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #2ecc71; /* Verde Conectado */
+    border-radius: 50%;
+    box-shadow: 0 0 8px #2ecc71;
+    animation: pulse-green 2s infinite;
+}
+
+.status-text {
+    font-size: 0.78rem;
+    color: #e0e0e0;
+    font-weight: 500;
+}
+
+/* Animação do Led Verde Piscando */
+@keyframes pulse-green {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
+
+/* --- MANTIDO OUTROS COMPONENTES DA SIDEBAR CASO PRECISE --- */
+.search-bar {
+    padding: 15px;
+    position: relative;
+}
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+}
+.search-bar input::placeholder { color: #ccc; }
+.search-bar i {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    color: white;
+}
 /* --- CONTEÚDO PRINCIPAL --- */
 .main-content {
     flex: 1;
@@ -232,6 +315,10 @@ body {
 
 /* ==================== COMPONENTE: TABELA ==================== */
 /* Força o widget da tabela a se comportar como um contêiner Flexbox */
+/* ==========================================================================
+   --- COMPONENTE: GRID INFERIOR (TABELA) ---
+   ========================================================================== */
+/* Força o widget da tabela a se comportar como um contêiner Flexbox */
 .table-widget {
     display: flex;
     flex-direction: column;
@@ -243,7 +330,7 @@ body {
     border-collapse: collapse; 
     text-align: center; 
     margin-top: 10px;
-    flex: 1; /* O segredo está aqui! Força a tabela a esticar verticalmente */
+    flex: 1; /* Força a tabela a esticar verticalmente acompanhando o gráfico */
 }
 
 .table-widget th { 
@@ -261,15 +348,79 @@ body {
     padding: 12px 0; 
     border-bottom: 1px solid #eee; 
     font-size: 0.9rem; 
-    vertical-align: middle; /* Garante que os textos continuem centralizados verticalmente */
+    vertical-align: middle; /* Mantém os textos centralizados verticalmente */
 }
 
-/* Badges da Tabela */
-.badge-green { background-color: #00a65a; color: white; padding: 3px 8px; border-radius: 1px; font-size: 0.7rem; font-weight: bold; }
-.badge-red { background-color: #ce2222; color: white; padding: 3px 8px; border-radius: 1px; font-size: 0.7rem; font-weight: bold; }
-/* Adicionado caso precise do Alerta */
-.badge-yellow { background-color: #f39c12; color: white; padding: 3px 8px; border-radius: 1px; font-size: 0.7rem; font-weight: bold; }
+/* ==========================================================================
+   --- BADGES DE STATUS PREMIUM COM ÍCONES (SEM CORRER O PHP) ---
+   ========================================================================== */
+.table-widget table tbody tr td .badge-green,
+.table-widget table tbody tr td .badge-red,
+.table-widget table tbody tr td .badge-yellow {
+    display: inline-flex;       /* Mudado para flex para alinhar o ícone perfeitamente com o texto */
+    align-items: center;
+    justify-content: center;
+    gap: 6px;                   /* Distância perfeita entre o ícone e a palavra */
+    padding: 5px 14px;          /* Ajustado para não colar nas linhas */
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    border-radius: 30px;        /* Estilo pílula moderno */
+    text-align: center;
+    min-width: 115px;           /* Largura ideal para acomodar o ícone + texto sem quebrar linha */
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    cursor: default;
+}
 
+/* --- EFECTO HOVER SUAVE NA LINHA --- */
+.table-widget table tbody tr:hover td .badge-green,
+.table-widget table tbody tr:hover td .badge-red,
+.table-widget table tbody tr:hover td .badge-yellow {
+    transform: scale(1.03);
+}
+
+/* --- ESTRUTURA BASE PARA OS ÍCONES (FONT AWESOME VIA CSS) --- */
+.table-widget table tbody tr td .badge-green::before,
+.table-widget table tbody tr td .badge-red::before,
+.table-widget table tbody tr td .badge-yellow::before {
+    font-family: "Font Awesome 6 Free"; /* Ativa os ícones do Font Awesome */
+    font-weight: 900;                   /* Garante que o ícone carregue na versão sólida */
+    font-size: 0.78rem;                 /* Tamanho ideal do ícone em relação ao texto */
+}
+
+/* --- ESTILOS E ÍCONES INDIVIDUAIS --- */
+
+/* IRRIGADO (Ícone: Check / correto) */
+.table-widget table tbody tr td .badge-green { 
+    background-color: #e6f7ed; 
+    color: #1e7e34; 
+    border: 1px solid #c3e6cb;
+}
+.table-widget table tbody tr td .badge-green::before {
+    content: "\f00c"; /* Código do ícone 'fa-check' */
+}
+
+/* FALHA (Ícone: X / erro) */
+.table-widget table tbody tr td .badge-red { 
+    background-color: #fde8e9; 
+    color: #bd2130; 
+    border: 1px solid #f5c6cb;
+}
+.table-widget table tbody tr td .badge-red::before {
+    content: "\f00d"; /* Código do ícone 'fa-xmark' */
+}
+
+/* ALERTA (Ícone: Exclamação / triângulo) */
+.table-widget table tbody tr td .badge-yellow { 
+    background-color: #fff3cd; 
+    color: #856404; /* Contraste perfeito que arrumamos */
+    border: 1px solid #ffeeba;
+}
+.table-widget table tbody tr td .badge-yellow::before {
+    content: "\f071"; /* Código do ícone 'fa-triangle-exclamation' */
+    font-size: 0.70rem; /* Ajuste leve porque esse ícone é naturalmente maior */
+}
 /* ==================== COMPONENTE: GRÁFICO ==================== */
 .chart-title { 
     text-align: center; 
@@ -1173,6 +1324,25 @@ body.alto-contraste .sidebar a,
 body.alto-contraste .nav-menu li a {
     color: #ffffff !important;
     background-color: transparent !important;
+}
+
+.modern-table th, 
+.modern-table td {
+    padding: 12px 15px;
+    vertical-align: middle; /* Impede os textos de subirem ou desalinharem */
+    text-align: left;       /* Mantém o padrão alinhado à esquerda como nos títulos */
+}
+
+/* Garante que o span em formato de pílula se comporte como bloco flexível alinhado */
+.modern-table td span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 12px;
 }
 
 /* Hover no menu lateral em Alto Contraste */

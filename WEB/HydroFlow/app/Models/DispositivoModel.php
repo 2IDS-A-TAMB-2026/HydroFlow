@@ -55,5 +55,15 @@ public function getDispositivoComDono($id = null)
     // Isso permite que o Controller coloque os filtros de busca antes de dar o findAll().
     return $this;
 }
-
+    public function getContagemStatus($filtroDono = 'todos')
+{
+    $builder = $this->builder();
+    $builder->select('DIS_STATUS, COUNT(*) as total');
+    
+    if ($filtroDono !== 'todos') {
+        $builder->where('FK_USU_ID', $filtroDono);
+    }
+    
+    return $builder->groupBy('DIS_STATUS')->get()->getResultArray();
+}
 }

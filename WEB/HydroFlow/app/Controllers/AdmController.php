@@ -85,34 +85,112 @@ class AdmController extends BaseController
     public function gerenciarUsuarios($id = null)
     {
         $usuarioModel = new UsuarioModel();
+        $session = session();
+        $dados = []; // Array que vai centralizar tudo para as views
 
-        $buscaNome  = $this->request->getGet('busca_nome');
-        $buscaUf    = $this->request->getGet('busca_uf');
+        // =====================================================================
+        // MODO 1: EDIÇÃO DE UM USUÁRIO ESPECÍFICO (Se houver ID na URL)
+        // =====================================================================
+        if ($id !== null) {
+            // Se o formulário enviou um POST, processa a atualização
+            if ($this->request->getMethod() === 'post') {
+                $dadosAtualizacao = [
+                    'USU_NOME'   => $this->request->getPost('NOME_USUARIO'),
+                    'USU_EMAIL'  => $this->request->getPost('EMAIL_USUARIO'),
+                    'USU_STATUS' => $this->request->getPost('STATUS_USUARIO'),
+                ];
 
-        $query = $usuarioModel;
+                if ($usuarioModel->update($id, $dadosAtualizacao)) {
+                    $session->setFlashdata('sucesso', 'Usuário atualizado com sucesso!');
+                } else {
+                    $session->setFlashdata('erro', 'Não foi possível atualizar o usuário.');
+                }
+                return redirect()->to(base_url('adm/usuarios'));
+            }
+
+            // Busca o usuário para carregar no formulário
+            $dados['usuario'] = $usuarioModel->find($id);
+            if (!$dados['usuario']) {
+                $session->setFlashdata('erro', 'Usuário não encontrado.');
+                return redirect()->to(base_url('adm/usuarios'));
+            }
+
+            // Retorno das Views usando o SEU caminho exato no modo Edição
+            return view('sistema/layout/dashboard/adm/header', $dados)
+                 . view('sistema/adm/usuarios', $dados);
+        }
+
+        // =====================================================================
+        // MODO 2: LISTAGEM GERAL & DASHBOARDS (Se $id for nulo)
+        // =====================================================================
+        $dados['usuario'] = null; // Indica para a view que é a tela de listagem
+
+        // Captura os filtros da busca via GET
+        $buscaNome = $this->request->getGet('busca_nome');
+        $buscaUf   = $this->request->getGet('busca_uf');
+
+        // Guarda os termos para manter os inputs preenchidos na tela
+        $dados['busca_nome'] = $buscaNome;
+        $dados['busca_uf']   = $buscaUf;
+
+        // Monta a query principal da tabela
+        $queryUsuarios = $usuarioModel;
 
         if (!empty($buscaNome)) {
-            $query = $query->groupStart()
-                           ->like('USU_NOME', $buscaNome)
-                           ->orLike('USU_EMAIL', $buscaNome)
-                           ->groupEnd();
+            $queryUsuarios = $queryUsuarios->groupStart()
+                                           ->like('USU_NOME', $buscaNome)
+                                           ->orLike('USU_EMAIL', $buscaNome)
+                                           ->groupEnd();
         }
 
         if (!empty($buscaUf)) {
-            $query = $query->where('USU_UF', $buscaUf);
+            $queryUsuarios = $queryUsuarios->where('USU_UF', $buscaUf);
         }
 
-        $dados['usuarios'] = $query->findAll();
+        // Executa a busca dos usuários filtrados
+        $dados['usuarios'] = $queryUsuarios->findAll();
 
+        // Lista de UFs únicas para alimentar o <select> do filtro
         $dados['ufs_disponiveis'] = $usuarioModel->select('USU_UF')
-                                                 ->groupBy('USU_UF')
-                                                 ->orderBy('USU_UF', 'ASC')
-                                                 ->findAll();
+                                                ->where('USU_UF IS NOT NULL')
+                                                ->where('USU_UF !=', '')
+                                                ->groupBy('USU_UF')
+                                                ->orderBy('USU_UF', 'ASC')
+                                                ->findAll();
 
-        $dados['busca_nome']  = $buscaNome;
-        $dados['busca_uf']    = $buscaUf;
-        $dados['usuario']     = null;
+        // --- DASHBOARD 1: Status das Contas (Gráfico de Rosca) ---
+        $totalAtivos   = $usuarioModel->where('USU_STATUS', 'ATIVO')->countAllResults();
+        $totalInativos = $usuarioModel->where('USU_STATUS', 'INATIVO')->countAllResults();
+        $dados['grafico_status'] = [
+            'valores' => [$totalAtivos, $totalInativos]
+        ];
 
+        // --- DASHBOARD 2: Todos os Estados com usuários (Mapa SVG) ---
+        // --- DASHBOARD 2: Todos os Estados com usuários (Mapa SVG) ---
+        $ufQuery = $usuarioModel->select('USU_UF, COUNT(*) as total')
+                                ->where('USU_UF IS NOT NULL')
+                                ->where('USU_UF !=', '')
+                                ->groupBy('USU_UF')
+                                ->findAll();
+
+        // 1. Inicializa TODOS os 27 estados do Brasil com ZERO por padrão
+        $mapaUfDados = [
+            'AC' => 0, 'AL' => 0, 'AP' => 0, 'AM' => 0, 'BA' => 0, 'CE' => 0, 'DF' => 0, 'ES' => 0,
+            'GO' => 0, 'MA' => 0, 'MT' => 0, 'MS' => 0, 'MG' => 0, 'PA' => 0, 'PB' => 0, 'PR' => 0,
+            'PE' => 0, 'PI' => 0, 'RJ' => 0, 'RN' => 0, 'RS' => 0, 'RO' => 0, 'RR' => 0, 'SC' => 0,
+            'SP' => 0, 'SE' => 0, 'TO' => 0
+        ];
+
+        // 2. Preenche apenas os estados que realmente possuem usuários cadastrados
+        foreach ($ufQuery as $row) {
+            $ufSigla = strtoupper(trim($row['USU_UF']));
+            if (array_key_exists($ufSigla, $mapaUfDados)) {
+                $mapaUfDados[$ufSigla] = (int) $row['total'];
+            }
+        }
+        $dados['mapa_uf_dados'] = $mapaUfDados;
+
+        // Retorno das Views usando o SEU caminho exato no modo Listagem
         return view('sistema/layout/dashboard/adm/header', $dados)
              . view('sistema/adm/usuarios', $dados);
     }

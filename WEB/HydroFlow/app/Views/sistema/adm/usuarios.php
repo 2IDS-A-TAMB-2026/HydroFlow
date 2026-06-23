@@ -26,6 +26,10 @@
 <?php endif; ?>
 
 <style>
+
+
+/* As classes que o seu script injeta para os estados ativos vão sobrescrever isso abaixo */
+
     .unified-card {
         background: #ffffff;
         border-radius: 8px;
@@ -43,13 +47,71 @@
         width: 100%;
         border-collapse: collapse;
     }
+    .data-table thead tr {
+        border-bottom: 2px solid #edf2f7;
+        text-align: left;
+    }
+    .data-table th {
+        padding: 12px;
+        color: #4a5568;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
     .data-table tbody tr {
         background-color: #ffffff !important;
         transition: background-color 0.2s ease;
+        border-bottom: 1px solid #edf2f7;
     }
     .data-table tbody tr:hover {
         background-color: #f8f9fa !important;
     }
+    .data-table td {
+        padding: 12px;
+        font-size: 0.95rem;
+        vertical-align: middle;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .badge-green { background: #e6fffa; color: #047857; border: 1px solid #b1f5e3; }
+    .badge-red { background: #fef2f2; color: #b91c1c; border: 1px solid #fee2e2; }
+    
+    .user-avatar {
+        width: 38px;
+        height: 38px;
+        background: #ebf8ff;
+        color: #2b6cb0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.9rem;
+        border: 1px solid #bee3f8;
+    }
+    .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 32px;
+        width: 32px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        transition: all 0.2s;
+    }
+    .btn-edit { color: #dd6b20; }
+    .btn-edit:hover { background: #fffaf0; border-color: #f6ad55; }
+    .btn-delete { color: #e53e3e; }
+    .btn-delete:hover { background: #fff5f5; border-color: #feb2b2; }
 </style>
 
 <main style="padding: 20px; font-family: Arial, sans-serif;">
@@ -61,18 +123,6 @@
                 <p style="color: #666; margin: 5px 0 0 0;">Editando o cadastro de: <b><?= esc($usuario['USU_NOME'] ?? $usuario['NOME_USUARIO'] ?? '') ?></b></p>
             </div>
         </div>
-
-        <?php if (session()->getFlashdata('sucesso') || session()->getFlashdata('success')): ?>
-            <div style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; max-width: 600px;">
-                <i class="fa-solid fa-circle-check"></i> <?= session()->getFlashdata('sucesso') ?? session()->getFlashdata('success') ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (session()->getFlashdata('erro') || session()->getFlashdata('error')): ?>
-            <div style="background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; max-width: 600px;">
-                <i class="fa-solid fa-circle-xmark"></i> <?= session()->getFlashdata('erro') ?? session()->getFlashdata('error') ?>
-            </div>
-        <?php endif; ?>
 
         <div class="unified-card" style="max-width: 600px;">
             <form id="formGerenciarUsuario" action="<?= base_url('admin/usuarios/' . ($usuario['USU_ID'] ?? $usuario['ID_USUARIO'] ?? '')) ?>" method="POST">
@@ -110,7 +160,7 @@
                 <a href="#" 
                    class="status-badge badge-red btnExcluirUsuario"
                    style="display: inline-flex; text-decoration: none; align-items: center; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;"
-                   data-url="<?= base_url('admin/excluirUsuario/' . ($usuario['USU_ID'] ?? $usuario['ID_USUARIO'] ?? '')) ?>"
+                   data-url="<?= base_url('adm/excluirUsuario/' . ($usuario['USU_ID'] ?? $usuario['ID_USUARIO'] ?? '')) ?>"
                    data-nome="<?= esc($usuario['USU_NOME'] ?? $usuario['NOME_USUARIO'] ?? '') ?>">
                      Excluir Conta Permanentemente
                 </a>
@@ -129,17 +179,29 @@
             </div>
         </div>
 
-        <?php if (session()->getFlashdata('sucesso') || session()->getFlashdata('success')): ?>
-            <div style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;">
-                <i class="fa-solid fa-circle-check"></i> <?= session()->getFlashdata('sucesso') ?? session()->getFlashdata('success') ?>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-bottom: 20px;">
+            
+            <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 20px; border: 1px solid #eef2f5; display: flex; align-items: center; min-height: 280px; box-sizing: border-box;">
+                <div style="width: 45%; height: 100%; max-height: 200px;">
+                    <canvas id="chartStatusUsuarios"></canvas>
+                </div>
+                <div style="width: 55%; padding-left: 20px; box-sizing: border-box;">
+                    <h4 style="margin: 0 0 12px 0; color: #4a5568; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Status das Contas</h4>
+                    <div style="font-size: 0.9rem; color: #666;">
+                        <p style="margin: 6px 0;"><span style="display:inline-block; width:10px; height:10px; background:#00a65a; border-radius:50%; margin-right:6px;"></span> Ativos: <strong><?= $grafico_status['valores'][0] ?? 0 ?></strong></p>
+                        <p style="margin: 6px 0;"><span style="display:inline-block; width:10px; height:10px; background:#d33; border-radius:50%; margin-right:6px;"></span> Inativos: <strong><?= $grafico_status['valores'][1] ?? 0 ?></strong></p>
+                    </div>
+                </div>
             </div>
-        <?php endif; ?>
 
-        <?php if (session()->getFlashdata('erro') || session()->getFlashdata('error')): ?>
-            <div style="background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;">
-                <i class="fa-solid fa-circle-xmark"></i> <?= session()->getFlashdata('erro') ?? session()->getFlashdata('error') ?>
+            <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 20px; border: 1px solid #eef2f5; display: flex; flex-direction: column; min-height: 280px; justify-content: flex-start; box-sizing: border-box;">
+                <h4 style="margin: 0 0 5px 0; color: #4a5568; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Distribuição Geográfica</h4>
+                
+                <div style="width: 100%; height: 100%; min-height: 220px;">
+                    <div id="mapa-brasil-container" style="width: 100%; height: 100%; min-height: 220px; margin: 0 auto;"></div>
+                </div>
             </div>
-        <?php endif; ?>
+        </div>
 
         <div class="unified-card">
             
@@ -153,7 +215,7 @@
                     <div style="flex: 3; min-width: 250px; display: flex; flex-direction: column; gap: 5px;">
                         <label style="font-size: 0.9rem; font-weight: bold; color: #444;">Buscar Usuário</label>
                         <div style="position: relative; width: 100%;">
-                            <input type="text" name="busca_nome" value="<?= esc($busca_nome ?? '') ?>" placeholder="Digite o nome ou e-mail..." style="width: 100%; padding: 10px 40px 10px 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; height: 42px;">
+                            <input type="text" name="busca_nome" value="<?= esc($busca_nome ?? '') ?>" placeholder="Digite o nome ou e-mail..." style="width: 100%; padding: 10px; padding-right: 40px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; height: 42px;">
                             <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #888;"></i>
                         </div>
                     </div>
@@ -196,7 +258,7 @@
                             <th>Cidade</th>
                             <th>UF</th>
                             <th>Status</th>
-                            <th style="text-align: center;">Ações</th>
+                            <th style="text-align: center; width: 120px;">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -238,7 +300,7 @@
 
                                             <a href="#"
                                                class="btn-icon btn-delete btnExcluirUsuario"
-                                               data-url="<?= base_url('admin/excluirUsuario/' . ($user['USU_ID'] ?? '')) ?>"
+                                               data-url="<?= base_url('adm/excluirUsuario/' . ($user['USU_ID'] ?? '')) ?>"
                                                data-nome="<?= esc($user['USU_NOME'] ?? '') ?>"
                                                title="Excluir" style="text-decoration: none;">
                                                 <i class="fa-solid fa-trash"></i>
@@ -266,11 +328,16 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://code.highcharts.com/maps/highmaps.js"></script>
+<script src="https://code.highcharts.com/mapdata/countries/br/br-all.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    
+    // --- POPUP DO SWEETALERT PARA EXCLUSÃO DE USUÁRIO ---
     const botoesExcluir = document.querySelectorAll('.btnExcluirUsuario');
-
     botoesExcluir.forEach(function(botao) {
         botao.addEventListener('click', function(e) {
             e.preventDefault();
@@ -296,5 +363,137 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+
+    // --- CARREGAMENTO DOS GRÁFICOS (APENAS NA VIEW DE LISTAGEM) ---
+    <?php if (empty($usuario)): ?>
+    
+    // 1. Gráfico de Rosca (Chart.js)
+    const ctxStatus = document.getElementById('chartStatusUsuarios').getContext('2d');
+    new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: ['Ativos', 'Inativos'],
+            datasets: [{
+                data: <?= json_encode($grafico_status['valores'] ?? [0,0]) ?>,
+                backgroundColor: ['#00a65a', '#d33'],
+                borderWidth: 0,
+                spacing: 3,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '72%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // 2. Integração Profissional do Mapa com Highmaps
+    const dadosUsuariosUf = <?= json_encode($mapa_uf_dados ?? []) ?>;
+    
+    // Formatando os dados de entrada do PHP ['SP' => 10] para o padrão Highmaps ['br-sp' => 10]
+    const dadosFormatadosParaMapas = Object.keys(dadosUsuariosUf).map(sigla => {
+        return {
+            'hc-key': 'br-' + sigla.toLowerCase(),
+            'value': parseInt(dadosUsuariosUf[sigla]) || 0
+        };
+    });
+
+    // 🔥 CORREÇÃO AQUI: Descobre o maior valor real, mas garante que o teto seja pelo menos 1
+    const maiorValorData = Math.max(1, ...dadosFormatadosParaMapas.map(d => d.value));
+
+    Highcharts.mapChart('mapa-brasil-container', {
+        chart: {
+            map: 'countries/br/br-all',
+            backgroundColor: 'transparent',
+            spacingTop: 0,
+            spacingBottom: 0,
+            spacingLeft: 0,
+            spacingRight: 0
+        },
+        title: {
+            text: null
+        },
+        credits: {
+            enabled: false
+        },
+        mapNavigation: {
+            enabled: false 
+        },
+        colorAxis: {
+            min: 0,
+            minColor: '#e2e8f0', // Um cinza/azul bem elegante para estados com 0 usuários
+            maxColor: '#1e3a8a', // Um azul escuro fechado (Navy), mas sem parecer preto/vazio
+            stops: [
+                [0, '#e2e8f0'],   // 0 usuários
+                [0.1, '#93c5fd'], // Poucos usuários (azul claro com boa visibilidade)
+                [0.5, '#3b82f6'], // Média de usuários (azul padrão HydroFlow)
+                [1, '#4567c5']    // Pico de usuários (azul escuro destacado)
+            ]
+        },
+        legend: {
+            enabled: false 
+        },
+        tooltip: {
+            backgroundColor: 'rgba(30, 60, 114, 0.95)',
+            borderColor: '#4299e1',
+            borderRadius: 6,
+            style: {
+                color: '#ffffff',
+                fontFamily: 'Arial, sans-serif',
+                fontSize: '12px',
+                fontWeight: 'bold'
+            },
+            headerFormat: '',
+            pointFormat: '● {point.name}: {point.value} {window.pluralUser}' 
+        },
+        plotOptions: {
+            map: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.properties.sigla}', // Ou o formato que você usou para a sigla
+                    style: {
+                        fontSize: '10px',
+                        fontWeight: 'bold',
+                        color: '#ffffff', // Força o texto a ser branco para contrastar com os azuis
+                        textOutline: '1px solid #334155' // Cria um contorno cinza escuro para ler bem mesmo nos estados claros!
+                    }
+                }
+            }
+        },
+        series: [{
+            data: dadosFormatadosParaMapas,
+            name: 'Usuários',
+            cursor: 'pointer',
+            borderWidth: 1,          // 🔥 ADICIONE ISSO: Define a espessura da linha do estado
+            borderColor: '#cbd5e1',  // 🔥 ADICIONE ISSO: Um cinza médio perfeito para contornar os estados vazios
+            states: {
+                hover: {
+                    color: '#38bdf8', 
+                    borderWidth: 2.5
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                format: '{point.properties.hc-a2}', 
+                style: {
+                    fontSize: '10px',
+                    fontWeight: 'bold',
+                    textOutline: 'none',
+                    color: '#000000'
+                }
+            }
+        }]
+    });
+    // Pequeno ajuste para lidar dinamicamente com singular/plural no tooltip do Highmaps
+    Highcharts.wrap(Highcharts.Point.prototype, 'getZone', function (proceed) {
+        window.pluralUser = this.value === 1 ? 'usuário' : 'usuários';
+        return proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+    });
+
+    <?php endif; ?>
 });
 </script>

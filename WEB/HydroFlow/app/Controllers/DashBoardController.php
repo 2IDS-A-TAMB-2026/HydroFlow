@@ -42,31 +42,30 @@ class DashboardController extends BaseController
             ->limit(8)
             ->findAll();
 
-        // 4. PREPARAÇÃO DOS DADOS DO GRÁFICO (Volume Consumido por Dia nos últimos 7 dias)
-        // Agrupa o volume de água gasto por data
-        $graficoQuery = $historicoModel
-            ->select("IRR_DATA, SUM(IRR_VOLUME) as volume_total")
-            ->where('FK_USU_ID', $idUsuarioLogado)
-            ->where('IRR_STATUS', 'Concluído')
-            ->groupBy('IRR_DATA')
-            ->orderBy('IRR_DATA ASC')
-            ->limit(7)
-            ->findAll();
+        // 4. PREPARAÇÃO DOS DADOS DO GRÁFICO (Radar Multi-Métricas)
+        $labelsGrafico = [
+            'Dispositivos Ativos', 
+            'Dispositivos Inativos', 
+            'Alertas (Falhas)', 
+            'Plantas Cadastradas', 
+            'Consumo Total (L)'
+        ];
 
-        $labelsGrafico = [];
-        $valoresGrafico = [];
-
-        foreach ($graficoQuery as $registro) {
-            // Formata a data para padrão brasileiro (Ex: 14/04) para ficar bonito no gráfico
-            $labelsGrafico[]  = date('d/m', strtotime($registro['IRR_DATA']));
-            $valoresGrafico[] = (float) $registro['volume_total'];
+        // Calcular consumo total
+        $consumoTotal = 0;
+        $historicoModelForTotal = new \App\Models\HistoricoIrrigacaoModel();
+        $regasConcluidas = $historicoModelForTotal->where('FK_USU_ID', $idUsuarioLogado)->where('IRR_STATUS', 'Concluído')->findAll();
+        foreach ($regasConcluidas as $rega) {
+            $consumoTotal += (float) $rega['IRR_VOLUME'];
         }
 
-        // Se o banco estiver vazio, coloca valores padrão para o gráfico não sumir da tela
-        if (empty($labelsGrafico)) {
-            $labelsGrafico  = ['Sem dados'];
-            $valoresGrafico = [0];
-        }
+        $valoresGrafico = [
+            (float) $data['total_ativos'],
+            (float) $data['total_inativos'],
+            (float) $data['total_alertas'],
+            (float) $data['total_plantas'],
+            (float) $consumoTotal
+        ];
 
         $data['grafico_labels']  = $labelsGrafico;
         $data['grafico_valores'] = $valoresGrafico;

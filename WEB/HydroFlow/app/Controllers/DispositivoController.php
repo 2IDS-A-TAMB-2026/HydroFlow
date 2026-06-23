@@ -37,7 +37,7 @@ class DispositivoController extends BaseController
 
     $query = $this->dispositivoModel;
 
-    // 3. Aplica a Busca por Texto (Filtra se o nome ou a descrição contêm o termo digitado)
+    // 3. Aplica a Busca por Texto
     if (!empty($filtroValores['busca'])) {
         $query = $query->groupStart()
                        ->like('DIS_NOME', $filtroValores['busca'])
@@ -45,24 +45,53 @@ class DispositivoController extends BaseController
                        ->groupEnd();
     }
 
-    // 4. Aplica o filtro de Dono (FK_USU_ID)
+    // 4. Aplica o filtro de Dono
     if ($filtroValores['dono_id'] !== 'todos') {
         $query = $query->where('FK_USU_ID', $filtroValores['dono_id']);
     }
 
-    // 5. Aplica o filtro de Status (DIS_STATUS)
+    // 5. Aplica o filtro de Status
     if ($filtroValores['status_filtro'] !== 'todos') {
         $query = $query->where('DIS_STATUS', $filtroValores['status_filtro']);
     }
 
-    // 6. Executa a busca trazendo a relação
+    // 6. Executa a busca trazendo os dados da tabela
     $dados['dispositivos']   = $query->getDispositivoComDono()->findAll();
     $dados['filtro_valores'] = $filtroValores;
+
+    // ================= DATA DOS GRÁFICOS =================
+    // Gráfico 1: Status (Ativos vs Inativos) - Respeitando o filtro de dono se houver
+    $contagemStatus = $this->dispositivoModel->getContagemStatus($filtroValores['dono_id']);
+    
+    $statusLabels = [];
+    $statusValores = [];
+    foreach ($contagemStatus as $cs) {
+        $statusLabels[] = strtoupper($cs['DIS_STATUS']);
+        $statusValores[] = (int)$cs['total'];
+    }
+    $dados['grafico_status'] = [
+        'labels'  => $statusLabels,
+        'valores' => $statusValores
+    ];
+
+    // Gráfico 2: Nível dos Tanques (Pega os dispositivos atuais filtrados)
+    $tanqueLabels = [];
+    $tanqueValores = [];
+    // Limitando a 10 no gráfico para não quebrar o layout se tiver muitos dados
+    $dispositivosGrafico = array_slice($dados['dispositivos'], 0, 10); 
+    foreach ($dispositivosGrafico as $disp) {
+        $tanqueLabels[] = $disp['DIS_NOME'];
+        $tanqueValores[] = (float)$disp['DIS_NIVEL_TANQUE'];
+    }
+    $dados['grafico_tanques'] = [
+        'labels'  => $tanqueLabels,
+        'valores' => $tanqueValores
+    ];
+    // =====================================================
 
     // 7. Renderiza as views coladas
     return view('sistema/dispositivos/index', $dados);
 }
-
     /**
      * Rota Unificada para renderizar o formulário (Novo ou Editar)
      * Rota: dispositivos/novo ou dispositivos/editar/ID

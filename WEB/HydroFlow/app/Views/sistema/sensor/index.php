@@ -138,9 +138,39 @@
         </a>
     </div>
 
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px;">
+        
+        <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 15px; border: 1px solid #eef2f5; display: flex; align-items: center; height: 140px;">
+            <div style="width: 40%; height: 100%;">
+                <canvas id="chartStatusHardwareRosca"></canvas>
+            </div>
+            <div style="width: 60%; padding-left: 15px;">
+                <h4 style="margin: 0 0 8px 0; color: #4a5568; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Disponibilidade</h4>
+                <div style="font-size: 0.85rem; color: #666;">
+                    <p style="margin: 4px 0;"><span style="display:inline-block; width:8px; height:8px; background:#00a65a; border-radius:50%; margin-right:5px;"></span> Ativos: <strong><?= $grafico_status['valores'][0] ?></strong></p>
+                    <p style="margin: 4px 0;"><span style="display:inline-block; width:8px; height:8px; background:#d33; border-radius:50%; margin-right:5px;"></span> Inativos: <strong><?= $grafico_status['valores'][1] ?></strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 15px; border: 1px solid #eef2f5; display: flex; align-items: center; height: 140px;">
+            <div style="width: 40%; height: 100%;">
+                <canvas id="chartTiposBarra"></canvas>
+            </div>
+            <div style="width: 60%; padding-left: 15px;">
+                <h4 style="margin: 0 0 8px 0; color: #4a5568; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Grandezas Monitoradas</h4>
+                <div style="font-size: 0.85rem; color: #666;">
+                    <p style="margin: 4px 0;"><i class="fa-solid fa-seedling" style="color: #00a389;"></i> Solo: <strong><?= $grafico_tipos['valores'][0] ?></strong> unidades</p>
+                    <p style="margin: 4px 0;"><i class="fa-solid fa-cloud-sun" style="color: #2b6cb0;"></i> Ar/Temp: <strong><?= $grafico_tipos['valores'][1] ?></strong> unidades</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <div class="unified-card">
         
-        <?php if (session()->getFlashdata('sucesso')): ?>
+        <?php if (session()->getFlashdata('sucesso') && !session()->getFlashdata('script_fired')): ?>
             <div style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;">
                 <i class="fa-solid fa-circle-check"></i> <?= session()->getFlashdata('sucesso') ?>
             </div>
@@ -277,6 +307,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // --- EXCLUSÃO COM SWEETALERT ---
     const botoesExcluir = document.querySelectorAll('.btn-deletar-custom');
 
     botoesExcluir.forEach(botao => {
@@ -302,6 +333,70 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.href = urlExclusao;
                 }
             });
+        });
+    });
+
+    // --- GRÁFICOS INVERTIDOS (CHART.JS) ---
+    document.fonts.ready.then(function() {
+
+        // 1. Disponibilidade -> AGORA É ROSCA (DOUGHNUT)
+        const ctxStatusRosca = document.getElementById('chartStatusHardwareRosca').getContext('2d');
+        new Chart(ctxStatusRosca, {
+            type: 'doughnut',
+            data: {
+                labels: ['Ativos', 'Inativos'],
+                datasets: [{
+                    data: <?= json_encode($grafico_status['valores'] ?? [0,0]) ?>,
+                    backgroundColor: ['#00a65a', '#d33'], // Cores padrões dos badges
+                    borderWidth: 0,
+                    spacing: 3,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { cornerRadius: 4 }
+                }
+            }
+        });
+
+        // 2. Grandezas Monitoradas -> AGORA É BARRA HORIZONTAL
+        const ctxTiposBarra = document.getElementById('chartTiposBarra').getContext('2d');
+        new Chart(ctxTiposBarra, {
+            type: 'bar',
+            data: {
+                labels: ['Solo', 'Ar/Temp'],
+                datasets: [{
+                    data: <?= json_encode($grafico_tipos['valores'] ?? [0,0]) ?>,
+                    backgroundColor: ['#00a389', '#2b6cb0'], // Cores casando com os badges da tabela
+                    borderWidth: 0,
+                    borderRadius: 4,
+                    barThickness: 18
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Deixa em horizontal
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { 
+                        beginAtZero: true,
+                        grid: { display: false },
+                        ticks: { precision: 0 }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { weight: '600' } }
+                    }
+                }
+            }
         });
     });
 });

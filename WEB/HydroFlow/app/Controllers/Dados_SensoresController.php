@@ -59,16 +59,17 @@ public function index()
             'umidade_max'   => $umidadeMax,
             'status_filtro' => $statusFiltro
         ];
+        $data['dados_grafico'] = ['labels' => [], 'temperaturas' => [], 'umidades' => []];
         return view('sistema/dados_sensores/historico', $data);
     }
 
-    // 4. 👉 A SOLUÇÃO: Usar o construtor nativo ($db->table) para o select não ser corrompido pelo Model
+    // 4. Usar o construtor nativo ($db->table) para a listagem filtrada
     $builder = $db->table('DADOS_SENSORES ds')
         ->select('ds.*, s.SEN_NOME as nome_sensor')
         ->join('SENSOR s', 's.SEN_ID = ds.FK_SEN_ID')
         ->whereIn('ds.FK_SEN_ID', $idsSensores);
 
-    // 5. Só aplica o filtro de data se o usuário realmente mexeu no calendário (ignorando as travas automáticas de 2026)
+    // 5. Aplica filtros se houver alteração manual
     if (!empty($dataInicial) && $dataInicial !== date('Y-m-01') && $dataInicial !== '2026-06-01') {
         $builder->where('ds.DDS_DATA >=', $dataInicial);
     }
@@ -77,14 +78,12 @@ public function index()
         $builder->where('ds.DDS_DATA <=', $dataFinal);
     }
 
-    // Filtro de Temperatura Mínima
     if ($tempMin !== null && $tempMin !== '') {
         $builder->where('ds.DDS_TEMP >=', (float)$tempMin);
     }
 
-    // 6. FILTRO DE CLASSIFICAÇÃO DA UMIDADE (Rodando direto na tabela nativa)
+    // 6. Filtro de Classificação da Umidade
     $statusFiltroLimpio = trim(strtolower($statusFiltro));
-    
     if ($statusFiltroLimpio !== 'todos' && !empty($statusFiltroLimpio)) {
         if ($statusFiltroLimpio === 'otimo') {
             $builder->where('ds.DDS_UMIDADE >', 70.00);
@@ -95,26 +94,56 @@ public function index()
             $builder->where('ds.DDS_UMIDADE <', 40.00);
         }
     } else {
-        // Se estiver em 'Todos', aceita o corte manual do input de teto se preenchido
         if ($umidadeMax !== null && $umidadeMax !== '') {
             $builder->where('ds.DDS_UMIDADE <=', (float)$umidadeMax);
         }
     }
 
-    // 7. Executa a query pura ordenando e convertendo para Array igual ao Model fazia
+    // 7. Executa a busca ordenando para a tabela
     $medicoesFiltradas = $builder->orderBy('ds.DDS_DATA DESC', 'ds.DDS_HORA DESC')
                                  ->get()
                                  ->getResultArray();
 
-    // 8. Envia tudo mastigado para a View
-    $data['medicoes']       = $medicoesFiltradas;
-    $data['titulo']         = "Histórico de Medições (Temperatura e Umidade)";
+    $data['medicoes'] = $medicoesFiltradas;
+    $data['titulo']   = "Histórico de Medições (Temperatura e Umidade)";
     $data['filtro_valores'] = [
         'data_inicial'  => $dataInicial ?? date('Y-m-01'),
         'data_final'    => $dataFinal ?? date('Y-m-d'),
         'temp_min'      => $tempMin,
         'umidade_max'   => $umidadeMax,
         'status_filtro' => $statusFiltro
+    ];
+
+    // --- NOVA LÓGICA: AGRUPAMENTO EM MÉDIA DIÁRIA PARA O GRÁFICO ---
+    $agrupadoPorDia = [];
+    foreach ($medicoesFiltradas as $med) {
+        $dia = date('d/m', strtotime($med['DDS_DATA']));
+        if (!isset($agrupadoPorDia[$dia])) {
+            $agrupadoPorDia[$dia] = ['temp_soma' => 0, 'umid_soma' => 0, 'qtd' => 0];
+        }
+        $agrupadoPorDia[$dia]['temp_soma'] += (float)($med['DDS_TEMP'] ?? 0);
+        $agrupadoPorDia[$dia]['umid_soma'] += (float)($med['DDS_UMIDADE'] ?? 0);
+        $agrupadoPorDia[$dia]['qtd']++;
+    }
+
+    // Cronologia correta (Passado para o Presente)
+    $agrupadoPorDia = array_reverse($agrupadoPorDia, true);
+
+    $labels = [];
+    $temperaturas = [];
+    $umidades = [];
+
+    foreach ($agrupadoPorDia as $dia => $valores) {
+        $labels[] = $dia;
+        // Calcula a média aritmética do dia arredondando para 1 casa decimal
+        $temperaturas[] = round($valores['temp_soma'] / $valores['qtd'], 1);
+        $umidades[]     = round($valores['umid_soma'] / $valores['qtd'], 1);
+    }
+
+    $data['dados_grafico'] = [
+        'labels'       => $labels,
+        'temperaturas' => $temperaturas,
+        'umidades'     => $umidades
     ];
 
     return view('sistema/dados_sensores/historico', $data);

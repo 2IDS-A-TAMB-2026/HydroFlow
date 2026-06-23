@@ -1,5 +1,10 @@
 <?= view("sistema/layout/dashboard/usuario/header") ?>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <main class="main-content">
     <header class="top-nav">
         <div class="nav-left">
@@ -8,7 +13,7 @@
         </div>
     </header>
 
-    <div class="widget form-widget full-width-form" style="margin-bottom: 20px;">
+    <div class="widget form-widget full-width-form ignore-pdf" style="margin-bottom: 20px;">
         <h3 class="form-title" style="margin-bottom: 15px; font-size: 1.1rem;">
             <i class="fa-solid fa-filter" style="color: #6c757d;"></i> Filtros de Busca
         </h3>
@@ -53,12 +58,26 @@
         </form>
     </div>
 
-    <div class="widget form-widget full-width-form">
-        <div class="form-header-flex">
-            <h3 class="form-title">
+    <div class="widget form-widget full-width-form ignore-pdf" style="margin-bottom: 20px; background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+        <h3 class="form-title" style="margin-bottom: 15px; font-size: 1.1rem; color: #1e3c72;">
+            <i class="fa-solid fa-chart-area"></i> Comportamento do Ambiente (Médias Diárias)
+        </h3>
+        <div style="width: 100%; max-height: 280px; height: 280px;">
+            <canvas id="chartMedicoesAmbiente"></canvas>
+        </div>
+    </div>
+
+    <div id="area-impressao" class="widget form-widget full-width-form">
+        <div class="form-header-flex" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <h3 class="form-title" style="margin: 0;">
                 <i class="fa-solid fa-clipboard-list" style="color: #1e3c72;"></i> Registros dos Sensores (ESP32)
             </h3>
-            <button class="btn-cancelar" style="margin: 0;"><i class="fa-solid fa-download"></i> Exportar PDF</button>
+            <div class="actions-wrapper" style="display: flex; gap: 10px;">
+                <button id="btn-exportar-excel" class="ignore-pdf" style="margin: 0; padding: 8px 15px; background-color: #1f7246; border: none; color: white; cursor: pointer; font-weight: bold; border-radius: 4px;">
+                    <i class="fa-solid fa-file-excel"></i> Exportar Excel (.xlsx)
+                </button>
+                <button id="btn-exportar-pdf" class="btn-cancelar ignore-pdf" style="margin: 0;"><i class="fa-solid fa-download"></i> Exportar PDF</button>
+            </div>
         </div>
         <hr class="divider">
         
@@ -70,7 +89,7 @@
                         <th>Sensor / Área</th>
                         <th>Temperatura</th>
                         <th>Umidade Coletada</th>
-                        <th style="text-align: center;">Status / Saúde</th>
+                        <th style="text-align: center;" class="actions-cell">Status / Saúde</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,9 +105,8 @@
                                 <td><?= esc($medicao['DDS_TEMP'] ?? '0') ?> °C</td>
                                 <td><?= esc($medicao['DDS_UMIDADE'] ?? '0') ?> %</td>
                                 
-                                <td style="text-align: center;">
+                                <td style="text-align: center;" class="actions-cell">
                                     <?php 
-                                    // Conversão direta para float sem firula, já que o banco entrega número puro
                                     $umidade = (float)($medicao['DDS_UMIDADE'] ?? 0);
                                     
                                     if ($umidade < 40.00): ?>
@@ -111,3 +129,242 @@
         </div>
     </div>
 </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // ==========================================
+    // 1. PROCESSAMENTO E RENDERIZAÇÃO DO GRÁFICO
+    // ==========================================
+    const dadosBrutos = <?= json_encode($dados_grafico ?? ['labels' => [], 'temperaturas' => [], 'umidades' => []]) ?>;
+    const ctx = document.getElementById('chartMedicoesAmbiente');
+    
+    if (ctx) {
+        const ctx2d = ctx.getContext('2d');
+        
+        const gradienteUmid = ctx2d.createLinearGradient(0, 0, 0, 240);
+        gradienteUmid.addColorStop(0, 'rgba(2, 132, 199, 0.25)');
+        gradienteUmid.addColorStop(1, 'rgba(2, 132, 199, 0.00)');
+
+        const gradienteTemp = ctx2d.createLinearGradient(0, 0, 0, 240);
+        gradienteTemp.addColorStop(0, 'rgba(255, 107, 107, 0.15)');
+        gradienteTemp.addColorStop(1, 'rgba(255, 107, 107, 0.00)');
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dadosBrutos.labels.length ? dadosBrutos.labels : ['Sem dados'],
+                datasets: [
+                    {
+                        label: 'Temperatura (°C)',
+                        data: dadosBrutos.temperaturas.length ? dadosBrutos.temperaturas : [0],
+                        borderColor: '#ff6b6b',
+                        backgroundColor: gradienteTemp,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ff6b6b',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        yAxisID: 'yTemp',
+                        tension: 0.35
+                    },
+                    {
+                        label: 'Umidade (%)',
+                        data: dadosBrutos.umidades.length ? dadosBrutos.umidades : [0],
+                        borderColor: '#0284c7',
+                        backgroundColor: gradienteUmid,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#0284c7',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        yAxisID: 'yUmid',
+                        tension: 0.35
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                            font: { size: 12, family: 'Inter, sans-serif', weight: '500' }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleFont: { size: 13, weight: '600' },
+                        bodyFont: { size: 12 },
+                        padding: 12,
+                        cornerRadius: 6,
+                        displayColors: true
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 11, family: 'Inter, sans-serif' },
+                            color: '#64748b'
+                        }
+                    },
+                    yTemp: {
+                        type: 'linear',
+                        position: 'left',
+                        beginAtZero: false,
+                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                        ticks: {
+                            color: '#ff6b6b',
+                            font: { weight: '600' },
+                            callback: function(val) { return val + ' °C'; }
+                        }
+                    },
+                    yUmid: {
+                        type: 'linear',
+                        position: 'right',
+                        min: 0,
+                        max: 100,
+                        grid: { drawOnChartArea: false },
+                        ticks: {
+                            color: '#0284c7',
+                            font: { weight: '600' },
+                            callback: function(val) { return val + ' %'; }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // ==========================================
+    // 2. EXPORTAÇÃO PARA PDF (jsPDF + AutoTable)
+    // ==========================================
+    const btnExportarPdf = document.getElementById("btn-exportar-pdf");
+    const areaParaExportar = document.getElementById("area-impressao");
+
+    if (btnExportarPdf && areaParaExportar) {
+        btnExportarPdf.addEventListener("click", function(e) {
+            e.preventDefault();
+            
+            const textoOriginal = btnExportarPdf.innerHTML;
+            btnExportarPdf.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gerando PDF...';
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+                const tabelaOriginal = areaParaExportar.querySelector(".data-table");
+                if (!tabelaOriginal) {
+                    alert("Erro: Tabela de dados não encontrada.");
+                    btnExportarPdf.innerHTML = textoOriginal;
+                    return;
+                }
+
+                // Cria o clone para não modificar a tabela visual na tela
+                const cloneTabela = tabelaOriginal.cloneNode(true);
+
+                doc.autoTable({
+                    html: cloneTabela,
+                    startY: 32, 
+                    theme: 'striped',
+                    headStyles: { 
+                        fillColor: [30, 60, 114], // Azul #1e3c72
+                        textColor: [255, 255, 255], 
+                        fontStyle: 'bold',
+                        fontSize: 10,
+                        halign: 'left',
+                        valign: 'middle',
+                        cellPadding: 4
+                    },
+                    bodyStyles: { 
+                        textColor: [60, 66, 82], 
+                        fontSize: 9,
+                        valign: 'middle',
+                        cellPadding: 4
+                    },
+                    alternateRowStyles: {
+                        fillColor: [248, 249, 250] 
+                    },
+                    tableLineColor: [222, 226, 230], 
+                    tableLineWidth: 0.2,
+                    margin: { top: 32, right: 15, bottom: 20, left: 15 },
+                    
+                    didDrawPage: function(data) {
+                        // ---- CABEÇALHO ----
+                        doc.setFillColor(30, 60, 114);
+                        doc.rect(15, 10, 267, 14, 'F');
+                        
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFont("helvetica", "bold");
+                        doc.setFontSize(12);
+                        doc.text("SISTEMA DE IRRIGAÇÃO - REGISTROS DOS SENSORES (ESP32)", 20, 18.5);
+
+                        doc.setFont("helvetica", "normal");
+                        doc.setFontSize(9);
+                        const dataHoje = new Date().toLocaleDateString('pt-BR');
+                        doc.text("Gerado em: " + dataHoje, 242, 18.5);
+
+                        // ---- RODAPÉ ----
+                        doc.setDrawColor(222, 226, 230);
+                        doc.setLineWidth(0.3);
+                        doc.line(15, 195, 282, 195); 
+
+                        doc.setTextColor(108, 117, 125);
+                        doc.setFontSize(9);
+                        doc.text("Relatório de Monitoramento de Sensores Automático", 15, 201);
+                        
+                        let numeroPagina = doc.internal.getNumberOfPages();
+                        doc.text("Página " + data.pageNumber, 265, 201);
+                    }
+                });
+
+                doc.save('registros_sensores.pdf');
+            } catch (error) {
+                console.error("Erro ao gerar PDF:", error);
+                alert("Ocorreu um erro ao exportar o PDF.");
+            } finally {
+                btnExportarPdf.innerHTML = textoOriginal;
+            }
+        });
+    }
+
+    // ==========================================
+    // 3. EXPORTAÇÃO PARA EXCEL (SheetJS)
+    // ==========================================
+    const btnExportarExcel = document.getElementById("btn-exportar-excel");
+
+    if (btnExportarExcel) {
+        btnExportarExcel.addEventListener("click", function(e) {
+            e.preventDefault();
+
+            const tabela = document.querySelector(".data-table");
+            if (!tabela) return;
+
+            const planilha = XLSX.utils.table_to_sheet(tabela);
+
+            const largurasColunas = [
+                { wch: 22 }, // Data e Hora
+                { wch: 25 }, // Sensor / Área
+                { wch: 15 }, // Temperatura
+                { wch: 18 }, // Umidade Coletada
+                { wch: 15 }  // Status / Saúde
+            ];
+            planirha['!cols'] = largurasColunas;
+
+            const pastaTrabalho = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(pastaTrabalho, planilha, "Dados do ESP32");
+
+            XLSX.writeFile(pastaTrabalho, "registros_sensores.xlsx");
+        });
+    }
+});
+</script>

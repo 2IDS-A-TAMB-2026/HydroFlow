@@ -18,7 +18,7 @@
 
         <hr class="divider">
 
-        <form action="<?= base_url('plantas/atualizar/' . $planta['PLANTA_ID']) ?>" method="post" id="formEditar">
+        <form action="<?= base_url('planta/atualizar/' . $planta['PLANTA_ID']) ?>" method="post" id="formEditar">
             <?= csrf_field() ?>
 
             <h4 class="section-title">Informações da Espécie</h4>
@@ -81,27 +81,21 @@
                            required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="flex: 2;">
                     <label for="FK_DIS_ID">Dispositivo Responsável</label>
-                    <input type="number"
-                           id="FK_DIS_ID"
-                           name="FK_DIS_ID"
-                           class="form-control"
-                           value="<?= esc($planta['FK_DIS_ID']) ?>"
-                           required>
+                    <select name="FK_DIS_ID" id="FK_DIS_ID" class="form-control" required>
+                        <option value="">Selecione um Dispositivo...</option>
+                        <?php if (!empty($dispositivos) && is_array($dispositivos)): ?>
+                            <?php foreach ($dispositivos as $disp): ?>
+                                <option value="<?= $disp['DIS_ID'] ?>" <?= (isset($planta['FK_DIS_ID']) && $planta['FK_DIS_ID'] == $disp['DIS_ID']) ? 'selected' : '' ?>>
+                                    <?= esc($disp['DIS_NOME']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="FK_USU_ID">Usuário Responsável</label>
-                    <input type="number"
-                           id="FK_USU_ID"
-                           name="FK_USU_ID"
-                           class="form-control"
-                           value="<?= esc($planta['FK_USU_ID']) ?>"
-                           required>
                 </div>
-
-            </div>
 
             <hr class="divider">
 

@@ -35,11 +35,12 @@
         </div>
     </section>
 
-    <section class="bottom-grid" style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px; align-items: start;">
+
+    <section class="bottom-grid">
         
-        <div class="widget table-widget" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <div class="widget table-widget">
             <h3>Últimos Status de Irrigação</h3>
-            <table>
+            <table class="modern-table">
                 <thead>
                     <tr>
                         <th>Planta</th>
@@ -57,10 +58,17 @@
                                     <?php 
                                         $badgeClass = 'badge-green';
                                         $textoBadge = 'IRRIGADO';
-                                        if ($irr['IRR_STATUS'] === 'Falha') { $badgeClass = 'badge-red'; $textoBadge = 'FALHA'; }
-                                        if ($irr['IRR_STATUS'] === 'Interrompido') { $badgeClass = 'badge-yellow'; $textoBadge = 'ALERTA'; }
+                                        
+                                        if ($irr['IRR_STATUS'] === 'Falha') { 
+                                            $badgeClass = 'badge-red'; 
+                                            $textoBadge = 'FALHA'; 
+                                        }
+                                        if ($irr['IRR_STATUS'] === 'Interrompido' || $irr['IRR_STATUS'] === 'Alerta') { 
+                                            $badgeClass = 'badge-yellow'; 
+                                            $textoBadge = 'ALERTA'; 
+                                        }
                                     ?>
-                                    <span class="status-badge <?= $badgeClass ?>"><?= $textoBadge ?></span>
+                                    <span class="<?= $badgeClass ?>"><?= $textoBadge ?></span>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -69,12 +77,12 @@
                             <td colspan="3" style="text-align: center; color: #888;">Nenhuma rega executada recentemente.</td>
                         </tr>
                     <?php endif; ?>
-                </tbody>
+            </tbody>
             </table>
         </div>
 
         <div class="widget chart-widget" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); height: 100%;">
-            <h3 class="chart-title"><i class="fa-solid fa-chart-line" style="color: #00a65a;"></i> Consumo de Água Recente (Litros)</h3>
+            <h3 class="chart-title"><i class="fa-solid fa-circle-nodes" style="color: #00a65a;"></i> Visão Geral do Ecossistema</h3>
             <div class="chart-container" style="position: relative; height: 380px; width: 100%;">
                 <canvas id="vendasChart"></canvas>
             </div>
@@ -86,36 +94,135 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    //  O PHP renderiza as arrays do banco em formato JSON válido para o JavaScript ler
     const labelsDoBanco = <?= json_encode($grafico_labels) ?>;
     const valoresDoBanco = <?= json_encode($grafico_valores) ?>;
+
+    function normalizarParaEscala(valores) {
+        const ativos = valores[0];
+        const inativos = valores[1];
+        const alertas = valores[2];
+        const plantas = valores[3];
+        const consumo = valores[4];
+
+        const maxAtivos = 5;    
+        const maxInativos = 5;  
+        const maxAlertas = 10;  
+        const maxPlantas = 10;  
+        const maxConsumo = 500; 
+
+        return [
+            Math.min((ativos / maxAtivos) * 10, 10),
+            Math.min((inativos / maxInativos) * 10, 10),
+            Math.min((alertas / maxAlertas) * 10, 10),
+            Math.min((plantas / maxPlantas) * 10, 10),
+            Math.min((consumo / maxConsumo) * 10, 10)
+        ];
+    }
+
+    const v = normalizarParaEscala(valoresDoBanco);
+
+    const coresFatias = [
+        { border: 'rgba(0, 188, 212, 1)',   bg: 'rgba(0, 188, 212, 0.4)' }, 
+        { border: 'rgba(233, 30, 99, 1)',   bg: 'rgba(233, 30, 99, 0.4)' }, 
+        { border: 'rgba(255, 152, 0, 1)',   bg: 'rgba(255, 152, 0, 0.4)' }, 
+        { border: 'rgba(76, 175, 80, 1)',   bg: 'rgba(76, 175, 80, 0.4)' }, 
+        { border: 'rgba(33, 150, 243, 1)',  bg: 'rgba(33, 150, 243, 0.4)' } 
+    ];
+
+    const pluginFatiasColoridas = {
+        id: 'pluginFatiasColoridas',
+        beforeDraw(chart) {
+            const { ctx, scales: { r } } = chart;
+            const centroX = r.xCenter;
+            const centroY = r.yCenter;
+            const metaData = chart.getDatasetMeta(0).data;
+
+            if (!metaData || metaData.length === 0) return;
+
+            metaData.forEach((ponto, i) => {
+                const proximoIndice = (i + 1) % metaData.length;
+                const proximoPonto = metaData[proximoIndice];
+
+                ctx.save();
+                ctx.beginPath();
+                
+                ctx.moveTo(centroX, centroY);
+                ctx.lineTo(ponto.x, ponto.y);
+                ctx.lineTo(proximoPonto.x, proximoPonto.y);
+                ctx.closePath();
+
+                ctx.fillStyle = coresFatias[i].bg;
+                ctx.fill();
+
+                ctx.strokeStyle = coresFatias[i].border;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(ponto.x, ponto.y);
+                ctx.lineTo(proximoPonto.x, proximoPonto.y);
+                ctx.stroke();
+
+                ctx.restore();
+            });
+        }
+    };
 
     document.addEventListener("DOMContentLoaded", function() {
         const ctx = document.getElementById('vendasChart').getContext('2d');
         
         new Chart(ctx, {
-            type: 'line', // Transforma em um gráfico de linha contínuo elegante
+            type: 'radar',
             data: {
-                labels: labelsDoBanco, // Injetado via PHP
+                labels: labelsDoBanco, 
                 datasets: [{
-                    label: 'Volume de Água Gasto (L)',
-                    data: valoresDoBanco, // Injetado via PHP
-                    backgroundColor: 'rgba(0, 166, 90, 0.1)',
-                    borderColor: '#00a65a', // Verde padrão do seu sistema
-                    borderWidth: 3,
-                    tension: 0.3, // Deixa a linha suave e curvada
-                    fill: true
+                    label: 'Métricas do Sistema',
+                    data: v, 
+                    borderColor: 'transparent', 
+                    backgroundColor: 'transparent', 
+                    pointBackgroundColor: coresFatias.map(c => c.border), 
+                    pointBorderColor: '#fff',
+                    pointRadius: 5
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Permite que o gráfico preencha a altura da div do CSS
+                maintainAspectRatio: false,
                 scales: {
-                    y: {
-                        beginAtZero: true
+                    r: {
+                        suggestMin: 0,
+                        suggestMax: 10,
+                        ticks: {
+                            display: false,
+                            backdropColor: 'transparent'
+                        },
+                        angleLines: { display: true }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }, 
+                    tooltip: {
+                        enabled: true,
+                        position: 'average',
+                        backgroundColor: 'rgba(20, 20, 20, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        z: 9999,
+                        callbacks: {
+                            label: function(context) {
+                                const indice = context.dataIndex;
+                                const valorReal = valoresDoBanco[indice];
+                                const label = labelsDoBanco[indice];
+                                
+                                if (label === 'Consumo Total (L)') {
+                                    return `${label}: ${valorReal.toFixed(1)} L`;
+                                } else {
+                                    return `${label}: ${valorReal}`;
+                                }
+                            }
+                        }
                     }
                 }
-            }
+            },
+            plugins: [pluginFatiasColoridas]
         });
     });
 </script>
