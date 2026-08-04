@@ -85,6 +85,13 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="<?= base_url('meus-dispositivos') ?>" aria-label="Ir para meus dispositivos">
+                        <i class="fa-solid fa-microchip " aria-hidden="true"></i>
+                        Meus Dispositivos
+                    </a>
+                </li>
+
                 <div class="menu-section-title">Sessão</div>
                 <li>
                     <?php if (session()->get('logado_adm')): ?>

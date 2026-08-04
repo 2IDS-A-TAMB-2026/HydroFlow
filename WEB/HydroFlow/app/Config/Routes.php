@@ -39,6 +39,8 @@ $routes->get('historico', 'HistoricoController::index');
 
 $routes->get('dados_sensores', 'Dados_SensoresController::index');
 
+$routes->get('meus-dispositivos', 'DispositivoController::meusDispositivos');
+
 // Módulo: Perfil do Usuário
 $routes->group('perfil', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'UsuarioController::index');
@@ -55,8 +57,8 @@ $routes->group('planta', ['filter' => 'auth'], function($routes) {
     $routes->get('novo', 'PlantaController::novo');
     $routes->post('salvar', 'PlantaController::salvar');
     $routes->get('detalhes/(:num)', 'PlantaController::detalhes/$1');
-    $routes->get('editar/(:num)', 'PlantaController::editar/$1');
-    $routes->post('atualizar/(:num)', 'PlantaController::atualizar/$1');
+    $routes->get('editar/(:num)', 'PlantaController::editar/$1'); // Reaproveita a função "novo" para mostrar o formulário de edição
+    $routes->post('atualizar/(:num)', 'PlantaController::salvar/$1');
     $routes->get('excluir/(:num)', 'PlantaController::excluir/$1');
 });
 
