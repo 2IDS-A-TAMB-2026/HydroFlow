@@ -3,6 +3,18 @@ import 'package:tcc/botao_acessibilidade.dart';
 import 'accessibility_provider.dart';
 import 'package:provider/provider.dart';
 
+/// ─────────────────────────────────────────────
+///  PALETA DO MODO ESCURO
+/// ─────────────────────────────────────────────
+class DarkPalette {
+  static const Color background = Color(0xFF0A1A2B);
+  static const Color surface = Color(0xFF10263D);
+  static const Color surfaceElevated = Color(0xFF16324B);
+  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color textPrimary = Color(0xFFF2F6FA);
+  static const Color textSecondary = Color(0xFFA9C0D6);
+}
+
 class SobreNos extends StatefulWidget {
   const SobreNos({super.key});
 
@@ -11,109 +23,138 @@ class SobreNos extends StatefulWidget {
 }
 
 class _SobreNosState extends State<SobreNos> {
-
   static const Color azulPrimario = Color(0xFF002855);
   static const Color azulRoyal = Color(0xFF0056B3);
   static const Color azulCyan = Color(0xFF4DD0E1);
 
   @override
   Widget build(BuildContext context) {
-    final accessibility =
-      Provider.of<AccessibilityProvider>(context);
+    final accessibility = Provider.of<AccessibilityProvider>(context);
 
     final highContrast = accessibility.isHighContrast;
     final fontFactor = accessibility.fontSizeFactor;
 
-    final bgColor =
-      highContrast ? Colors.black : const Color(0xFFF2F2F2);
-
-    final cardColor =
-      highContrast ? Colors.black : Colors.white;
-
-    final textColor =
-    highContrast ? Colors.white : azulPrimario;
-
-    final subTextColor =
-      highContrast ? Colors.white : Colors.grey.shade600;
+    final bgColor = highContrast ? DarkPalette.background : const Color(0xFFF2F2F2);
+    final cardColor = highContrast ? DarkPalette.surface : Colors.white;
+    final textColor = highContrast ? Colors.cyanAccent : azulPrimario;
+    final subTextColor = highContrast ? DarkPalette.textSecondary : Colors.grey.shade600;
+    final appBarBg = highContrast ? DarkPalette.surface : azulPrimario;
 
     return Scaffold(
       backgroundColor: bgColor,
 
       // 🔷 APPBAR PADRÃO
       appBar: AppBar(
-        backgroundColor: azulPrimario,
+        backgroundColor: appBarBg,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
+        elevation: 0,
+        shape: highContrast
+            ? const Border(bottom: BorderSide(color: DarkPalette.surfaceBorder, width: 2))
+            : null,
+        title: Text(
           "HYDROFLOW",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 18 * fontFactor,
           ),
         ),
         actions: [
-            const BotaoAcessibilidade(),
+          const BotaoAcessibilidade(),
         ],
       ),
 
       // 🍔 MENU PADRÃO
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: azulPrimario,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Hydroflow",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: highContrast
+                ? const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [DarkPalette.background, DarkPalette.surface],
+                  )
+                : null,
+            color: highContrast ? null : Colors.white,
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(top: 60, left: 16, bottom: 20),
+                color: highContrast ? Colors.transparent : azulPrimario,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Hydroflow",
+                      style: TextStyle(
+                        color: highContrast ? Colors.cyanAccent : Colors.white,
+                        fontSize: 24 * fontFactor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-
-                  SizedBox(height: 8),
-
-                  Text(
-                    "Tecnologia no Campo",
-                    style: TextStyle(color: azulCyan),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Text(
+                      "Tecnologia no Campo",
+                      style: TextStyle(
+                        color: highContrast ? DarkPalette.textSecondary : azulCyan,
+                        fontSize: 14 * fontFactor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text("Início"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/home');
-              },
-            ),
+              Divider(color: highContrast ? DarkPalette.surfaceBorder : Colors.grey[200], height: 1),
 
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text("Sobre"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/sobre');
-              },
-            ),
+              ListTile(
+                leading: Icon(Icons.home, color: highContrast ? Colors.cyanAccent : Colors.black54),
+                title: Text(
+                  "Início",
+                  style: TextStyle(
+                    fontSize: 15 * fontFactor,
+                    color: highContrast ? DarkPalette.textPrimary : Colors.black87,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacementNamed(context, '/home');
+                },
+              ),
 
-            ListTile(
-              leading: const Icon(Icons.login),
-              title: const Text("Login"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/login');
-              },
-            ),
+              ListTile(
+                leading: Icon(Icons.info, color: highContrast ? Colors.cyanAccent : Colors.black54),
+                title: Text(
+                  "Sobre",
+                  style: TextStyle(
+                    fontSize: 15 * fontFactor,
+                    color: highContrast ? DarkPalette.textPrimary : Colors.black87,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacementNamed(context, '/sobre');
+                },
+              ),
 
-          ],
+              ListTile(
+                leading: Icon(Icons.login, color: highContrast ? Colors.cyanAccent : Colors.black54),
+                title: Text(
+                  "Login",
+                  style: TextStyle(
+                    fontSize: 15 * fontFactor,
+                    color: highContrast ? DarkPalette.textPrimary : Colors.black87,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+              ),
+            ],
+          ),
         ),
       ),
 
@@ -132,33 +173,43 @@ class _SobreNosState extends State<SobreNos> {
 
                 Container(
                   height: 200,
-                  color: Colors.black.withOpacity(0.6),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.4),
+                        Colors.black.withOpacity(0.75),
+                      ],
+                    ),
+                  ),
                 ),
 
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 60),
-
-                      Text(
-                        "Equipe Técnica",
-                        style: TextStyle(
-                          color: azulCyan,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+                SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Equipe Técnica",
+                          style: TextStyle(
+                            color: azulCyan,
+                            fontSize: 28 * fontFactor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          "Unindo engenharia e software para um futuro sustentável.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            "Unindo engenharia e software para um futuro sustentável.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white, fontSize: 13 * fontFactor),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -169,7 +220,7 @@ class _SobreNosState extends State<SobreNos> {
             Text(
               "Nossa Equipe",
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 24 * fontFactor,
                 fontWeight: FontWeight.bold,
                 color: textColor,
               ),
@@ -205,7 +256,6 @@ class _SobreNosState extends State<SobreNos> {
                     fontFactor,
                     highContrast,
                   ),
-
                   _buildTeamCard(
                     "Ana Rita Boiago",
                     "SM / Back-End",
@@ -216,7 +266,6 @@ class _SobreNosState extends State<SobreNos> {
                     fontFactor,
                     highContrast,
                   ),
-
                   _buildTeamCard(
                     "Giulia Ribeiro",
                     "Analista de Sistemas e Designer",
@@ -227,7 +276,6 @@ class _SobreNosState extends State<SobreNos> {
                     fontFactor,
                     highContrast,
                   ),
-
                   _buildTeamCard(
                     "Rubens Neto",
                     "Analista de Sistemas e Designer",
@@ -238,7 +286,6 @@ class _SobreNosState extends State<SobreNos> {
                     fontFactor,
                     highContrast,
                   ),
-
                   _buildTeamCard(
                     "Diego Bortolotti",
                     "Full-Stack",
@@ -249,7 +296,6 @@ class _SobreNosState extends State<SobreNos> {
                     fontFactor,
                     highContrast,
                   ),
-
                   _buildTeamCard(
                     "Felipe Ribeiro",
                     "Full-Stack",
@@ -269,14 +315,14 @@ class _SobreNosState extends State<SobreNos> {
             // 📌 FOOTER
             Container(
               padding: const EdgeInsets.all(30),
-              color: highContrast ? Colors.black : Colors.grey[300],
-              width: double.infinity,
-              child: Text(
-                "© 2026 Hydroflow - Gestão de Recursos Hídricos.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: textColor,
+              color: highContrast ? DarkPalette.surface : azulRoyal,
+              child: Center(
+                child: Text(
+                  "© 2026 HydroFlow • Tecnologia Sustentável",
+                  style: TextStyle(
+                    color: highContrast ? DarkPalette.textSecondary : Colors.white70,
+                    fontSize: 13 * fontFactor,
+                  ),
                 ),
               ),
             ),
@@ -298,78 +344,77 @@ class _SobreNosState extends State<SobreNos> {
   ) {
     return Card(
       color: cardColor,
-      elevation: 4,
-
+      elevation: highContrast ? 0 : 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: highContrast
-            ? const BorderSide(
-                color: Colors.white,
-                width: 2,
-              )
+            ? const BorderSide(color: DarkPalette.surfaceBorder, width: 1.5)
             : BorderSide.none,
       ),
-
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 38,
-            backgroundColor: azulRoyal,
-
-            child: CircleAvatar(
-              radius: 34,
-              backgroundImage: AssetImage(imagePath),
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-              color: nameColor,
-            ),
-          ),
-
-          Text(
-            role,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 11,
-              color: roleColor,
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.business,
-                  size: 18,
-                  color: Color(0xFF0077B5),
-                ),
-                onPressed: () {},
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 38,
+              backgroundColor: highContrast ? Colors.cyanAccent : azulRoyal,
+              child: CircleAvatar(
+                radius: 34,
+                backgroundImage: AssetImage(imagePath),
               ),
+            ),
 
-              IconButton(
-                icon: Icon(
-                  Icons.code,
-                  size: 18,
-                  color:
-                      highContrast ? Colors.white : Colors.black,
-                ),
-                onPressed: () {},
+            const SizedBox(height: 10),
+
+            Text(
+              name,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14 * fontFactor,
+                color: nameColor,
               ),
-            ],
-          )
-        ],
+            ),
+
+            Text(
+              role,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11 * fontFactor,
+                color: roleColor,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.business,
+                    size: 18,
+                    color: highContrast ? Colors.cyanAccent : const Color(0xFF0077B5),
+                  ),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.code,
+                    size: 18,
+                    color: highContrast ? DarkPalette.textPrimary : Colors.black,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

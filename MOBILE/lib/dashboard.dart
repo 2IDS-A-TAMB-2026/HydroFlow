@@ -73,6 +73,18 @@ const List<String> graficoLabels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', '
 const List<double> graficoValores = [12.5, 18.0, 9.3, 22.1, 15.6, 7.8, 19.4];
 
 /// ─────────────────────────────────────────────
+///  PALETA DO MODO ESCURO (mantém as cores do app)
+/// ─────────────────────────────────────────────
+class DarkPalette {
+  // Fundo escuro em vez de preto puro (derivado do azul primário)
+  static const Color background = Color(0xFF0A1A2B);
+  static const Color surface = Color(0xFF10263D);
+  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color textPrimary = Color(0xFFF2F6FA);
+  static const Color textSecondary = Color(0xFFA9C0D6);
+}
+
+/// ─────────────────────────────────────────────
 ///  DASHBOARD HYDROFLOW
 /// ─────────────────────────────────────────────
 class DashboardPage extends StatelessWidget {
@@ -87,10 +99,12 @@ class DashboardPage extends StatelessWidget {
     final high = acc.isHighContrast;
     final f = acc.fontSizeFactor;
 
-    // Definição dinâmica de cores para o fundo da tela e textos principais
-    final bg = high ? Colors.black : const Color(0xFFF4F6F9);
-    final appBarBg = high ? Colors.black : azulPrimario;
-    final appBarBorder = high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none;
+    // Fundo escuro com tom de azul, não preto/branco puro
+    final bg = high ? DarkPalette.background : const Color(0xFFF4F6F9);
+    final appBarBg = high ? DarkPalette.surface : azulPrimario;
+    final appBarBorder = high
+        ? const BorderSide(color: DarkPalette.surfaceBorder, width: 2)
+        : BorderSide.none;
 
     return Scaffold(
       backgroundColor: bg,
@@ -98,7 +112,7 @@ class DashboardPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: appBarBg,
         foregroundColor: Colors.white,
-        shape: Border(bottom: appBarBorder), // Borda visual no alto contraste
+        shape: Border(bottom: appBarBorder), // Borda visual no modo escuro
         title: Text(
           'Painel HYDROFLOW',
           style: TextStyle(fontSize: 18 * f, fontWeight: FontWeight.bold),
@@ -106,7 +120,6 @@ class DashboardPage extends StatelessWidget {
         actions: const [BotaoAcessibilidade()],
       ),
 
-      // ADICIONADO: O botão flutuante de acessibilidade importado do seu projeto
       floatingActionButton: const BotaoAcessibilidade(),
 
       body: SingleChildScrollView(
@@ -168,10 +181,12 @@ class _KpiCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: high ? Colors.black : Colors.white,
+        color: high ? DarkPalette.surface : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: high 
-            ? Border.all(color: Colors.white, width: 2) // Borda branca no alto contraste
+        // No modo escuro a borda usa a cor do próprio KPI, mais forte,
+        // em vez de ficar tudo branco/preto
+        border: high
+            ? Border.all(color: color.withOpacity(0.9), width: 1.5)
             : Border(left: BorderSide(color: color, width: 4)),
       ),
       child: Column(
@@ -183,14 +198,15 @@ class _KpiCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 24 * acc.fontSizeFactor,
               fontWeight: FontWeight.bold,
-              color: high ? Colors.white : Colors.black87,
+              // valor numérico ganha a cor do KPI no modo escuro
+              color: high ? color : Colors.black87,
             ),
           ),
           Text(
             label,
             style: TextStyle(
               fontSize: 12 * acc.fontSizeFactor,
-              color: high ? Colors.white70 : Colors.black54,
+              color: high ? DarkPalette.textSecondary : Colors.black54,
             ),
           ),
         ],
@@ -213,9 +229,9 @@ class _TableWidget extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: high ? Colors.black : Colors.white,
+        color: high ? DarkPalette.surface : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: high ? Border.all(color: Colors.white, width: 2) : null,
+        border: high ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,11 +241,10 @@ class _TableWidget extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16 * f,
-              color: high ? Colors.white : const Color(0xFF002855),
+              color: high ? Colors.cyanAccent : const Color(0xFF002855),
             ),
           ),
           const SizedBox(height: 12),
-          // Gerando as linhas da tabela dinamicamente com base no mock
           ...ultimasIrrigacoes.map((item) => Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Row(
@@ -241,16 +256,16 @@ class _TableWidget extends StatelessWidget {
                     Text(
                       item.nomePlanta,
                       style: TextStyle(
-                        fontSize: 14 * f, 
+                        fontSize: 14 * f,
                         fontWeight: FontWeight.w600,
-                        color: high ? Colors.white : Colors.black87
+                        color: high ? DarkPalette.textPrimary : Colors.black87,
                       ),
                     ),
                     Text(
                       item.nomeDispositivo,
                       style: TextStyle(
-                        fontSize: 12 * f, 
-                        color: high ? Colors.white70 : Colors.grey
+                        fontSize: 12 * f,
+                        color: high ? DarkPalette.textSecondary : Colors.grey,
                       ),
                     ),
                   ],
@@ -258,18 +273,30 @@ class _TableWidget extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: item.status == IrrigacaoStatus.irrigado ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2),
+                    color: item.status == IrrigacaoStatus.irrigado
+                        ? Colors.green.withOpacity(high ? 0.35 : 0.2)
+                        : Colors.red.withOpacity(high ? 0.35 : 0.2),
                     borderRadius: BorderRadius.circular(6),
-                    border: high ? Border.all(color: Colors.white) : null,
+                    border: high
+                        ? Border.all(
+                            color: item.status == IrrigacaoStatus.irrigado
+                                ? Colors.greenAccent
+                                : Colors.redAccent,
+                          )
+                        : null,
                   ),
                   child: Text(
                     item.status == IrrigacaoStatus.irrigado ? "Irrigado" : "Falha",
                     style: TextStyle(
                       fontSize: 12 * f,
                       fontWeight: FontWeight.bold,
-                      color: high 
-                          ? Colors.white 
-                          : (item.status == IrrigacaoStatus.irrigado ? Colors.green[800] : Colors.red[800]),
+                      color: high
+                          ? (item.status == IrrigacaoStatus.irrigado
+                              ? Colors.greenAccent
+                              : Colors.redAccent)
+                          : (item.status == IrrigacaoStatus.irrigado
+                              ? Colors.green[800]
+                              : Colors.red[800]),
                     ),
                   ),
                 )
@@ -296,15 +323,17 @@ class _ChartWidget extends StatelessWidget {
       height: 280,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: high ? Colors.black : Colors.white,
+        color: high ? DarkPalette.surface : Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: high ? Border.all(color: Colors.white, width: 2) : null,
-        boxShadow: high ? [] : [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-          )
-        ],
+        border: high ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5) : null,
+        boxShadow: high
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                )
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,7 +343,7 @@ class _ChartWidget extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14 * f,
-              color: high ? Colors.white : Colors.black87,
+              color: high ? DarkPalette.textPrimary : Colors.black87,
             ),
           ),
           const SizedBox(height: 12),
@@ -356,9 +385,14 @@ class _LinePainter extends CustomPainter {
     final maxValue = values.reduce(max);
     final stepX = chartWidth / (values.length - 1);
 
+    // Cor de destaque do gráfico: verde-água no modo claro, cyan vivo no escuro
+    final lineColor = isHighContrast ? Colors.cyanAccent : const Color(0xFF00A65A);
+
     /// ── GRID ─────────────────────────────
     final gridPaint = Paint()
-      ..color = isHighContrast ? Colors.white.withOpacity(0.3) : Colors.grey.withOpacity(0.15)
+      ..color = isHighContrast
+          ? DarkPalette.surfaceBorder.withOpacity(0.6)
+          : Colors.grey.withOpacity(0.15)
       ..strokeWidth = 1;
 
     for (int i = 0; i <= 4; i++) {
@@ -395,30 +429,29 @@ class _LinePainter extends CustomPainter {
     }
 
     /// ── AREA FILL ─────────────────────────
-    if (!isHighContrast) {
-      final fillPath = Path.from(path)
-        ..lineTo(points.last.dx, chartHeight)
-        ..lineTo(points.first.dx, chartHeight)
-        ..close();
+    // Agora também preenche no modo escuro, com opacidade menor
+    final fillPath = Path.from(path)
+      ..lineTo(points.last.dx, chartHeight)
+      ..lineTo(points.first.dx, chartHeight)
+      ..close();
 
-      final fillPaint = Paint()
-        ..shader = LinearGradient(
-          colors: [
-            const Color(0xFF00A65A).withOpacity(0.25),
-            Colors.transparent,
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    final fillPaint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          lineColor.withOpacity(isHighContrast ? 0.30 : 0.25),
+          Colors.transparent,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-      canvas.drawPath(fillPath, fillPaint);
-    }
+    canvas.drawPath(fillPath, fillPaint);
 
     /// ── LINE ─────────────────────────────
     final linePaint = Paint()
-      ..color = isHighContrast ? Colors.white : const Color(0xFF00A65A)
+      ..color = lineColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = isHighContrast ? 3.5 : 2.5;
+      ..strokeWidth = isHighContrast ? 3 : 2.5;
 
     canvas.drawPath(path, linePaint);
 
@@ -426,12 +459,16 @@ class _LinePainter extends CustomPainter {
     for (int i = 0; i < points.length; i++) {
       final p = points[i];
 
-      canvas.drawCircle(p, 5, Paint()..color = isHighContrast ? Colors.black : Colors.white);
+      canvas.drawCircle(
+        p,
+        5,
+        Paint()..color = isHighContrast ? DarkPalette.surface : Colors.white,
+      );
       canvas.drawCircle(
         p,
         5,
         Paint()
-          ..color = isHighContrast ? Colors.white : const Color(0xFF00A65A)
+          ..color = lineColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2,
       );
@@ -441,7 +478,7 @@ class _LinePainter extends CustomPainter {
           text: values[i].toStringAsFixed(0),
           style: TextStyle(
             fontSize: 10,
-            color: isHighContrast ? Colors.white : Colors.black87,
+            color: isHighContrast ? DarkPalette.textPrimary : Colors.black87,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -455,7 +492,7 @@ class _LinePainter extends CustomPainter {
           text: labels[i],
           style: TextStyle(
             fontSize: 10,
-            color: isHighContrast ? Colors.white70 : Colors.grey,
+            color: isHighContrast ? DarkPalette.textSecondary : Colors.grey,
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -482,7 +519,17 @@ class _HydroflowDrawer extends StatelessWidget {
 
     return Drawer(
       child: Container(
-        color: high ? Colors.black : azulPrimario,
+        // Em vez de preto puro, mantém um degradê do azul da marca
+        decoration: BoxDecoration(
+          gradient: high
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [DarkPalette.background, DarkPalette.surface],
+                )
+              : null,
+          color: high ? null : azulPrimario,
+        ),
         child: Column(
           children: [
             Container(
@@ -490,25 +537,27 @@ class _HydroflowDrawer extends StatelessWidget {
               width: double.infinity,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                border: high ? const Border(bottom: BorderSide(color: Colors.white24)) : null,
+                border: high
+                    ? const Border(bottom: BorderSide(color: DarkPalette.surfaceBorder))
+                    : null,
               ),
               child: Text(
                 "HYDROFLOW",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: high ? Colors.cyanAccent : Colors.white,
                   fontSize: 26 * f,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
                 ),
               ),
             ),
-            const Divider(color: Colors.white24),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
             _drawerItem(context, Icons.home, "Painel", '/dashboard'),
             _drawerItem(context, Icons.park, "Plantas", '/plantas'),
             _drawerItem(context, Icons.history, "Histórico", '/historico'),
             _drawerItem(context, Icons.memory, "Equipamentos", '/equipamentos'),
             const Spacer(),
-            const Divider(color: Colors.white24),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
             _drawerItem(context, Icons.logout, "Sair", '/login'),
             const SizedBox(height: 20),
           ],
@@ -531,7 +580,6 @@ class _HydroflowDrawer extends StatelessWidget {
       ),
       onTap: () {
         Navigator.pop(context);
-        // Evita que quebre caso as rotas ainda não estejam configuradas no MaterialApp
         try {
           Navigator.pushReplacementNamed(context, route);
         } catch (e) {

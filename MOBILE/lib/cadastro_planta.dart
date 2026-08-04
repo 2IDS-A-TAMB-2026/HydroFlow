@@ -4,6 +4,18 @@ import 'package:tcc/botao_acessibilidade.dart';
 import 'accessibility_provider.dart';
 import 'package:provider/provider.dart';
 
+/// ─────────────────────────────────────────────
+///  PALETA DO MODO ESCURO (mesma do dashboard/plantas)
+/// ─────────────────────────────────────────────
+class DarkPalette {
+  static const Color background = Color(0xFF0A1A2B);
+  static const Color surface = Color(0xFF10263D);
+  static const Color surfaceElevated = Color(0xFF16324B);
+  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color textPrimary = Color(0xFFF2F6FA);
+  static const Color textSecondary = Color(0xFFA9C0D6);
+}
+
 class CadastroPlantaPage extends StatefulWidget {
   const CadastroPlantaPage({super.key});
 
@@ -39,19 +51,25 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
   InputDecoration _input(String label, bool high, double f, {String? hint}) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: high ? Colors.white70 : Colors.black54, fontSize: 14 * f),
+      labelStyle: TextStyle(
+        color: high ? DarkPalette.textSecondary : Colors.black54,
+        fontSize: 14 * f,
+      ),
       hintText: hint,
-      hintStyle: TextStyle(color: high ? Colors.white54 : Colors.black38, fontSize: 14 * f),
+      hintStyle: TextStyle(
+        color: high ? DarkPalette.textSecondary : Colors.black38,
+        fontSize: 14 * f,
+      ),
       filled: true,
-      fillColor: high ? Colors.grey[900] : Colors.white,
+      fillColor: high ? DarkPalette.surface : Colors.white,
       errorStyle: TextStyle(fontSize: 12 * f, fontWeight: FontWeight.bold),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: high ? Colors.white54 : Colors.grey.withOpacity(0.5)),
+        borderSide: BorderSide(color: high ? DarkPalette.surfaceBorder : Colors.grey.withOpacity(0.5)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: high ? Colors.white : azulPrimario, width: 2),
+        borderSide: BorderSide(color: high ? Colors.cyanAccent : azulPrimario, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -71,17 +89,23 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
     final high = acc.isHighContrast;
     final f = acc.fontSizeFactor;
 
-    final bgPage = high ? Colors.black : const Color(0xFFF4F6F9);
-    final bgCard = high ? Colors.black : Colors.white;
-    final appBarBg = high ? Colors.black : azulPrimario;
-    final txtPrincipal = high ? Colors.white : azulPrimario;
-    final appBarBorder = high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none;
+    final bgPage = high ? DarkPalette.background : const Color(0xFFF4F6F9);
+    final bgCard = high ? DarkPalette.surface : Colors.white;
+    final appBarBg = high ? DarkPalette.surface : azulPrimario;
+    final txtPrincipal = high ? Colors.cyanAccent : azulPrimario;
+    final appBarBorder = high
+        ? const BorderSide(color: DarkPalette.surfaceBorder, width: 2)
+        : BorderSide.none;
 
     return Scaffold(
       backgroundColor: bgPage,
 
       appBar: AppBar(
-        title: Text("Cadastro de Culturas", style: TextStyle(fontSize: 20 * f)),
+        title: Text(
+          "Cadastro de Culturas",
+          style: TextStyle(fontSize: 20 * f),
+          overflow: TextOverflow.ellipsis,
+        ),
         backgroundColor: appBarBg,
         foregroundColor: Colors.white,
         shape: Border(bottom: appBarBorder),
@@ -96,17 +120,19 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
           children: [
             /// CARD PRINCIPAL
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: bgCard,
                 borderRadius: BorderRadius.circular(14),
-                border: high ? Border.all(color: Colors.white, width: 2) : null,
-                boxShadow: high ? [] : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                  )
-                ],
+                border: high ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5) : null,
+                boxShadow: high
+                    ? []
+                    : [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                        )
+                      ],
               ),
               child: Form(
                 key: _formKey,
@@ -115,36 +141,50 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                   children: [
 
                     /// HEADER Interno
+                    // CORRIGIDO: Row com Expanded/Flexible para não estourar
+                    // quando o texto aumenta (fontSizeFactor) ou a tela é estreita
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.eco, color: high ? Colors.white : azulPrimario),
-                            const SizedBox(width: 10),
-                            Text(
-                              "Nova Planta",
-                              style: TextStyle(
-                                fontSize: 20 * f,
-                                fontWeight: FontWeight.bold,
-                                color: txtPrincipal,
+                        Expanded(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.eco, color: high ? Colors.cyanAccent : azulPrimario),
+                              const SizedBox(width: 10),
+                              Flexible(
+                                child: Text(
+                                  "Nova Planta",
+                                  style: TextStyle(
+                                    fontSize: 20 * f,
+                                    fontWeight: FontWeight.bold,
+                                    color: txtPrincipal,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-
+                        const SizedBox(width: 8),
                         TextButton.icon(
                           onPressed: () => Navigator.pushReplacementNamed(context, '/plantas'),
                           icon: const Icon(Icons.list),
-                          label: Text("Ver plantas", style: TextStyle(fontSize: 14 * f)),
+                          label: Text(
+                            "Ver plantas",
+                            style: TextStyle(fontSize: 14 * f),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           style: TextButton.styleFrom(
-                            foregroundColor: high ? Colors.white : azulPrimario,
+                            foregroundColor: high ? Colors.cyanAccent : azulPrimario,
                           ),
                         ),
                       ],
                     ),
 
-                    Divider(height: 30, color: high ? Colors.white24 : Colors.grey[300]),
+                    Divider(
+                      height: 30,
+                      color: high ? DarkPalette.surfaceBorder : Colors.grey[300],
+                    ),
 
                     /// SEÇÃO 1
                     Text(
@@ -152,7 +192,7 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14 * f,
-                        color: high ? Colors.white70 : Colors.grey,
+                        color: high ? DarkPalette.textSecondary : Colors.grey,
                       ),
                     ),
 
@@ -160,7 +200,10 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
 
                     TextFormField(
                       controller: _nomeController,
-                      style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                      style: TextStyle(
+                        color: high ? DarkPalette.textPrimary : Colors.black,
+                        fontSize: 14 * f,
+                      ),
                       decoration: _input("Nome da planta", high, f, hint: "Ex: Tomate Carmem"),
                     ),
 
@@ -170,8 +213,12 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                       children: [
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            dropdownColor: high ? Colors.grey[900] : Colors.white,
-                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            isExpanded: true, // CORRIGIDO: evita overflow do texto do item
+                            dropdownColor: high ? DarkPalette.surfaceElevated : Colors.white,
+                            style: TextStyle(
+                              color: high ? DarkPalette.textPrimary : Colors.black,
+                              fontSize: 14 * f,
+                            ),
                             decoration: _input("Tipo", high, f),
                             items: const [
                               "Hortaliça",
@@ -182,7 +229,7 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                             ]
                                 .map((e) => DropdownMenuItem(
                                       value: e,
-                                      child: Text(e),
+                                      child: Text(e, overflow: TextOverflow.ellipsis),
                                     ))
                                 .toList(),
                             onChanged: (v) => _tipoSelecionado = v,
@@ -192,7 +239,10 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                         Expanded(
                           child: TextFormField(
                             controller: _culturaController,
-                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            style: TextStyle(
+                              color: high ? DarkPalette.textPrimary : Colors.black,
+                              fontSize: 14 * f,
+                            ),
                             decoration: _input("Cultura", high, f),
                           ),
                         ),
@@ -207,7 +257,7 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14 * f,
-                        color: high ? Colors.white70 : Colors.grey,
+                        color: high ? DarkPalette.textSecondary : Colors.grey,
                       ),
                     ),
 
@@ -220,21 +270,28 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                           child: TextFormField(
                             controller: _qtdAguaController,
                             keyboardType: TextInputType.number,
-                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            style: TextStyle(
+                              color: high ? DarkPalette.textPrimary : Colors.black,
+                              fontSize: 14 * f,
+                            ),
                             decoration: _input("Quantidade de água", high, f),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: DropdownButtonFormField<String>(
+                            isExpanded: true,
                             value: _unidadeAgua,
-                            dropdownColor: high ? Colors.grey[900] : Colors.white,
-                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            dropdownColor: high ? DarkPalette.surfaceElevated : Colors.white,
+                            style: TextStyle(
+                              color: high ? DarkPalette.textPrimary : Colors.black,
+                              fontSize: 14 * f,
+                            ),
                             decoration: _input("Unidade", high, f),
                             items: const ["Litros/dia", "mm/dia", "mL/dia"]
                                 .map((e) => DropdownMenuItem(
                                       value: e,
-                                      child: Text(e),
+                                      child: Text(e, overflow: TextOverflow.ellipsis),
                                     ))
                                 .toList(),
                             onChanged: (v) => setState(() => _unidadeAgua = v!),
@@ -246,9 +303,13 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                     const SizedBox(height: 12),
 
                     DropdownButtonFormField<String>(
+                      isExpanded: true,
                       decoration: _input("Dispositivo", high, f),
-                      dropdownColor: high ? Colors.grey[900] : Colors.white,
-                      style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                      dropdownColor: high ? DarkPalette.surfaceElevated : Colors.white,
+                      style: TextStyle(
+                        color: high ? DarkPalette.textPrimary : Colors.black,
+                        fontSize: 14 * f,
+                      ),
                       items: const [
                         "Irriga 1000",
                         "Hortas 03012",
@@ -256,7 +317,7 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                       ]
                           .map((e) => DropdownMenuItem(
                                 value: e,
-                                child: Text(e),
+                                child: Text(e, overflow: TextOverflow.ellipsis),
                               ))
                           .toList(),
                       onChanged: (v) => _dispositivoSelecionado = v,
@@ -270,21 +331,28 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                           child: TextFormField(
                             controller: _periodoController,
                             keyboardType: TextInputType.number,
-                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            style: TextStyle(
+                              color: high ? DarkPalette.textPrimary : Colors.black,
+                              fontSize: 14 * f,
+                            ),
                             decoration: _input("Periodicidade", high, f),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: DropdownButtonFormField<String>(
+                            isExpanded: true,
                             value: _unidadeTempo,
-                            dropdownColor: high ? Colors.grey[900] : Colors.white,
-                            style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+                            dropdownColor: high ? DarkPalette.surfaceElevated : Colors.white,
+                            style: TextStyle(
+                              color: high ? DarkPalette.textPrimary : Colors.black,
+                              fontSize: 14 * f,
+                            ),
                             decoration: _input("Unidade", high, f),
                             items: const ["Horas", "Dias", "Semanas"]
                                 .map((e) => DropdownMenuItem(
                                       value: e,
-                                      child: Text(e),
+                                      child: Text(e, overflow: TextOverflow.ellipsis),
                                     ))
                                 .toList(),
                             onChanged: (v) => setState(() => _unidadeTempo = v!),
@@ -296,18 +364,22 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                     const SizedBox(height: 25),
 
                     /// BOTÕES
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    // CORRIGIDO: Wrap em vez de Row simples, para os botões
+                    // quebrarem linha em telas estreitas ou fonte grande,
+                    // em vez de estourar a largura do card.
+                    Wrap(
+                      alignment: WrapAlignment.end,
+                      spacing: 12,
+                      runSpacing: 12,
                       children: [
                         OutlinedButton(
                           onPressed: () => _formKey.currentState?.reset(),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: high ? Colors.white : azulPrimario,
-                            side: BorderSide(color: high ? Colors.white54 : azulPrimario),
+                            foregroundColor: high ? Colors.cyanAccent : azulPrimario,
+                            side: BorderSide(color: high ? DarkPalette.surfaceBorder : azulPrimario),
                           ),
                           child: Text("Limpar", style: TextStyle(fontSize: 14 * f)),
                         ),
-                        const SizedBox(width: 12),
                         ElevatedButton.icon(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
@@ -319,11 +391,14 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                             }
                           },
                           icon: const Icon(Icons.check),
-                          label: Text("Salvar", style: TextStyle(fontSize: 14 * f, fontWeight: FontWeight.bold)),
+                          label: Text(
+                            "Salvar",
+                            style: TextStyle(fontSize: 14 * f, fontWeight: FontWeight.bold),
+                          ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: high ? Colors.black : azulPrimario,
-                            foregroundColor: Colors.white,
-                            side: high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none,
+                            backgroundColor: high ? DarkPalette.surfaceElevated : azulPrimario,
+                            foregroundColor: high ? Colors.cyanAccent : Colors.white,
+                            side: high ? const BorderSide(color: Colors.cyanAccent, width: 1.5) : BorderSide.none,
                           ),
                         ),
                       ],
@@ -342,7 +417,16 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
   Widget _buildDrawer(BuildContext context, bool high, double f) {
     return Drawer(
       child: Container(
-        color: high ? Colors.black : azulPrimario,
+        decoration: BoxDecoration(
+          gradient: high
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [DarkPalette.background, DarkPalette.surface],
+                )
+              : null,
+          color: high ? null : azulPrimario,
+        ),
         child: Column(
           children: [
             SizedBox(
@@ -351,20 +435,20 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                 child: Text(
                   "HYDROFLOW",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: high ? Colors.cyanAccent : Colors.white,
                     fontSize: 26 * f,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
-            const Divider(color: Colors.white24),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
             _drawerItem(Icons.home, "Painel", '/dashboard', f),
             _drawerItem(Icons.eco, "Plantas", '/plantas', f),
             _drawerItem(Icons.history, "Histórico", '/historico', f),
             _drawerItem(Icons.memory, "Equipamentos", '/equipamentos', f),
             const Spacer(),
-            const Divider(color: Colors.white24),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
             _drawerItem(Icons.logout, "Sair", '/login', f, isLogout: true),
             const SizedBox(height: 20),
           ],

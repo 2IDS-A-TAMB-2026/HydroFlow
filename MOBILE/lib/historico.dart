@@ -4,6 +4,18 @@ import 'package:tcc/botao_acessibilidade.dart';
 import 'accessibility_provider.dart';
 import 'package:provider/provider.dart';
 
+/// ─────────────────────────────────────────────
+///  PALETA DO MODO ESCURO
+/// ─────────────────────────────────────────────
+class DarkPalette {
+  static const Color background = Color(0xFF0A1A2B);
+  static const Color surface = Color(0xFF10263D);
+  static const Color surfaceElevated = Color(0xFF16324B);
+  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color textPrimary = Color(0xFFF2F6FA);
+  static const Color textSecondary = Color(0xFFA9C0D6);
+}
+
 class HistoricoPage extends StatefulWidget {
   const HistoricoPage({super.key});
 
@@ -71,15 +83,21 @@ class _HistoricoPageState extends State<HistoricoPage> {
     final high = acc.isHighContrast;
     final f = acc.fontSizeFactor;
 
-    final bgPage = high ? Colors.black : Colors.grey[100];
-    final appBarBg = high ? Colors.black : azul;
-    final appBarBorder = high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none;
+    final bgPage = high ? DarkPalette.background : Colors.grey[100];
+    final appBarBg = high ? DarkPalette.surface : azul;
+    final appBarBorder = high
+        ? const BorderSide(color: DarkPalette.surfaceBorder, width: 2)
+        : BorderSide.none;
 
     return Scaffold(
       backgroundColor: bgPage,
-      
+
       appBar: AppBar(
-        title: Text("Histórico de Ativações", style: TextStyle(fontSize: 20 * f)),
+        title: Text(
+          "Histórico de Ativações",
+          style: TextStyle(fontSize: 20 * f),
+          overflow: TextOverflow.ellipsis,
+        ),
         backgroundColor: appBarBg,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -106,10 +124,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
   Widget _buildFilterWidget(bool high, double f) {
     return Card(
       elevation: high ? 0 : 3,
-      color: high ? Colors.black : Colors.white,
+      color: high ? DarkPalette.surface : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none,
+        side: high ? const BorderSide(color: DarkPalette.surfaceBorder, width: 1.5) : BorderSide.none,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -118,14 +136,17 @@ class _HistoricoPageState extends State<HistoricoPage> {
           children: [
             Row(
               children: [
-                Icon(Icons.filter_list, color: high ? Colors.white : azul),
+                Icon(Icons.filter_list, color: high ? Colors.cyanAccent : azul),
                 const SizedBox(width: 8),
-                Text(
-                  "Filtros de Busca",
-                  style: TextStyle(
-                    fontSize: 16 * f,
-                    fontWeight: FontWeight.bold,
-                    color: high ? Colors.white : Colors.black87,
+                Flexible(
+                  child: Text(
+                    "Filtros de Busca",
+                    style: TextStyle(
+                      fontSize: 16 * f,
+                      fontWeight: FontWeight.bold,
+                      color: high ? DarkPalette.textPrimary : Colors.black87,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -138,20 +159,20 @@ class _HistoricoPageState extends State<HistoricoPage> {
                   _query = value.toLowerCase();
                 });
               },
-              style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+              style: TextStyle(color: high ? DarkPalette.textPrimary : Colors.black, fontSize: 14 * f),
               decoration: InputDecoration(
                 hintText: "Buscar por setor, data ou status...",
-                hintStyle: TextStyle(color: high ? Colors.white54 : Colors.black38, fontSize: 14 * f),
-                prefixIcon: Icon(Icons.search, color: high ? Colors.white70 : Colors.black45),
+                hintStyle: TextStyle(color: high ? DarkPalette.textSecondary : Colors.black38, fontSize: 14 * f),
+                prefixIcon: Icon(Icons.search, color: high ? Colors.cyanAccent : Colors.black45),
                 filled: true,
-                fillColor: high ? Colors.grey[900] : const Color(0xFFF5F7FA),
+                fillColor: high ? DarkPalette.surfaceElevated : const Color(0xFFF5F7FA),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: high ? Colors.white54 : Colors.grey.withOpacity(0.3)),
+                  borderSide: BorderSide(color: high ? DarkPalette.surfaceBorder : Colors.grey.withOpacity(0.3)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: high ? Colors.white : azul, width: 2),
+                  borderSide: BorderSide(color: high ? Colors.cyanAccent : azul, width: 2),
                 ),
               ),
             ),
@@ -171,10 +192,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
     return Card(
       elevation: high ? 0 : 3,
-      color: high ? Colors.black : Colors.white,
+      color: high ? DarkPalette.surface : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none,
+        side: high ? const BorderSide(color: DarkPalette.surfaceBorder, width: 1.5) : BorderSide.none,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -182,29 +203,35 @@ class _HistoricoPageState extends State<HistoricoPage> {
           children: [
             Row(
               children: [
-                Icon(Icons.assignment, color: high ? Colors.white : azul),
+                Icon(Icons.assignment, color: high ? Colors.cyanAccent : azul),
                 const SizedBox(width: 8),
-                Text(
-                  "Registros de Irrigação",
-                  style: TextStyle(
-                    fontSize: 18 * f,
-                    fontWeight: FontWeight.bold,
-                    color: high ? Colors.white : Colors.black87,
+                Flexible(
+                  child: Text(
+                    "Registros de Irrigação",
+                    style: TextStyle(
+                      fontSize: 18 * f,
+                      fontWeight: FontWeight.bold,
+                      color: high ? DarkPalette.textPrimary : Colors.black87,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
-            Divider(color: high ? Colors.white24 : Colors.grey[300]),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.grey[300]),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
+                headingRowColor: MaterialStateProperty.all(
+                  high ? DarkPalette.surfaceElevated : null,
+                ),
                 headingTextStyle: TextStyle(
-                  color: high ? Colors.white : azul,
+                  color: high ? Colors.cyanAccent : azul,
                   fontWeight: FontWeight.bold,
                   fontSize: 14 * f,
                 ),
                 dataTextStyle: TextStyle(
-                  color: high ? Colors.white70 : Colors.black87,
+                  color: high ? DarkPalette.textSecondary : Colors.black87,
                   fontSize: 13 * f,
                 ),
                 columns: const [
@@ -249,15 +276,27 @@ class _HistoricoPageState extends State<HistoricoPage> {
     bool high,
     double f,
   ) {
+    // CORRIGIDO: no modo escuro o status usava sempre branco e perdia
+    // a distinção visual entre "Concluído" (verde) e "Falha" (vermelho).
+    // Agora usa uma versão mais clara da própria cor do status.
+    final Color highStatusColor = statusColor == Colors.green ? Colors.greenAccent : Colors.redAccent;
+
     return DataRow(
       cells: [
-        DataCell(Text(data, style: TextStyle(fontWeight: FontWeight.bold, color: high ? Colors.white : Colors.black))),
+        DataCell(Text(
+          data,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: high ? DarkPalette.textPrimary : Colors.black,
+          ),
+        )),
         DataCell(Text(setor)),
         DataCell(Text(duracao)),
         DataCell(Text(vol)),
         DataCell(Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: high ? Colors.white70 : Colors.black54),
+            Icon(icon, size: 16, color: high ? DarkPalette.textSecondary : Colors.black54),
             const SizedBox(width: 5),
             Text(tipo),
           ],
@@ -266,14 +305,14 @@ class _HistoricoPageState extends State<HistoricoPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: high ? Colors.transparent : statusColor,
+              color: high ? highStatusColor.withOpacity(0.18) : statusColor,
               borderRadius: BorderRadius.circular(20),
-              border: high ? Border.all(color: Colors.white, width: 1.5) : null,
+              border: high ? Border.all(color: highStatusColor, width: 1.5) : null,
             ),
             child: Text(
               status,
               style: TextStyle(
-                color: high ? Colors.white : Colors.white,
+                color: high ? highStatusColor : Colors.white,
                 fontSize: 11 * f,
                 fontWeight: FontWeight.bold,
               ),
@@ -288,20 +327,29 @@ class _HistoricoPageState extends State<HistoricoPage> {
   Widget _buildDrawer(BuildContext context, bool high, double f) {
     return Drawer(
       child: Container(
-        color: high ? Colors.black : azul,
+        decoration: BoxDecoration(
+          gradient: high
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [DarkPalette.background, DarkPalette.surface],
+                )
+              : null,
+          color: high ? null : azul,
+        ),
         child: Column(
           children: [
             const SizedBox(height: 80),
             Text(
               "HYDROFLOW",
               style: TextStyle(
-                color: Colors.white,
+                color: high ? Colors.cyanAccent : Colors.white,
                 fontSize: 24 * f,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 20),
-            const Divider(color: Colors.white24),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
 
             _drawerItem(context, Icons.home, "Painel", f, () {
               Navigator.pushReplacementNamed(context, '/dashboard');
@@ -317,7 +365,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             }),
 
             const Spacer(),
-            const Divider(color: Colors.white24),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
 
             _drawerItem(context, Icons.logout, "Sair", f, () {
               _logout(context);

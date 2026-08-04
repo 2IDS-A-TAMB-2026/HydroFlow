@@ -4,6 +4,18 @@ import 'package:tcc/botao_acessibilidade.dart';
 import 'accessibility_provider.dart';
 import 'package:provider/provider.dart';
 
+/// ─────────────────────────────────────────────
+///  PALETA DO MODO ESCURO (mesma do dashboard)
+/// ─────────────────────────────────────────────
+class DarkPalette {
+  static const Color background = Color(0xFF0A1A2B);
+  static const Color surface = Color(0xFF10263D);
+  static const Color surfaceElevated = Color(0xFF16324B);
+  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color textPrimary = Color(0xFFF2F6FA);
+  static const Color textSecondary = Color(0xFFA9C0D6);
+}
+
 class PlantasPage extends StatefulWidget {
   const PlantasPage({super.key});
 
@@ -29,11 +41,13 @@ class _PlantasPageState extends State<PlantasPage> {
     final high = acc.isHighContrast;
     final f = acc.fontSizeFactor;
 
-    final bgPage = high ? Colors.black : const Color(0xFFF5F6FA);
-    final bgContainer = high ? Colors.black : Colors.white;
-    final appBarBg = high ? Colors.black : azul;
-    final txtPrincipal = high ? Colors.white : azul;
-    final appBarBorder = high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none;
+    final bgPage = high ? DarkPalette.background : const Color(0xFFF5F6FA);
+    final bgContainer = high ? DarkPalette.surface : Colors.white;
+    final appBarBg = high ? DarkPalette.surface : azul;
+    final txtPrincipal = high ? Colors.cyanAccent : azul;
+    final appBarBorder = high
+        ? const BorderSide(color: DarkPalette.surfaceBorder, width: 2)
+        : BorderSide.none;
 
     return Scaffold(
       backgroundColor: bgPage,
@@ -72,7 +86,7 @@ class _PlantasPageState extends State<PlantasPage> {
                     Text(
                       "Cadastre e gerencie culturas",
                       style: TextStyle(
-                        color: high ? Colors.white70 : Colors.grey,
+                        color: high ? DarkPalette.textSecondary : Colors.grey,
                         fontSize: 14 * f,
                       ),
                     ),
@@ -84,9 +98,11 @@ class _PlantasPageState extends State<PlantasPage> {
                   icon: Icon(Icons.add, size: 18 * f),
                   label: Text("Nova", style: TextStyle(fontSize: 14 * f, fontWeight: FontWeight.bold)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: high ? Colors.black : azul,
-                    foregroundColor: Colors.white,
-                    side: high ? const BorderSide(color: Colors.white, width: 2) : BorderSide.none,
+                    // Mantém a cor de destaque (azul) também no modo escuro,
+                    // em vez de virar botão preto
+                    backgroundColor: high ? DarkPalette.surfaceElevated : azul,
+                    foregroundColor: high ? Colors.cyanAccent : Colors.white,
+                    side: high ? const BorderSide(color: Colors.cyanAccent, width: 1.5) : BorderSide.none,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -99,21 +115,24 @@ class _PlantasPageState extends State<PlantasPage> {
 
             /// SEARCH BAR LIMPA
             TextField(
-              style: TextStyle(color: high ? Colors.white : Colors.black, fontSize: 14 * f),
+              style: TextStyle(color: high ? DarkPalette.textPrimary : Colors.black, fontSize: 14 * f),
               decoration: InputDecoration(
                 hintText: "Buscar planta...",
-                hintStyle: TextStyle(color: high ? Colors.white54 : Colors.black38, fontSize: 14 * f),
-                prefixIcon: Icon(Icons.search, color: high ? Colors.white70 : Colors.black45),
+                hintStyle: TextStyle(
+                  color: high ? DarkPalette.textSecondary : Colors.black38,
+                  fontSize: 14 * f,
+                ),
+                prefixIcon: Icon(Icons.search, color: high ? Colors.cyanAccent : Colors.black45),
                 filled: true,
-                fillColor: high ? Colors.grey[900] : Colors.white,
+                fillColor: high ? DarkPalette.surface : Colors.white,
                 contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: high ? Colors.white54 : Colors.transparent),
+                  borderSide: BorderSide(color: high ? DarkPalette.surfaceBorder : Colors.transparent),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: high ? Colors.white : azul, width: 2),
+                  borderSide: BorderSide(color: high ? Colors.cyanAccent : azul, width: 2),
                 ),
               ),
             ),
@@ -126,7 +145,7 @@ class _PlantasPageState extends State<PlantasPage> {
                 decoration: BoxDecoration(
                   color: bgContainer,
                   borderRadius: BorderRadius.circular(10),
-                  border: high ? Border.all(color: Colors.white, width: 2) : null,
+                  border: high ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5) : null,
                 ),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -134,15 +153,15 @@ class _PlantasPageState extends State<PlantasPage> {
                     scrollDirection: Axis.vertical,
                     child: DataTable(
                       headingRowColor: MaterialStateProperty.all(
-                        high ? Colors.grey[900] : const Color(0xFFF0F2F5),
+                        high ? DarkPalette.surfaceElevated : const Color(0xFFF0F2F5),
                       ),
                       headingTextStyle: TextStyle(
-                        color: high ? Colors.white : azul,
+                        color: high ? Colors.cyanAccent : azul,
                         fontWeight: FontWeight.bold,
                         fontSize: 14 * f,
                       ),
                       dataTextStyle: TextStyle(
-                        color: high ? Colors.white70 : Colors.black87,
+                        color: high ? DarkPalette.textSecondary : Colors.black87,
                         fontSize: 13 * f,
                       ),
                       columnSpacing: 25,
@@ -185,7 +204,7 @@ class _PlantasPageState extends State<PlantasPage> {
             nome,
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: high ? Colors.white : Colors.black,
+              color: high ? DarkPalette.textPrimary : Colors.black,
             ),
           ),
         ),
@@ -215,20 +234,30 @@ class _PlantasPageState extends State<PlantasPage> {
   Widget _buildDrawer(bool high, double f) {
     return Drawer(
       child: Container(
-        color: high ? Colors.black : azul,
+        // Degradê do azul da marca no lugar de preto sólido
+        decoration: BoxDecoration(
+          gradient: high
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [DarkPalette.background, DarkPalette.surface],
+                )
+              : null,
+          color: high ? null : azul,
+        ),
         child: Column(
           children: [
             const SizedBox(height: 80),
             Text(
               "HYDROFLOW",
               style: TextStyle(
-                color: Colors.white,
+                color: high ? Colors.cyanAccent : Colors.white,
                 fontSize: 24 * f,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 20),
-            const Divider(color: Colors.white24),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
 
             _item(Icons.home, "Painel", '/dashboard', f),
             _item(Icons.park, "Plantas", '/plantas', f),
@@ -236,7 +265,7 @@ class _PlantasPageState extends State<PlantasPage> {
             _item(Icons.memory, "Equipamentos", '/equipamentos', f),
 
             const Spacer(),
-            const Divider(color: Colors.white24),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
 
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.white),
