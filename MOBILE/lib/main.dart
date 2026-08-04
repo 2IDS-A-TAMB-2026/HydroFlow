@@ -5,11 +5,9 @@ import 'package:provider/provider.dart';
 import 'accessibility_provider.dart';
 import 'botao_acessibilidade.dart';
 
-// Suas importações originais
 import 'home.dart';
 import 'login.dart';
 import 'sobre_nos.dart';
-import 'cadastro.dart';
 import 'dashboard.dart';
 import 'esqueci_senha.dart';
 import 'cadastro_planta.dart';
@@ -64,7 +62,6 @@ class HydroflowApp extends StatelessWidget {
         '/home': (context) => const Home(),
         '/login': (context) => const LoginMobilePage(),
         '/sobre': (context) => const SobreNos(),
-        '/cadastro': (context) => const CadastroPage(),
         '/dashboard': (context) => const DashboardPage(),
         '/nova_senha': (context) => const NovaSenhaPage(),
         '/cadastro_plantas': (context) => const CadastroPlantaPage(),

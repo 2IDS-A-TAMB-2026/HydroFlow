@@ -7,7 +7,6 @@ class BotaoAcessibilidade extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Escuta o provider (listen: false pois só queremos disparar funções aqui)
     final acc = Provider.of<AccessibilityProvider>(context, listen: false);
 
     return PopupMenuButton<String>(

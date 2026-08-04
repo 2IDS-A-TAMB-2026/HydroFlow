@@ -113,14 +113,6 @@ class _SobreNosState extends State<SobreNos> {
               },
             ),
 
-            ListTile(
-              leading: const Icon(Icons.person_add),
-              title: const Text("Cadastro"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, '/cadastro');
-              },
-            ),
           ],
         ),
       ),

@@ -92,12 +92,6 @@ class Home extends StatelessWidget {
                       "Login",
                       '/login',
                     ),
-                    _drawerItem(
-                      context,
-                      Icons.person_add,
-                      "Cadastro",
-                      '/cadastro',
-                    ),
                   ],
                 ),
               ),

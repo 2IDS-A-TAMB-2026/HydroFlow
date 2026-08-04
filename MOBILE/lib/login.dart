@@ -187,20 +187,6 @@ class _LoginMobilePageState
                       },
                     ),
 
-                    _drawerItem(
-                      icon:
-                          Icons.person_add_alt_1,
-                      label: 'Cadastro',
-                      onTap: () {
-                        Navigator.pop(context);
-
-                        Navigator
-                            .pushReplacementNamed(
-                          context,
-                          '/cadastro',
-                        );
-                      },
-                    ),
                   ],
                 ),
               ),
@@ -419,12 +405,6 @@ class _LoginMobilePageState
 
                       const SizedBox(
                         height: 20,
-                      ),
-
-                      _buildFooterLink(
-                        'Não tem uma conta? ',
-                        'Cadastre-se',
-                        '/cadastro',
                       ),
                     ],
                   ),
