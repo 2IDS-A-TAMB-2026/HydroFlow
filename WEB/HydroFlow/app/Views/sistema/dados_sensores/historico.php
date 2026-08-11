@@ -21,22 +21,22 @@
         <form class="filter-bar" method="get" action="<?= base_url('dados_sensores') ?>">
             <div class="form-group">
                 <label>Data Inicial</label>
-                <input type="date" class="form-control" name="data_inicial" value="<?= esc($filtro_valores['data_inicial']) ?>">
+                <input type="date" class="form-control" name="data_inicial" value="<?= esc($filtro_valores['data_inicial'] ?? '') ?>">
             </div>
 
             <div class="form-group">
                 <label>Data Final</label>
-                <input type="date" class="form-control" name="data_final" value="<?= esc($filtro_valores['data_final']) ?>">
+                <input type="date" class="form-control" name="data_final" value="<?= esc($filtro_valores['data_final'] ?? '') ?>">
             </div>
 
             <div class="form-group">
                 <label>Temperatura Acima de (°C)</label>
-                <input type="number" class="form-control" name="temp_min" placeholder="Ex: 25" min="0" max="100" value="<?= esc($filtro_valores['temp_min']) ?>">
+                <input type="number" class="form-control" name="temp_min" placeholder="Ex: 25" min="0" max="100" value="<?= esc($filtro_valores['temp_min'] ?? '') ?>">
             </div>
 
             <div class="form-group">
                 <label>Umidade Abaixo de (%)</label>
-                <input type="number" class="form-control" name="umidade_max" placeholder="Ex: 40" min="0" max="100" value="<?= esc($filtro_valores['umidade_max']) ?>">
+                <input type="number" class="form-control" name="umidade_max" placeholder="Ex: 40" min="0" max="100" value="<?= esc($filtro_valores['umidade_max'] ?? '') ?>">
             </div>
 
             <div class="form-group">
@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         pointBackgroundColor: '#ff6b6b',
                         pointBorderColor: '#ffffff',
                         pointBorderWidth: 2,
-                        pointRadius: 0,
+                        pointRadius: 4, // CORRIGIDO: Era 0, agora pontos isolados são visíveis!
                         pointHoverRadius: 6,
                         fill: true,
                         yAxisID: 'yTemp',
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         pointBackgroundColor: '#0284c7',
                         pointBorderColor: '#ffffff',
                         pointBorderWidth: 2,
-                        pointRadius: 0,
+                        pointRadius: 4, // CORRIGIDO: Era 0, agora pontos isolados são visíveis!
                         pointHoverRadius: 6,
                         fill: true,
                         yAxisID: 'yUmid',
@@ -269,7 +269,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     return;
                 }
 
-                // Cria o clone para não modificar a tabela visual na tela
                 const cloneTabela = tabelaOriginal.cloneNode(true);
 
                 doc.autoTable({
@@ -277,7 +276,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     startY: 32, 
                     theme: 'striped',
                     headStyles: { 
-                        fillColor: [30, 60, 114], // Azul #1e3c72
+                        fillColor: [30, 60, 114],
                         textColor: [255, 255, 255], 
                         fontStyle: 'bold',
                         fontSize: 10,
@@ -299,7 +298,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     margin: { top: 32, right: 15, bottom: 20, left: 15 },
                     
                     didDrawPage: function(data) {
-                        // ---- CABEÇALHO ----
                         doc.setFillColor(30, 60, 114);
                         doc.rect(15, 10, 267, 14, 'F');
                         
@@ -313,7 +311,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         const dataHoje = new Date().toLocaleDateString('pt-BR');
                         doc.text("Gerado em: " + dataHoje, 242, 18.5);
 
-                        // ---- RODAPÉ ----
                         doc.setDrawColor(222, 226, 230);
                         doc.setLineWidth(0.3);
                         doc.line(15, 195, 282, 195); 
@@ -322,7 +319,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         doc.setFontSize(9);
                         doc.text("Relatório de Monitoramento de Sensores Automático", 15, 201);
                         
-                        let numeroPagina = doc.internal.getNumberOfPages();
                         doc.text("Página " + data.pageNumber, 265, 201);
                     }
                 });
@@ -358,7 +354,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 { wch: 18 }, // Umidade Coletada
                 { wch: 15 }  // Status / Saúde
             ];
-            planirha['!cols'] = largurasColunas;
+            planilha['!cols'] = largurasColunas; // CORRIGIDO: Estava 'planirha' com 'r'
 
             const pastaTrabalho = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(pastaTrabalho, planilha, "Dados do ESP32");

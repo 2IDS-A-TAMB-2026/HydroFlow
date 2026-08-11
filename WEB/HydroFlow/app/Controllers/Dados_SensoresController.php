@@ -70,34 +70,34 @@ public function index()
         ->whereIn('ds.FK_SEN_ID', $idsSensores);
 
     // 5. Aplica filtros se houver alteração manual
-    if (!empty($dataInicial) && $dataInicial !== date('Y-m-01') && $dataInicial !== '2026-06-01') {
-        $builder->where('ds.DDS_DATA >=', $dataInicial);
-    }
-    
-    if (!empty($dataFinal) && $dataFinal !== date('Y-m-d') && $dataFinal !== '2026-06-09') {
-        $builder->where('ds.DDS_DATA <=', $dataFinal);
-    }
+if (!empty($dataInicial)) {
+    $builder->where('ds.DDS_DATA >=', $dataInicial);
+}
 
-    if ($tempMin !== null && $tempMin !== '') {
-        $builder->where('ds.DDS_TEMP >=', (float)$tempMin);
-    }
+if (!empty($dataFinal)) {
+    $builder->where('ds.DDS_DATA <=', $dataFinal);
+}
 
-    // 6. Filtro de Classificação da Umidade
-    $statusFiltroLimpio = trim(strtolower($statusFiltro));
-    if ($statusFiltroLimpio !== 'todos' && !empty($statusFiltroLimpio)) {
-        if ($statusFiltroLimpio === 'otimo') {
-            $builder->where('ds.DDS_UMIDADE >', 70.00);
-        } elseif ($statusFiltroLimpio === 'bom') {
-            $builder->where('ds.DDS_UMIDADE >=', 40.00);
-            $builder->where('ds.DDS_UMIDADE <=', 70.00);
-        } elseif ($statusFiltroLimpio === 'ruim') {
-            $builder->where('ds.DDS_UMIDADE <', 40.00);
-        }
-    } else {
-        if ($umidadeMax !== null && $umidadeMax !== '') {
-            $builder->where('ds.DDS_UMIDADE <=', (float)$umidadeMax);
-        }
+if ($tempMin !== null && $tempMin !== '') {
+    $builder->where('ds.DDS_TEMP >=', (float)$tempMin);
+}
+
+// 6. Filtro de Classificação da Umidade
+$statusFiltroLimpio = trim(strtolower($statusFiltro));
+if ($statusFiltroLimpio !== 'todos' && !empty($statusFiltroLimpio)) {
+    if ($statusFiltroLimpio === 'otimo') {
+        $builder->where('ds.DDS_UMIDADE >', 70.00);
+    } elseif ($statusFiltroLimpio === 'bom') {
+        $builder->where('ds.DDS_UMIDADE >=', 40.00);
+        $builder->where('ds.DDS_UMIDADE <=', 70.00);
+    } elseif ($statusFiltroLimpio === 'ruim') {
+        $builder->where('ds.DDS_UMIDADE <', 40.00);
     }
+} else {
+    if ($umidadeMax !== null && $umidadeMax !== '') {
+        $builder->where('ds.DDS_UMIDADE <=', (float)$umidadeMax);
+    }
+}
 
     // 7. Executa a busca ordenando para a tabela
     $medicoesFiltradas = $builder->orderBy('ds.DDS_DATA DESC', 'ds.DDS_HORA DESC')
@@ -172,6 +172,7 @@ public function index()
             'DDS_DATA'    => date('Y-m-d'),
             'DDS_TEMP'    => $json['dds_temp'],
             'DDS_UMIDADE' => $json['dds_umidade'],
+            'DDS_UMIDADE_SOLO' => $json['dds_umidade_solo'],
             'FK_SEN_ID'   => $json['fk_sen_id']
         ];
 

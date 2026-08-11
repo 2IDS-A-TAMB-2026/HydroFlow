@@ -15,7 +15,30 @@ $routes->get('sobre', 'Home::irParaSobre');
 $routes->get('cadastro', 'Home::irParaCadastro');
 $routes->post('cadastro/salvar', 'UsuarioController::salvar');
 
+// API (Em andamento fiott)
+$routes->get('/api/usuarios', 'api\usuarioController::index');
+$routes->get('/api/usuarios/(:num)', 'api\usuarioController::show/$1');
+$routes->get('/api/plantas', 'api\plantasController::index');
+$routes->get('/api/plantas/(:num)', 'api\plantasController::show/$1');
+$routes->get('/api/historico', 'api\historicoController::index');
+$routes->get('/api/historico/(:num)', 'api\historicoController::show/$1');
 
+$routes->get('/api/dados_sensores', 'api\dadosSensoresController::index');
+$routes->get('/api/dados_sensores/(:num)', 'api\dadosSensoresController::show/$1');
+$routes->post('/api/dados_sensores', 'api\dadosSensoresController::create');
+$routes->put('/api/dados_sensores/(:num)', 'api\dadosSensoresController::update/$1');
+$routes->patch('/api/dados_sensores/(:num)', 'api\dadosSensoresController::update/$1');
+$routes->delete('/api/dados_sensores/(:num)', 'api\dadosSensoresController::delete/$1');
+
+$routes->group('api/dispositivos', function ($routes) {
+    $routes->get('/', 'Api\DispositivoController::index');
+    $routes->get('meus', 'Api\DispositivoController::meus');
+    $routes->get('(:num)', 'Api\DispositivoController::show/$1');
+    $routes->post('/', 'Api\DispositivoController::create');
+    $routes->put('(:num)', 'Api\DispositivoController::update/$1');
+    $routes->patch('(:num)', 'Api\DispositivoController::update/$1');
+    $routes->delete('(:num)', 'Api\DispositivoController::delete/$1');
+});
 
 // ==========================================
 //  SISTEMA DE AUTENTICAÇÃO (LOGIN / LOGOUT)
@@ -58,7 +81,7 @@ $routes->group('planta', ['filter' => 'auth'], function($routes) {
     $routes->post('salvar', 'PlantaController::salvar');
     $routes->get('detalhes/(:num)', 'PlantaController::detalhes/$1');
     $routes->get('editar/(:num)', 'PlantaController::editar/$1'); // Reaproveita a função "novo" para mostrar o formulário de edição
-    $routes->post('atualizar/(:num)', 'PlantaController::salvar/$1');
+    $routes->post('atualizar/(:num)', 'PlantaController::atualizar/$1');
     $routes->get('excluir/(:num)', 'PlantaController::excluir/$1');
 });
 
