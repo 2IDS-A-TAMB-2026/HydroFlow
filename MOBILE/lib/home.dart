@@ -460,20 +460,24 @@ class Home extends StatelessWidget {
     );
   }
 
+  // CORRIGIDO: antes usava um Border não uniforme (largura 6 à esquerda e
+  // 0/1 nos outros lados) junto com borderRadius. Essa combinação faz o
+  // Flutter falhar ao pintar a borda e, junto com ela, o conteúdo (texto)
+  // deixava de ser desenhado — por isso os cards apareciam vazios,
+  // principalmente no modo escuro (onde os outros 3 lados passavam a ter
+  // largura 1 em vez de 0, evidenciando o problema).
+  //
+  // Agora a barrinha colorida da esquerda é um widget separado (Container
+  // de 6px dentro de um Row), e a borda do Container principal é sempre
+  // uniforme (Border.all), o que é seguro de combinar com borderRadius.
   Widget buildBox(String title, String desc, Color corBorda, bool high, double f) {
     return Container(
       constraints: const BoxConstraints(minHeight: 140),
       margin: const EdgeInsets.all(8),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: high ? DarkPalette.surface : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border(
-          left: BorderSide(color: corBorda, width: 6),
-          top: high ? BorderSide(color: DarkPalette.surfaceBorder) : BorderSide.none,
-          right: high ? BorderSide(color: DarkPalette.surfaceBorder) : BorderSide.none,
-          bottom: high ? BorderSide(color: DarkPalette.surfaceBorder) : BorderSide.none,
-        ),
+        border: high ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5) : null,
         boxShadow: high
             ? []
             : [
@@ -483,26 +487,47 @@ class Home extends StatelessWidget {
                 ),
               ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: high ? corBorda : azulPrimario,
-              fontSize: 16 * f,
+      clipBehavior: Clip.antiAlias,
+      // IMPORTANTE: IntrinsicHeight calcula a altura do Row a partir do
+      // conteúdo antes de esticar os filhos. Sem isso, o Row com
+      // CrossAxisAlignment.stretch tenta esticar para uma altura
+      // "infinita" (já que está dentro de uma ListView), o que quebra
+      // o layout da tela inteira — foi esse o erro da versão anterior.
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Barrinha de destaque à esquerda, agora desenhada separadamente
+            Container(width: 6, color: corBorda),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: high ? corBorda : azulPrimario,
+                        fontSize: 16 * f,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      desc,
+                      style: TextStyle(
+                        fontSize: 13 * f,
+                        color: high ? DarkPalette.textSecondary : Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            desc,
-            style: TextStyle(
-              fontSize: 13 * f,
-              color: high ? DarkPalette.textSecondary : Colors.black87,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
