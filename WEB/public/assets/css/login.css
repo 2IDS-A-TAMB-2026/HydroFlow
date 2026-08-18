@@ -1,10 +1,18 @@
+/* ==========================================================================
+   RESET E VARIÁVEIS
+   ========================================================================== */
 :root {
-    --azul-primario: #002855;
-    --azul-royal: #0056B3;
-    --azul-cyan: #4DD0E1;
-    --borda-gota: #B2EBF2;
-    --off-white: #F2F2F2;
+    --primary-color: #0284c7;
+    --primary-hover: #0369a1;
+    --primary-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --focus-ring: rgba(2, 132, 199, 0.15);
     --white: #ffffff;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --transition: all 0.25s ease-in-out;
 }
 
 * {
@@ -15,273 +23,358 @@
 }
 
 body {
-    background-color: var(--off-white);
-    color: var(--azul-primario);
+    background-color: #f8fafc;
+    min-height: 100vh;
 }
 
-/* Container Principal dividindo a tela */
 .login-container {
     display: flex;
-    min-height: 100vh; /* Ocupa 100% da altura da tela */
-}
-
-/* === LADO ESQUERDO (Painel Escuro) === */
-.login-left {
-    flex: 1; /* Ocupa metade da tela */
-    background: linear-gradient(135deg, var(--azul-primario) 0%, #00152b 100%);
-    color: var(--white);
-    padding: 60px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--white);
     overflow: hidden;
 }
 
-/* Aquele brilho de fundo suave na parte escura */
-.login-left::before {
-    content: '';
-    position: absolute;
-    top: -150px;
-    right: -150px;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(77, 208, 225, 0.15) 0%, transparent 70%);
-    border-radius: 50%;
-}
-.pequeno{
-    font-size: smaller;
-    color:#023269;
-}
-.log_adm{
-    text-decoration: none;
-    color:#023269;
-}
-.log_adm:hover{
-    text-decoration: none;
-    color:#044085;
-}
-.logo {
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    z-index: 1;
-}
-.logo_bonita{
+/* ==========================================================================
+   PAINEL ESQUERDO (GRADIENTE MESH + ILUSTRAÇÃO)
+   ========================================================================== */
+.login-left {
+    flex: 1.1;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
+        linear-gradient(135deg, #02182b 0%, #082f49 50%, #0f4c75 100%);
+    padding: 3rem 4rem;
     display: flex;
-    margin: auto;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    color: var(--white);
 }
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--white);
+}
+
 .logo span {
-    color: var(--azul-cyan);
+    color: #38bdf8;
 }
 
 .left-content {
-    margin-top: auto;
-    margin-bottom: auto;
-    z-index: 1;
+    max-width: 480px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: #7dd3fc;
 }
 
 .left-content h1 {
-    font-size: 54px;
-    font-style: italic;
-    margin-bottom: 10px;
-    line-height: 1.1;
+    font-size: 2.3rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.5px;
+    color: #ffffff;
 }
 
 .left-content p {
-    font-size: 18px;
-    color: var(--borda-gota);
-    font-style: italic;
-    font-weight: 400;
+    font-size: 0.98rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    font-weight: 300;
 }
 
-/* === LADO DIREITO (Formulário) === */
-.login-right {
-    flex: 1.2; /* Ocupa um pouquinho mais de espaço que o lado esquerdo */
-    background-color: var(--off-white);
+/* CONTAINER DA ILUSTRAÇÃO */
+.illustration-box {
+    width: 100%;
+    max-width: 420px;
+    height: 260px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px;
+    margin: 1rem 0;
+    position: relative;
+    z-index: 2;
 }
 
-/* O Card do Formulário */
+.hero-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.35));
+    animation: float 4s ease-in-out infinite;
+}
+
+/* Animação suave de flutuação na imagem */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+.log_adm {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+    width: fit-content;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.log_adm:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ==========================================================================
+   PAINEL DIREITO (FORMULÁRIO)
+   ========================================================================== */
+.login-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-color: #f8fafc;
+}
+
 .login-card {
-    background-color: var(--white);
-    padding: 50px 40px;
-    border-radius: 12px;
-    box-shadow: 0 15px 40px rgba(0, 40, 85, 0.08); /* Sombra elegante azulada */
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
+    background-color: var(--white);
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
 }
 
 .login-card h2 {
-    font-size: 22px;
-    margin-bottom: 30px;
-    color: var(--azul-primario);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+}
+
+.subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 1.8rem;
 }
 
 .input-group {
-    margin-bottom: 20px;
-    position: relative;
+    margin-bottom: 1.2rem;
 }
 
-.input-group label {
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+label {
     display: block;
-    font-size: 13px;
+    font-size: 0.85rem;
     font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--azul-primario);
+    color: var(--text-dark);
 }
 
-.input-group input {
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
     width: 100%;
-    padding: 14px 16px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: 0.3s;
+    padding: 0.75rem 2.5rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    background-color: #fff;
     outline: none;
-    color: #333;
+    transition: var(--transition);
 }
 
-.input-group input:focus {
-    border-color: var(--azul-royal);
-    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+input::placeholder {
+    color: #cbd5e1;
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.input-wrapper:focus-within .input-icon {
+    color: var(--primary-color);
 }
 
 .forgot-password {
-    position: absolute;
-    right: 0;
-    top: 0;
-    font-size: 12px;
-    color: var(--azul-royal);
+    font-size: 0.8rem;
+    color: var(--primary-color);
     text-decoration: none;
-    font-weight: 600;
-    transition: 0.3s;
+    font-weight: 500;
 }
 
 .forgot-password:hover {
-    color: var(--azul-cyan);
+    text-decoration: underline;
 }
 
-/* Botão de Ação */
-.btn-main {
-    width: 100%;
-    background-color: var(--azul-royal);
-    color: var(--white);
-    padding: 14px;
-    border: none;
-    border-radius: 6px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-    margin-top: 10px;
-}
-
-.btn-main:hover {
-    background-color: var(--azul-primario);
-    transform: translateY(-2px);
-}
-
-/* Linha com a palavra "ou" */
-.divider {
+/* FIX DO CHECKBOX */
+.remember-box {
     display: flex;
     align-items: center;
-    text-align: center;
-    margin: 25px 0;
-    color: #999;
-    font-size: 13px;
+    gap: 8px;
+    margin: 1rem 0 0.5rem 0;
 }
 
-.divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #e0e0e0;
+.remember-box input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
 }
 
-.divider::before { margin-right: 15px; }
-.divider::after { margin-left: 15px; }
+.remember-box label {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin: 0;
+}
 
-/* Botão Google */
-.btn-google {
+.btn-main {
     width: 100%;
-    background-color: var(--white);
-    color: var(--azul-primario);
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
+    padding: 0.85rem;
+    background: var(--primary-gradient);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    transition: 0.3s;
+    gap: 8px;
+    margin-top: 1.2rem;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    transition: var(--transition);
 }
 
-.btn-google:hover {
-    background-color: var(--off-white);
-    border-color: var(--azul-cyan);
+.btn-main:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
 }
 
 .signup-link {
     text-align: center;
-    margin-top: 30px;
-    font-size: 14px;
-    color: #666;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-top: 1.5rem;
 }
 
 .signup-link a {
-    color: var(--azul-royal);
+    color: var(--primary-color);
     text-decoration: none;
     font-weight: 600;
 }
 
 .signup-link a:hover {
-    color: var(--azul-cyan);
+    text-decoration: underline;
 }
 
-/* === RESPONSIVIDADE (Telas menores e celulares) === */
-@media (max-width: 850px) {
+/* RESPONSIVIDADE (Telas menores) */
+@media (max-width: 900px) {
     .login-container {
         flex-direction: column;
+        height: auto;
+        min-height: 100vh;
     }
-    
+
     .login-left {
-        flex: none;
-        padding: 50px 30px;
-        text-align: center;
+        padding: 2.5rem 2rem;
+        gap: 1.5rem;
     }
-    
-    .left-content {
-        margin-top: 50px;
+
+    .left-content h1 {
+        font-size: 1.8rem;
     }
-    
+
+    .illustration-box {
+        display: none;
+    }
+
     .login-right {
-        padding: 20px;
-    }
-    
-    .login-card {
-        padding: 40px 25px;
+        padding: 2rem 1.5rem;
     }
 }
 
-.top-brand {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+/* ==========================================================================
+   FIX: remove ícone nativo de "mostrar senha" / autofill do navegador
+   (Chrome, Brave, Edge), cobrindo tanto type="password" quanto type="text"
+   já que o botão de toggle troca o type dinamicamente
+   ========================================================================== */
+.input-wrapper input[type="password"]::-ms-reveal,
+.input-wrapper input[type="password"]::-ms-clear,
+.input-wrapper input[type="text"]::-ms-reveal,
+.input-wrapper input[type="text"]::-ms-clear {
+    display: none;
 }
 
-.voltar-home {
-    color: white;
-    text-decoration: none;
-    font-size: 28px;
-    font-weight: bold;
-    transition: 0.2s ease;
-}
-
-.voltar-home:hover {
-    transform: translateX(-4px);
+.input-wrapper input[type="password"]::-webkit-credentials-auto-fill-button,
+.input-wrapper input[type="password"]::-webkit-reveal-password-button,
+.input-wrapper input[type="text"]::-webkit-credentials-auto-fill-button,
+.input-wrapper input[type="text"]::-webkit-reveal-password-button,
+.input-wrapper input[type="text"]::-webkit-strong-password-auto-fill-button {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    position: absolute;
+    right: 0;
+    width: 0;
 }

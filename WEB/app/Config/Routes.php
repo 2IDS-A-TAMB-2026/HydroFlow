@@ -31,8 +31,8 @@ $routes->patch('/api/dados_sensores/(:num)', 'api\dadosSensoresController::updat
 $routes->delete('/api/dados_sensores/(:num)', 'api\dadosSensoresController::delete/$1');
 
 $routes->group('api/sensores', function ($routes) {
-    $routes->get('/', 'api/sensoresController::index');
-    $routes->get('(:num)', 'api/sensoresController::show/$1');
+    $routes->get('/', 'Api\SensoresController::index');
+    $routes->get('(:num)', 'Api\SensoresController::show/$1');
 });
 
 $routes->group('api/dispositivos', function ($routes) {

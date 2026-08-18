@@ -4,7 +4,7 @@ namespace App\Controllers\Api;
 use CodeIgniter\RESTful\ResourceController;
 
 class sensoresController extends ResourceController{
-    protected $modelName = 'App\\Models\\SensoresModel';
+    protected $modelName = 'App\\Models\\SensorModel';
     protected $format = "json";
 
     public function index(){
