@@ -30,6 +30,11 @@ $routes->put('/api/dados_sensores/(:num)', 'api\dadosSensoresController::update/
 $routes->patch('/api/dados_sensores/(:num)', 'api\dadosSensoresController::update/$1');
 $routes->delete('/api/dados_sensores/(:num)', 'api\dadosSensoresController::delete/$1');
 
+$routes->group('api/sensores', function ($routes) {
+    $routes->get('/', 'api/sensoresController::index');
+    $routes->get('(:num)', 'api/sensoresController::show/$1');
+});
+
 $routes->group('api/dispositivos', function ($routes) {
     $routes->get('/', 'Api\DispositivoController::index');
     $routes->get('meus', 'Api\DispositivoController::meus');

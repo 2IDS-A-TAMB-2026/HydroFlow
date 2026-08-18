@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\DadosSensoresModel;
 
-class Dados_SensoresController extends BaseController
+class dados_SensoresController extends BaseController
 {
     protected $dadosSensoresModel;
 

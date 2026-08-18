@@ -1,39 +1,38 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:tcc/botao_acessibilidade.dart';
 import 'accessibility_provider.dart';
-import 'package:provider/provider.dart';
 
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => AccessibilityProvider(),
-      child: const IrrigacaoApp(),
-    ),
-  );
-}
+/// ─────────────────────────────────────────────
+///  MODELOS DE DADOS
+/// ─────────────────────────────────────────────
+class KpiData {
+  final int totalAtivos;
+  final int totalAlertas;
+  final int totalPlantas;
+  final int totalInativos;
 
-class IrrigacaoApp extends StatelessWidget {
-  const IrrigacaoApp({super.key});
+  KpiData({
+    required this.totalAtivos,
+    required this.totalAlertas,
+    required this.totalPlantas,
+    required this.totalInativos,
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hydroflow Dashboard',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF002855)),
-        fontFamily: 'Poppins',
-        useMaterial3: true,
-      ),
-      home: const DashboardPage(),
+  factory KpiData.fromJson(Map<String, dynamic> json) {
+    return KpiData(
+      totalAtivos: json['totalAtivos'] ?? 0,
+      totalAlertas: json['totalAlertas'] ?? 0,
+      totalPlantas: json['totalPlantas'] ?? 0,
+      totalInativos: json['totalInativos'] ?? 0,
     );
   }
 }
 
-/// ─────────────────────────────────────────────
-///  MODEL
-/// ─────────────────────────────────────────────
 enum IrrigacaoStatus { irrigado, falha, interrompido }
 
 class IrrigacaoItem {
@@ -41,42 +40,93 @@ class IrrigacaoItem {
   final String nomeDispositivo;
   final IrrigacaoStatus status;
 
-  const IrrigacaoItem({
+  IrrigacaoItem({
     required this.nomePlanta,
     required this.nomeDispositivo,
     required this.status,
   });
+
+  factory IrrigacaoItem.fromJson(Map<String, dynamic> json) {
+    return IrrigacaoItem(
+      nomePlanta: json['nomePlanta'] ?? '',
+      nomeDispositivo: json['nomeDispositivo'] ?? '',
+      status: _statusFromString(json['status']),
+    );
+  }
+
+  static IrrigacaoStatus _statusFromString(String? value) {
+    switch (value) {
+      case 'irrigado':
+        return IrrigacaoStatus.irrigado;
+      case 'interrompido':
+        return IrrigacaoStatus.interrompido;
+      default:
+        return IrrigacaoStatus.falha;
+    }
+  }
+}
+
+class ConsumoAguaPonto {
+  final String label;
+  final double valor;
+
+  ConsumoAguaPonto({required this.label, required this.valor});
+
+  factory ConsumoAguaPonto.fromJson(Map<String, dynamic> json) {
+    return ConsumoAguaPonto(
+      label: json['label'] ?? '',
+      valor: (json['valor'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
 }
 
 /// ─────────────────────────────────────────────
-///  MOCK HYDROFLOW
+///  CHAMADAS GET PARA A API
 /// ─────────────────────────────────────────────
-const int totalAtivos = 12;
-const int totalAlertas = 3;
-const int totalPlantas = 8;
-const int totalInativos = 2;
+class HydroflowApiService {
+  // TROQUE pela URL real da sua API
+  static const String baseUrl = 'https://';
 
-const List<IrrigacaoItem> ultimasIrrigacoes = [
-  IrrigacaoItem(
-    nomePlanta: 'Tomate Cereja',
-    nomeDispositivo: 'ESP32-01',
-    status: IrrigacaoStatus.irrigado,
-  ),
-  IrrigacaoItem(
-    nomePlanta: 'Alface Crespa',
-    nomeDispositivo: 'ESP32-02',
-    status: IrrigacaoStatus.falha,
-  ),
-];
+  /// GET - KPIs do topo do dashboard
+  Future<KpiData> getKpis() async {
+    final response = await http.get(Uri.parse('$baseUrl/dashboard/kpis'));
 
-const List<String> graficoLabels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
-const List<double> graficoValores = [12.5, 18.0, 9.3, 22.1, 15.6, 7.8, 19.4];
+    if (response.statusCode == 200) {
+      return KpiData.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Erro ao buscar KPIs: ${response.statusCode}');
+    }
+  }
+
+  /// GET - Últimas irrigações (tabela)
+  Future<List<IrrigacaoItem>> getUltimasIrrigacoes() async {
+    final response = await http.get(Uri.parse('$baseUrl/irrigacoes/ultimas'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => IrrigacaoItem.fromJson(json)).toList();
+    } else {
+      throw Exception('Erro ao buscar irrigações: ${response.statusCode}');
+    }
+  }
+
+  /// GET - Dados do gráfico de consumo de água
+  Future<List<ConsumoAguaPonto>> getConsumoAgua() async {
+    final response = await http.get(Uri.parse('$baseUrl/consumo-agua/semana'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => ConsumoAguaPonto.fromJson(json)).toList();
+    } else {
+      throw Exception('Erro ao buscar consumo de água: ${response.statusCode}');
+    }
+  }
+}
 
 /// ─────────────────────────────────────────────
-///  PALETA DO MODO ESCURO (mantém as cores do app)
+///  PALETA DO MODO ESCURO
 /// ─────────────────────────────────────────────
 class DarkPalette {
-  // Fundo escuro em vez de preto puro (derivado do azul primário)
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
   static const Color surfaceBorder = Color(0xFF1E3B57);
@@ -85,13 +135,86 @@ class DarkPalette {
 }
 
 /// ─────────────────────────────────────────────
-///  DASHBOARD HYDROFLOW
+///  DASHBOARD HYDROFLOW (dados da API + auto-refresh)
 /// ─────────────────────────────────────────────
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
   static const azulPrimario = Color(0xFF002855);
   static const azulCyan = Color(0xFF4DD0E1);
+
+  final HydroflowApiService _api = HydroflowApiService();
+
+  KpiData? _kpiData;
+  List<IrrigacaoItem> _irrigacoes = [];
+  List<ConsumoAguaPonto> _consumo = [];
+
+  bool _carregandoInicial = true;
+  String? _erro;
+
+  Timer? _pollingTimer;
+
+  // Intervalo de atualização automática
+  static const Duration _intervaloAtualizacao = Duration(seconds: 15);
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarDados(mostrarLoading: true);
+
+    // Polling: busca dados novos periodicamente sem precisar de ação do usuário
+    _pollingTimer = Timer.periodic(_intervaloAtualizacao, (_) {
+      _carregarDados(mostrarLoading: false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _pollingTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _carregarDados({required bool mostrarLoading}) async {
+    if (mostrarLoading) {
+      setState(() {
+        _carregandoInicial = true;
+        _erro = null;
+      });
+    }
+
+    try {
+      final results = await Future.wait([
+        _api.getKpis(),
+        _api.getUltimasIrrigacoes(),
+        _api.getConsumoAgua(),
+      ]);
+
+      if (!mounted) return;
+
+      setState(() {
+        _kpiData = results[0] as KpiData;
+        _irrigacoes = results[1] as List<IrrigacaoItem>;
+        _consumo = results[2] as List<ConsumoAguaPonto>;
+        _carregandoInicial = false;
+        _erro = null;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _carregandoInicial = false;
+        _erro = e.toString();
+      });
+    }
+  }
+
+  Future<void> _recarregarManual() async {
+    await _carregarDados(mostrarLoading: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +222,6 @@ class DashboardPage extends StatelessWidget {
     final high = acc.isHighContrast;
     final f = acc.fontSizeFactor;
 
-    // Fundo escuro com tom de azul, não preto/branco puro
     final bg = high ? DarkPalette.background : const Color(0xFFF4F6F9);
     final appBarBg = high ? DarkPalette.surface : azulPrimario;
     final appBarBorder = high
@@ -112,48 +234,101 @@ class DashboardPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: appBarBg,
         foregroundColor: Colors.white,
-        shape: Border(bottom: appBarBorder), // Borda visual no modo escuro
+        shape: Border(bottom: appBarBorder),
         title: Text(
           'Painel HYDROFLOW',
           style: TextStyle(fontSize: 18 * f, fontWeight: FontWeight.bold),
         ),
         actions: const [BotaoAcessibilidade()],
       ),
-
       floatingActionButton: const BotaoAcessibilidade(),
+      body: RefreshIndicator(
+        onRefresh: _recarregarManual,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (_carregandoInicial)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 60),
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (_erro != null)
+                _ErrorBox(mensagem: _erro!, onTentarNovamente: _recarregarManual)
+              else ...[
+                /// ── KPI ─────────────────────────────
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.6,
+                  children: [
+                    _KpiCard(value: "${_kpiData?.totalAtivos ?? 0}", label: "Dispositivos Ativos", color: Colors.cyan),
+                    _KpiCard(value: "${_kpiData?.totalAlertas ?? 0}", label: "Alertas", color: Colors.orange),
+                    _KpiCard(value: "${_kpiData?.totalPlantas ?? 0}", label: "Plantas", color: Colors.green),
+                    _KpiCard(value: "${_kpiData?.totalInativos ?? 0}", label: "Inativos", color: Colors.red),
+                  ],
+                ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// ── KPI ─────────────────────────────
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.6,
-              children: [
-                _KpiCard(value: "$totalAtivos", label: "Dispositivos Ativos", color: Colors.cyan),
-                _KpiCard(value: "$totalAlertas", label: "Alertas", color: Colors.orange),
-                _KpiCard(value: "$totalPlantas", label: "Plantas", color: Colors.green),
-                _KpiCard(value: "$totalInativos", label: "Inativos", color: Colors.red),
+                const SizedBox(height: 20),
+
+                /// ── TABELA ──────────────────────────
+                _TableWidget(itens: _irrigacoes),
+
+                const SizedBox(height: 20),
+
+                /// ── GRÁFICO ─────────────────────────
+                _ChartWidget(pontos: _consumo),
               ],
-            ),
-
-            const SizedBox(height: 20),
-
-            /// ── TABELA ──────────────────────────
-            _TableWidget(),
-
-            const SizedBox(height: 20),
-
-            /// ── GRÁFICO ─────────────────────────
-            _ChartWidget(),
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+/// ─────────────────────────────────────────────
+///  BOX DE ERRO GENÉRICA
+/// ─────────────────────────────────────────────
+class _ErrorBox extends StatelessWidget {
+  final String mensagem;
+  final VoidCallback? onTentarNovamente;
+
+  const _ErrorBox({required this.mensagem, this.onTentarNovamente});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.red.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.redAccent),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.redAccent),
+              const SizedBox(width: 8),
+              Expanded(child: Text('Erro ao carregar dados: $mensagem')),
+            ],
+          ),
+          if (onTentarNovamente != null) ...[
+            const SizedBox(height: 12),
+            TextButton.icon(
+              onPressed: onTentarNovamente,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Tentar novamente'),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -183,8 +358,6 @@ class _KpiCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: high ? DarkPalette.surface : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        // No modo escuro a borda usa a cor do próprio KPI, mais forte,
-        // em vez de ficar tudo branco/preto
         border: high
             ? Border.all(color: color.withOpacity(0.9), width: 1.5)
             : Border(left: BorderSide(color: color, width: 4)),
@@ -198,7 +371,6 @@ class _KpiCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 24 * acc.fontSizeFactor,
               fontWeight: FontWeight.bold,
-              // valor numérico ganha a cor do KPI no modo escuro
               color: high ? color : Colors.black87,
             ),
           ),
@@ -219,6 +391,10 @@ class _KpiCard extends StatelessWidget {
 ///  TABELA HYDROFLOW
 /// ─────────────────────────────────────────────
 class _TableWidget extends StatelessWidget {
+  final List<IrrigacaoItem> itens;
+
+  const _TableWidget({required this.itens});
+
   @override
   Widget build(BuildContext context) {
     final acc = Provider.of<AccessibilityProvider>(context);
@@ -245,7 +421,15 @@ class _TableWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          ...ultimasIrrigacoes.map((item) => Padding(
+          if (itens.isEmpty)
+            Text(
+              "Nenhuma irrigação registrada.",
+              style: TextStyle(
+                fontSize: 13 * f,
+                color: high ? DarkPalette.textSecondary : Colors.grey,
+              ),
+            ),
+          ...itens.map((item) => Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -313,6 +497,10 @@ class _TableWidget extends StatelessWidget {
 ///  GRÁFICO HYDROFLOW
 /// ─────────────────────────────────────────────
 class _ChartWidget extends StatelessWidget {
+  final List<ConsumoAguaPonto> pontos;
+
+  const _ChartWidget({required this.pontos});
+
   @override
   Widget build(BuildContext context) {
     final acc = Provider.of<AccessibilityProvider>(context);
@@ -348,14 +536,23 @@ class _ChartWidget extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Expanded(
-            child: CustomPaint(
-              painter: _LinePainter(
-                values: graficoValores,
-                labels: graficoLabels,
-                isHighContrast: high,
-              ),
-              size: Size.infinite,
-            ),
+            child: pontos.isEmpty
+                ? Center(
+                    child: Text(
+                      "Sem dados de consumo.",
+                      style: TextStyle(
+                        color: high ? DarkPalette.textSecondary : Colors.grey,
+                      ),
+                    ),
+                  )
+                : CustomPaint(
+                    painter: _LinePainter(
+                      values: pontos.map((p) => p.valor).toList(),
+                      labels: pontos.map((p) => p.label).toList(),
+                      isHighContrast: high,
+                    ),
+                    size: Size.infinite,
+                  ),
           ),
         ],
       ),
@@ -379,16 +576,16 @@ class _LinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (values.isEmpty) return;
+
     final chartHeight = size.height - 40;
     final chartWidth = size.width - 20;
 
-    final maxValue = values.reduce(max);
-    final stepX = chartWidth / (values.length - 1);
+    final maxValue = values.reduce(max) == 0 ? 1 : values.reduce(max);
+    final stepX = values.length > 1 ? chartWidth / (values.length - 1) : 0.0;
 
-    // Cor de destaque do gráfico: verde-água no modo claro, cyan vivo no escuro
     final lineColor = isHighContrast ? Colors.cyanAccent : const Color(0xFF00A65A);
 
-    /// ── GRID ─────────────────────────────
     final gridPaint = Paint()
       ..color = isHighContrast
           ? DarkPalette.surfaceBorder.withOpacity(0.6)
@@ -397,14 +594,9 @@ class _LinePainter extends CustomPainter {
 
     for (int i = 0; i <= 4; i++) {
       final y = (chartHeight / 4) * i;
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(chartWidth, y),
-        gridPaint,
-      );
+      canvas.drawLine(Offset(0, y), Offset(chartWidth, y), gridPaint);
     }
 
-    /// ── POINTS ───────────────────────────
     List<Offset> points = [];
     for (int i = 0; i < values.length; i++) {
       final x = i * stepX;
@@ -412,7 +604,6 @@ class _LinePainter extends CustomPainter {
       points.add(Offset(x, y));
     }
 
-    /// ── CURVE PATH ───────────────────────
     final path = Path();
     path.moveTo(points.first.dx, points.first.dy);
 
@@ -421,15 +612,9 @@ class _LinePainter extends CustomPainter {
       final next = points[i + 1];
       final midX = (current.dx + next.dx) / 2;
 
-      path.cubicTo(
-        midX, current.dy,
-        midX, next.dy,
-        next.dx, next.dy,
-      );
+      path.cubicTo(midX, current.dy, midX, next.dy, next.dx, next.dy);
     }
 
-    /// ── AREA FILL ─────────────────────────
-    // Agora também preenche no modo escuro, com opacidade menor
     final fillPath = Path.from(path)
       ..lineTo(points.last.dx, chartHeight)
       ..lineTo(points.first.dx, chartHeight)
@@ -447,7 +632,6 @@ class _LinePainter extends CustomPainter {
 
     canvas.drawPath(fillPath, fillPaint);
 
-    /// ── LINE ─────────────────────────────
     final linePaint = Paint()
       ..color = lineColor
       ..style = PaintingStyle.stroke
@@ -455,15 +639,10 @@ class _LinePainter extends CustomPainter {
 
     canvas.drawPath(path, linePaint);
 
-    /// ── DOTS + LABELS ─────────────────────
     for (int i = 0; i < points.length; i++) {
       final p = points[i];
 
-      canvas.drawCircle(
-        p,
-        5,
-        Paint()..color = isHighContrast ? DarkPalette.surface : Colors.white,
-      );
+      canvas.drawCircle(p, 5, Paint()..color = isHighContrast ? DarkPalette.surface : Colors.white);
       canvas.drawCircle(
         p,
         5,
@@ -506,6 +685,9 @@ class _LinePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
+/// ─────────────────────────────────────────────
+///  DRAWER
+/// ─────────────────────────────────────────────
 class _HydroflowDrawer extends StatelessWidget {
   static const azulPrimario = Color(0xFF002855);
 
@@ -519,7 +701,6 @@ class _HydroflowDrawer extends StatelessWidget {
 
     return Drawer(
       child: Container(
-        // Em vez de preto puro, mantém um degradê do azul da marca
         decoration: BoxDecoration(
           gradient: high
               ? const LinearGradient(

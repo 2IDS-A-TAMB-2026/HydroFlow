@@ -5,7 +5,6 @@ namespace App\Controllers\Api;
 use App\Controllers\BaseController;
 use App\Models\DispositivoModel;
 use CodeIgniter\API\ResponseTrait;
-
 class DispositivoController extends BaseController
 {
     use ResponseTrait;

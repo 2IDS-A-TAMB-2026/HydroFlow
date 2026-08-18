@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 /// ─────────────────────────────────────────────
 ///  PALETA DO MODO ESCURO (mesma do dashboard/plantas)
-/// ─────────────────────────────────────────────
+/// ───────────────────────────────────────
 class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
