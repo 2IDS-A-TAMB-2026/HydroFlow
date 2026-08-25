@@ -4,9 +4,8 @@ import 'package:tcc/botao_acessibilidade.dart';
 import 'accessibility_provider.dart';
 import 'package:provider/provider.dart';
 
-/// ─────────────────────────────────────────────
-///  PALETA DO MODO ESCURO (mesma do dashboard/plantas)
-/// ───────────────────────────────────────
+//  PALETA DO MODO ESCURO (mesma do dashboard/plantas)
+
 class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
@@ -140,9 +139,7 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-                    /// HEADER Interno
-                    // CORRIGIDO: Row com Expanded/Flexible para não estourar
-                    // quando o texto aumenta (fontSizeFactor) ou a tela é estreita
+                    /// HEADER Intern
                     Row(
                       children: [
                         Expanded(
@@ -213,7 +210,7 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                       children: [
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            isExpanded: true, // CORRIGIDO: evita overflow do texto do item
+                            isExpanded: true, //evita overflow do texto do item
                             dropdownColor: high ? DarkPalette.surfaceElevated : Colors.white,
                             style: TextStyle(
                               color: high ? DarkPalette.textPrimary : Colors.black,
@@ -364,7 +361,6 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                     const SizedBox(height: 25),
 
                     /// BOTÕES
-                    // CORRIGIDO: Wrap em vez de Row simples, para os botões
                     // quebrarem linha em telas estreitas ou fonte grande,
                     // em vez de estourar a largura do card.
                     Wrap(

@@ -28,7 +28,7 @@ class BotaoAcessibilidade extends StatelessWidget {
         ),
         const PopupMenuItem(
           value: 'contraste',
-          child: ListTile(leading: Icon(Icons.contrast), title: Text("Preto e Branco")),
+          child: ListTile(leading: Icon(Icons.contrast), title: Text("Modo escuro")),
         ),
       ],
     );

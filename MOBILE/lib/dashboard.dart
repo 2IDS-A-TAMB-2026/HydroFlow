@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tcc/botao_acessibilidade.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'accessibility_provider.dart';
+import 'api_service.dart';
+import 'botao_acessibilidade.dart';
 
 /// ─────────────────────────────────────────────
 ///  PALETA DO MODO ESCURO
@@ -10,14 +13,12 @@ import 'accessibility_provider.dart';
 class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
+  static const Color surfaceElevated = Color(0xFF16324B);
   static const Color surfaceBorder = Color(0xFF1E3B57);
   static const Color textPrimary = Color(0xFFF2F6FA);
   static const Color textSecondary = Color(0xFFA9C0D6);
 }
 
-/// ─────────────────────────────────────────────
-///  DASHBOARD HYDROFLOW (dados da API + auto-refresh)
-/// ─────────────────────────────────────────────
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -26,26 +27,23 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  static const azulPrimario = Color(0xFF002855);
-
+  static const azul = Color(0xFF002855);
   final ApiService _api = ApiService();
 
-  DashboardData? _dashboardData;
-
+  Map<String, dynamic>? _dashboardData;
   bool _carregandoInicial = true;
   String? _erro;
 
   Timer? _pollingTimer;
-
   static const Duration _intervaloAtualizacao = Duration(seconds: 15);
 
   @override
   void initState() {
     super.initState();
-    _carregarDados(mostrarLoading: true);
+    _carregandoDados(mostrarLoading: true);
 
     _pollingTimer = Timer.periodic(_intervaloAtualizacao, (_) {
-      _carregarDados(mostrarLoading: false);
+      _carregandoDados(mostrarLoading: false);
     });
   }
 
@@ -55,7 +53,7 @@ class _DashboardPageState extends State<DashboardPage> {
     super.dispose();
   }
 
-  Future<void> _carregarDados({required bool mostrarLoading}) async {
+  Future<void> _carregandoDados({required bool mostrarLoading}) async {
     if (mostrarLoading) {
       setState(() {
         _carregandoInicial = true;
@@ -64,33 +62,29 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     try {
-      final json = await _api.getDashboard();
-      final dados = DashboardData.fromJson(json);
+      final dados = await _api.getDashboard();
 
       if (!mounted) return;
-
       setState(() {
         _dashboardData = dados;
         _carregandoInicial = false;
         _erro = null;
       });
-    } on ApiException catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _carregandoInicial = false;
-        _erro = e.message;
-      });
     } catch (e) {
       if (!mounted) return;
       setState(() {
+        _erro = e.toString();
         _carregandoInicial = false;
-        _erro = 'Erro inesperado: $e';
       });
     }
   }
 
-  Future<void> _recarregarManual() async {
-    await _carregarDados(mostrarLoading: false);
+  Future<void> _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   @override
@@ -99,161 +93,134 @@ class _DashboardPageState extends State<DashboardPage> {
     final high = acc.isHighContrast;
     final f = acc.fontSizeFactor;
 
-    final bg = high ? DarkPalette.background : const Color(0xFFF4F6F9);
-    final appBarBg = high ? DarkPalette.surface : azulPrimario;
+    final bgPage = high ? DarkPalette.background : const Color(0xFFF5F6FA);
+    final bgContainer = high ? DarkPalette.surface : Colors.white;
+    final appBarBg = high ? DarkPalette.surface : azul;
+    final txtPrincipal = high ? Colors.cyanAccent : azul;
     final appBarBorder = high
         ? const BorderSide(color: DarkPalette.surfaceBorder, width: 2)
         : BorderSide.none;
 
     return Scaffold(
-      backgroundColor: bg,
-      drawer: _HydroflowDrawer(),
+      backgroundColor: bgPage,
       appBar: AppBar(
+        title: Text("Painel Principal", style: TextStyle(fontSize: 20 * f)),
         backgroundColor: appBarBg,
         foregroundColor: Colors.white,
+        elevation: 0,
         shape: Border(bottom: appBarBorder),
-        title: Text(
-          'Painel HYDROFLOW',
-          style: TextStyle(fontSize: 18 * f, fontWeight: FontWeight.bold),
-        ),
         actions: const [BotaoAcessibilidade()],
       ),
-      floatingActionButton: const BotaoAcessibilidade(),
-      body: RefreshIndicator(
-        onRefresh: _recarregarManual,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (_carregandoInicial)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 60),
-                  child: Center(child: CircularProgressIndicator()),
+      drawer: _buildDrawer(high, f),
+      body: _carregandoInicial
+          ? const Center(child: CircularProgressIndicator())
+          : _erro != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Erro ao carregar dados",
+                        style: TextStyle(
+                          color: high ? Colors.redAccent : Colors.red,
+                          fontSize: 16 * f,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () => _carregandoDados(mostrarLoading: true),
+                        child: const Text("Tentar Novamente"),
+                      )
+                    ],
+                  ),
                 )
-              else if (_erro != null)
-                _ErrorBox(mensagem: _erro!, onTentarNovamente: _recarregarManual)
-              else
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.6,
-                  children: [
-                    _KpiCard(
-                      value: "${_dashboardData?.qtdPlantas ?? 0}",
-                      label: "Plantas",
-                      color: Colors.green,
-                    ),
-                    _KpiCard(
-                      value: "${_dashboardData?.qtdIrrigacoes ?? 0}",
-                      label: "Irrigações",
-                      color: Colors.cyan,
-                    ),
-                    _KpiCard(
-                      value: "${_dashboardData?.dispositivosAtivos ?? 0}",
-                      label: "Dispositivos Ativos",
-                      color: Colors.blue,
-                    ),
-                  ],
+              : Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Visão Geral",
+                        style: TextStyle(
+                          fontSize: 20 * f,
+                          fontWeight: FontWeight.bold,
+                          color: txtPrincipal,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Expanded(
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          children: [
+                            _cardMetric(
+                              "Plantas",
+                              _dashboardData?['qtdPlantas']?.toString() ?? '0',
+                              Icons.park,
+                              bgContainer,
+                              high,
+                              f,
+                            ),
+                            _cardMetric(
+                              "Irrigações",
+                              _dashboardData?['qtdIrrigacoes']?.toString() ?? '0',
+                              Icons.water_drop,
+                              bgContainer,
+                              high,
+                              f,
+                            ),
+                            _cardMetric(
+                              "Dispositivos",
+                              _dashboardData?['dispositivosAtivos']?.toString() ?? '0',
+                              Icons.memory,
+                              bgContainer,
+                              high,
+                              f,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-            ],
-          ),
-        ),
-      ),
     );
   }
-}
 
-/// ─────────────────────────────────────────────
-///  BOX DE ERRO GENÉRICA
-/// ─────────────────────────────────────────────
-class _ErrorBox extends StatelessWidget {
-  final String mensagem;
-  final VoidCallback? onTentarNovamente;
-
-  const _ErrorBox({required this.mensagem, this.onTentarNovamente});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _cardMetric(
+    String title,
+    String value,
+    IconData icon,
+    Color bg,
+    bool high,
+    double f,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.08),
+        color: bg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.redAccent),
+        border: high ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5) : null,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.error_outline, color: Colors.redAccent),
-              const SizedBox(width: 8),
-              Expanded(child: Text('Erro ao carregar dados: $mensagem')),
-            ],
-          ),
-          if (onTentarNovamente != null) ...[
-            const SizedBox(height: 12),
-            TextButton.icon(
-              onPressed: onTentarNovamente,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Tentar novamente'),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// ─────────────────────────────────────────────
-///  KPI CARD HYDROFLOW
-/// ─────────────────────────────────────────────
-class _KpiCard extends StatelessWidget {
-  final String value;
-  final String label;
-  final Color color;
-
-  const _KpiCard({
-    required this.value,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final acc = Provider.of<AccessibilityProvider>(context);
-    final high = acc.isHighContrast;
-
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: high ? DarkPalette.surface : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: high
-            ? Border.all(color: color.withOpacity(0.9), width: 1.5)
-            : Border(left: BorderSide(color: color, width: 4)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Icon(icon, size: 36 * f, color: high ? Colors.cyanAccent : azul),
+          const SizedBox(height: 8),
           Text(
             value,
             style: TextStyle(
-              fontSize: 24 * acc.fontSizeFactor,
+              fontSize: 22 * f,
               fontWeight: FontWeight.bold,
-              color: high ? color : Colors.black87,
+              color: high ? DarkPalette.textPrimary : Colors.black87,
             ),
           ),
+          const SizedBox(height: 4),
           Text(
-            label,
+            title,
             style: TextStyle(
-              fontSize: 12 * acc.fontSizeFactor,
+              fontSize: 14 * f,
               color: high ? DarkPalette.textSecondary : Colors.black54,
             ),
           ),
@@ -261,22 +228,8 @@ class _KpiCard extends StatelessWidget {
       ),
     );
   }
-}
 
-/// ─────────────────────────────────────────────
-///  DRAWER
-/// ─────────────────────────────────────────────
-class _HydroflowDrawer extends StatelessWidget {
-  static const azulPrimario = Color(0xFF002855);
-
-  const _HydroflowDrawer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final acc = Provider.of<AccessibilityProvider>(context);
-    final f = acc.fontSizeFactor;
-    final high = acc.isHighContrast;
-
+  Widget _buildDrawer(bool high, double f) {
     return Drawer(
       child: Container(
         decoration: BoxDecoration(
@@ -287,37 +240,36 @@ class _HydroflowDrawer extends StatelessWidget {
                   colors: [DarkPalette.background, DarkPalette.surface],
                 )
               : null,
-          color: high ? null : azulPrimario,
+          color: high ? null : azul,
         ),
         child: Column(
           children: [
-            Container(
-              height: 160,
-              width: double.infinity,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: high
-                    ? const Border(bottom: BorderSide(color: DarkPalette.surfaceBorder))
-                    : null,
-              ),
-              child: Text(
-                "HYDROFLOW",
-                style: TextStyle(
-                  color: high ? Colors.cyanAccent : Colors.white,
-                  fontSize: 26 * f,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                ),
+            const SizedBox(height: 80),
+            Text(
+              "HYDROFLOW",
+              style: TextStyle(
+                color: high ? Colors.cyanAccent : Colors.white,
+                fontSize: 24 * f,
+                fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(height: 20),
             Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
-            _drawerItem(context, Icons.home, "Painel", '/dashboard'),
-            _drawerItem(context, Icons.park, "Plantas", '/plantas'),
-            _drawerItem(context, Icons.history, "Histórico", '/historico'),
-            _drawerItem(context, Icons.memory, "Equipamentos", '/equipamentos'),
+
+            _item(Icons.home, "Painel", '/dashboard', f),
+            _item(Icons.park, "Plantas", '/plantas', f),
+            _item(Icons.history, "Histórico", '/historico', f),
+            _item(Icons.memory, "Equipamentos", '/equipamentos', f),
+
             const Spacer(),
             Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
-            _drawerItem(context, Icons.logout, "Sair", '/login'),
+
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.white),
+              title: Text("Sair", style: TextStyle(color: Colors.white, fontSize: 14 * f)),
+              onTap: _logout,
+            ),
+
             const SizedBox(height: 20),
           ],
         ),
@@ -325,25 +277,13 @@ class _HydroflowDrawer extends StatelessWidget {
     );
   }
 
-  Widget _drawerItem(BuildContext context, IconData icon, String label, String route) {
-    final acc = Provider.of<AccessibilityProvider>(context);
-
+  Widget _item(IconData icon, String label, String route, double f) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
-      title: Text(
-        label,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 14 * acc.fontSizeFactor,
-        ),
-      ),
+      title: Text(label, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
       onTap: () {
         Navigator.pop(context);
-        try {
-          Navigator.pushReplacementNamed(context, route);
-        } catch (e) {
-          debugPrint("Rota $route não configurada ainda.");
-        }
+        Navigator.pushReplacementNamed(context, route);
       },
     );
   }
