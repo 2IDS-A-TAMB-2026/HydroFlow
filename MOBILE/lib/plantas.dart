@@ -3,10 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tcc/botao_acessibilidade.dart';
 import 'accessibility_provider.dart';
 import 'package:provider/provider.dart';
-import 'api_service.dart'; // <--- Importando o serviço de API
 
 /// ─────────────────────────────────────────────
-///  PALETA DO MODO ESCURO
+///  PALETA DO MODO ESCURO (mesma do dashboard)
 /// ─────────────────────────────────────────────
 class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
@@ -26,7 +25,6 @@ class PlantasPage extends StatefulWidget {
 
 class _PlantasPageState extends State<PlantasPage> {
   static const azul = Color(0xFF002855);
-  final ApiService _apiService = ApiService();
 
   Future<void> _logout() async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,6 +36,7 @@ class _PlantasPageState extends State<PlantasPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Escutando as configurações do Provider de acessibilidade
     final acc = Provider.of<AccessibilityProvider>(context);
     final high = acc.isHighContrast;
     final f = acc.fontSizeFactor;
@@ -52,6 +51,7 @@ class _PlantasPageState extends State<PlantasPage> {
 
     return Scaffold(
       backgroundColor: bgPage,
+
       appBar: AppBar(
         title: Text("Plantas", style: TextStyle(fontSize: 20 * f)),
         backgroundColor: appBarBg,
@@ -60,7 +60,9 @@ class _PlantasPageState extends State<PlantasPage> {
         shape: Border(bottom: appBarBorder),
         actions: const [BotaoAcessibilidade()],
       ),
+
       drawer: _buildDrawer(high, f),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -90,11 +92,14 @@ class _PlantasPageState extends State<PlantasPage> {
                     ),
                   ],
                 ),
+
                 ElevatedButton.icon(
                   onPressed: () => Navigator.pushReplacementNamed(context, '/cadastro_plantas'),
                   icon: Icon(Icons.add, size: 18 * f),
                   label: Text("Nova", style: TextStyle(fontSize: 14 * f, fontWeight: FontWeight.bold)),
                   style: ElevatedButton.styleFrom(
+                    // Mantém a cor de destaque (azul) também no modo escuro,
+                    // em vez de virar botão preto
                     backgroundColor: high ? DarkPalette.surfaceElevated : azul,
                     foregroundColor: high ? Colors.cyanAccent : Colors.white,
                     side: high ? const BorderSide(color: Colors.cyanAccent, width: 1.5) : BorderSide.none,
@@ -108,7 +113,7 @@ class _PlantasPageState extends State<PlantasPage> {
 
             const SizedBox(height: 12),
 
-            /// SEARCH BAR
+            /// SEARCH BAR LIMPA
             TextField(
               style: TextStyle(color: high ? DarkPalette.textPrimary : Colors.black, fontSize: 14 * f),
               decoration: InputDecoration(
@@ -134,94 +139,46 @@ class _PlantasPageState extends State<PlantasPage> {
 
             const SizedBox(height: 12),
 
-            /// TABELA INTEGRADA COM O GET DA API
+            /// TABELA (FULL CLEAN)
             Expanded(
               child: Container(
-                width: double.infinity,
                 decoration: BoxDecoration(
                   color: bgContainer,
                   borderRadius: BorderRadius.circular(10),
                   border: high ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5) : null,
                 ),
-                child: FutureBuilder<List<dynamic>>(
-                  future: _apiService.getPlantas(), // <--- CHAMA O GET /plantas AQUI
-                  builder: (context, snapshot) {
-                    // 1. Enquanto carrega a API
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    // 2. Se der erro na conexão
-                    // if (snapshot.hasError) {
-                    //   return Center(
-                    //     child: Text(
-                    //       "Erro ao carregar dados da API",
-                    //       style: TextStyle(color: high ? Colors.redAccent : Colors.red),
-                    //     ),
-                    //   );
-                    // }
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          "ERRO: ${snapshot.error}",
-                          style: TextStyle(
-                            color: high ? Colors.redAccent : Colors.red,
-                          ),
-                        ),
-                      );
-                    }
-
-                    // 3. Pegando a lista de plantas retornada pela API
-                    final plantas = snapshot.data ?? [];
-
-                    if (plantas.isEmpty) {
-                      return Center(
-                        child: Text(
-                          "Nenhuma planta cadastrada.",
-                          style: TextStyle(color: high ? DarkPalette.textSecondary : Colors.black54),
-                        ),
-                      );
-                    }
-
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: DataTable(
-                          headingRowColor: MaterialStateProperty.all(
-                            high ? DarkPalette.surfaceElevated : const Color(0xFFF0F2F5),
-                          ),
-                          headingTextStyle: TextStyle(
-                            color: high ? Colors.cyanAccent : azul,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14 * f,
-                          ),
-                          dataTextStyle: TextStyle(
-                            color: high ? DarkPalette.textSecondary : Colors.black87,
-                            fontSize: 13 * f,
-                          ),
-                          columnSpacing: 25,
-                          columns: const [
-                            DataColumn(label: Text("Nome")),
-                            DataColumn(label: Text("Tipo")),
-                            DataColumn(label: Text("Cultura")),
-                            DataColumn(label: Text("Consumo")),
-                            DataColumn(label: Text("Ações")),
-                          ],
-                          rows: plantas.map((planta) {
-                            return _row(
-                              planta['PLANTA_NOME'] ?? 'Sem nome',
-                              planta['PLANTA_TIPO'] ?? 'Geral',
-                              planta['PLANTA_CULTURA'] ?? 'Outros',
-                              planta['PLANTA_QTD_AGUA'] ?? 'N/A',
-                              high,
-                              f,
-                            );
-                          }).toList(),
-                        ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: DataTable(
+                      headingRowColor: MaterialStateProperty.all(
+                        high ? DarkPalette.surfaceElevated : const Color(0xFFF0F2F5),
                       ),
-                    );
-                  },
+                      headingTextStyle: TextStyle(
+                        color: high ? Colors.cyanAccent : azul,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14 * f,
+                      ),
+                      dataTextStyle: TextStyle(
+                        color: high ? DarkPalette.textSecondary : Colors.black87,
+                        fontSize: 13 * f,
+                      ),
+                      columnSpacing: 25,
+                      columns: const [
+                        DataColumn(label: Text("Nome")),
+                        DataColumn(label: Text("Tipo")),
+                        DataColumn(label: Text("Cultura")),
+                        DataColumn(label: Text("Consumo")),
+                        DataColumn(label: Text("Ações")),
+                      ],
+                      rows: [
+                        _row("Tomate Carmem", "Hortaliça", "Solanáceas", "5L/dia", high, f),
+                        _row("Alface Crespa", "Hortaliça", "Folhosas", "2L/dia", high, f),
+                        _row("Couve", "Hortaliça", "Folhosas", "3L/dia", high, f),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -231,6 +188,7 @@ class _PlantasPageState extends State<PlantasPage> {
     );
   }
 
+  // Removido o 'static' para permitir a leitura das variáveis dinâmicas de interface
   DataRow _row(
     String nome,
     String tipo,
@@ -276,6 +234,7 @@ class _PlantasPageState extends State<PlantasPage> {
   Widget _buildDrawer(bool high, double f) {
     return Drawer(
       child: Container(
+        // Degradê do azul da marca no lugar de preto sólido
         decoration: BoxDecoration(
           gradient: high
               ? const LinearGradient(

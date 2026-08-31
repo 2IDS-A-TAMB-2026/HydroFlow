@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'accessibility_provider.dart';
-import 'api_service.dart';
+import 'relatorio_dados_sensores.dart';
 import 'botao_acessibilidade.dart';
 
 /// ─────────────────────────────────────────────
@@ -28,7 +28,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   static const azul = Color(0xFF002855);
-  final ApiService _api = ApiService();
+  final RelatorioDadosSensoresService _api = RelatorioDadosSensoresService();
 
   Map<String, dynamic>? _dashboardData;
   bool _carregandoInicial = true;
