@@ -442,7 +442,7 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
             _drawerItem(Icons.home, "Painel", '/dashboard', f),
             _drawerItem(Icons.eco, "Plantas", '/plantas', f),
             _drawerItem(Icons.history, "Histórico", '/historico', f),
-            _drawerItem(Icons.memory, "Equipamentos", '/equipamentos', f),
+            _drawerItem(Icons.memory, "sensores", '/sensores', f),
             const Spacer(),
             Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
             _drawerItem(Icons.logout, "Sair", '/login', f, isLogout: true),
