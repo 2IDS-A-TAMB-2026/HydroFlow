@@ -1,0 +1,428 @@
+/* ==========================================================================
+   RESET E VARIÁVEIS
+   ========================================================================== */
+:root {
+    --primary-color: #0284c7;
+    --primary-hover: #0369a1;
+    --primary-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --focus-ring: rgba(2, 132, 199, 0.15);
+    --white: #ffffff;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --transition: all 0.25s ease-in-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f8fafc;
+    min-height: 100vh;
+}
+
+.login-container {
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    background-color: var(--white);
+}
+
+/* ==========================================================================
+   PAINEL ESQUERDO (GRADIENTE MESH)
+   ========================================================================== */
+.login-left {
+    flex: 0.8;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
+        linear-gradient(135deg, #02182b 0%, #082f49 50%, #0f4c75 100%);
+    padding: 3rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    color: var(--white);
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.logo span {
+    color: #38bdf8;
+}
+
+.left-content {
+    max-width: 480px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: #7dd3fc;
+}
+
+.left-content h1 {
+    font-size: 2.3rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+.left-content p {
+    font-size: 0.98rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+.log_adm {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+    width: fit-content;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.log_adm:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ==========================================================================
+   PAINEL DIREITO (FORMULÁRIO DE CADASTRO)
+   ========================================================================== */
+.login-right {
+    flex: 1.4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem;
+    background-color: #f8fafc;
+    overflow-y: auto;
+}
+
+.login-card {
+    width: 100%;
+    background-color: var(--white);
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+}
+
+.signup-card {
+    max-width: 780px;
+}
+
+.login-card h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+}
+
+.subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* GRID / LAYOUT DO FORMULÁRIO */
+.form-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.input-group {
+    margin-bottom: 0.85rem;
+    flex: 1;
+}
+
+.nome-group { flex: 2; }
+.cpf-group { flex: 1.2; }
+.email-group { flex: 1; }
+
+.cep-group { flex: 1.2; }
+.rua-group { flex: 2; }
+.bairro-group { flex: 1.8; }
+.numero-group { flex: 0.8; }
+
+.cidade-group { flex: 1.8; }
+.uf-group { flex: 0.8; }
+
+label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.3rem;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    width: 100%;
+    padding: 0.65rem 2.4rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    color: var(--text-dark);
+    background-color: #fff;
+    outline: none;
+    transition: var(--transition);
+}
+
+input::placeholder {
+    color: #cbd5e1;
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.input-wrapper:focus-within .input-icon {
+    color: var(--primary-color);
+}
+
+/* DIVISORES DE SEÇÃO */
+.form-section-title {
+    width: 100%;
+    margin: 1.2rem 0 1rem 0;
+    position: relative;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.form-section-title span {
+    background-color: var(--white);
+    color: var(--primary-color);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-right: 10px;
+    position: relative;
+    top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* BOTÃO PRINCIPAL */
+.btn-main {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--primary-gradient);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1.2rem;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    transition: var(--transition);
+}
+
+.btn-main:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.signup-link {
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-top: 1.2rem;
+}
+
+.signup-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+/* MENSAGENS DE ERRO NOS INPUTS */
+.input-group span[id^="falta"] {
+    color: #ef4444;
+    font-size: 0.72rem;
+    display: block;
+    margin-top: 3px;
+    font-weight: 500;
+    min-height: 14px;
+}
+
+.erro-borda {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 900px) {
+    .login-container {
+        flex-direction: column;
+    }
+
+    .login-left {
+        padding: 2.5rem 2rem;
+        gap: 1.5rem;
+    }
+
+    .left-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .login-right {
+        padding: 1.5rem 1rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .signup-card {
+        padding: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   CORREÇÃO DOS INPUTS E ÍCONES
+   ========================================================================== */
+
+/* Garante que o wrapper seja a referência de posicionamento */
+.input-wrapper {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100%;
+}
+
+/* Posiciona o ícone da esquerda DENTRO do input */
+.input-wrapper .input-icon {
+    position: absolute !important;
+    left: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    pointer-events: none; /* impede que o ícone atrapalhe o clique no campo */
+    z-index: 2;
+    transition: var(--transition);
+}
+
+/* Posiciona o olho de mostrar/ocultar senha DENTRO do input */
+.input-wrapper .toggle-password {
+    position: absolute !important;
+    right: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.95rem;
+    z-index: 2;
+    transition: var(--transition);
+}
+
+.input-wrapper .toggle-password:hover {
+    color: var(--primary-color);
+}
+
+/* Estilização do Input com Espaço Interno (Padding) correto */
+.input-wrapper input[type="email"],
+.input-wrapper input[type="password"],
+.input-wrapper input[type="text"] {
+    width: 100%;
+    height: 44px; /* Altura fixa confortável */
+    padding-left: 42px !important; /* Espaço para o ícone da esquerda não sobrepor o texto */
+    padding-right: 42px !important; /* Espaço para o ícone da direita (olho) */
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    color: var(--text-dark);
+    background-color: #fff;
+    outline: none;
+    transition: var(--transition);
+}
+
+.input-wrapper input::placeholder {
+    color: #cbd5e1;
+}
+
+.input-wrapper input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+/* Muda a cor do ícone quando o campo está focado */
+.input-wrapper:focus-within .input-icon {
+    color: var(--primary-color);
+}

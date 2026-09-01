@@ -1,0 +1,606 @@
+/* ==========================================================================
+   RESET E VARIÁVEIS
+   ========================================================================== */
+:root {
+    --primary-color: #0284c7;
+    --primary-hover: #0369a1;
+    --primary-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --focus-ring: rgba(2, 132, 199, 0.15);
+    --white: #ffffff;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --transition: all 0.25s ease-in-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f8fafc;
+    min-height: 100vh;
+}
+
+.login-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--white);
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   PAINEL ESQUERDO (GRADIENTE MESH + ILUSTRAÇÃO)
+   ========================================================================== */
+.login-left {
+    flex: 1.1;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
+        linear-gradient(135deg, #02182b 0%, #082f49 50%, #0f4c75 100%);
+    padding: 3rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    color: var(--white);
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.logo span {
+    color: #38bdf8;
+}
+
+.left-content {
+    max-width: 480px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: #7dd3fc;
+}
+
+.left-content h1 {
+    font-size: 2.3rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+.left-content p {
+    font-size: 0.98rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+/* CONTAINER DA ILUSTRAÇÃO */
+.illustration-box {
+    width: 100%;
+    max-width: 420px;
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.35));
+    animation: float 4s ease-in-out infinite;
+}
+
+/* Animação suave de flutuação na imagem */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+.log_adm {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+    width: fit-content;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.log_adm:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ==========================================================================
+   PAINEL DIREITO (FORMULÁRIO)
+   ========================================================================== */
+.login-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-color: #f8fafc;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background-color: var(--white);
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+}
+
+.login-card h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+}
+
+.subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 1.8rem;
+}
+
+.input-group {
+    margin-bottom: 1.2rem;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    width: 100%;
+    padding: 0.75rem 2.5rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    background-color: #fff;
+    outline: none;
+    transition: var(--transition);
+}
+
+input::placeholder {
+    color: #cbd5e1;
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.input-wrapper:focus-within .input-icon {
+    color: var(--primary-color);
+}
+
+.forgot-password {
+    font-size: 0.8rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* FIX DO CHECKBOX */
+.remember-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 1rem 0 0.5rem 0;
+}
+
+.remember-box input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
+.remember-box label {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin: 0;
+}
+
+.btn-main {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--primary-gradient);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1.2rem;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    transition: var(--transition);
+}
+
+.btn-main:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.signup-link {
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-top: 1.5rem;
+}
+
+.signup-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+/* RESPONSIVIDADE (Telas menores) */
+@media (max-width: 900px) {
+    .login-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .login-left {
+        padding: 2.5rem 2rem;
+        gap: 1.5rem;
+    }
+
+    .left-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .illustration-box {
+        display: none;
+    }
+
+    .login-right {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   FIX: remove ícone nativo de "mostrar senha" / autofill do navegador
+   (Chrome, Brave, Edge), cobrindo tanto type="password" quanto type="text"
+   já que o botão de toggle troca o type dinamicamente
+   ========================================================================== */
+.input-wrapper input[type="password"]::-ms-reveal,
+.input-wrapper input[type="password"]::-ms-clear,
+.input-wrapper input[type="text"]::-ms-reveal,
+.input-wrapper input[type="text"]::-ms-clear {
+    display: none;
+}
+
+.input-wrapper input[type="password"]::-webkit-credentials-auto-fill-button,
+.input-wrapper input[type="password"]::-webkit-reveal-password-button,
+.input-wrapper input[type="text"]::-webkit-credentials-auto-fill-button,
+.input-wrapper input[type="text"]::-webkit-reveal-password-button,
+.input-wrapper input[type="text"]::-webkit-strong-password-auto-fill-button {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    position: absolute;
+    right: 0;
+    width: 0;
+}
+
+/* ==========================================================================
+   BOTÃO FLUTUANTE DE ACESSIBILIDADE
+   ========================================================================== */
+.btn-accessibility {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    transition: var(--transition);
+    z-index: 999;
+}
+
+.btn-accessibility:hover {
+    transform: scale(1.1);
+    background: var(--primary-hover);
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+}
+
+.btn-accessibility:focus-visible {
+    outline: 3px solid #38bdf8;
+    outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+    .btn-accessibility {
+        bottom: 1.2rem;
+        right: 1.2rem;
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+    }
+}
+
+/* ==========================================================================
+   ACESSIBILIDADE: PAINEL FLUTUANTE COM TRANSIÇÃO E ALINHAMENTO FIXO
+   ========================================================================== */
+
+/* Contêiner principal fixo no canto inferior direito */
+.accessibility-wrapper {
+    position: fixed !important;
+    bottom: 2rem !important;
+    right: 2rem !important;
+    display: flex !important;
+    flex-direction: row-reverse !important; /* Mantém o botão azul fixo na ponta direita */
+    align-items: center !important;
+    z-index: 99999 !important;
+}
+
+/* Botão Azul Flutuante */
+.btn-accessibility {
+    position: relative !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    background: var(--primary-gradient) !important;
+    color: var(--white) !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.4rem !important;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
+    transition: transform 0.2s ease, background 0.2s ease !important;
+    flex-shrink: 0 !important;
+    margin-left: 12px !important;
+    z-index: 2 !important;
+}
+
+.btn-accessibility:hover {
+    transform: scale(1.08) !important;
+    background: var(--primary-hover) !important;
+}
+
+/* Menu de Opções com Animação Suave */
+.accessibility-menu {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: #ffffff !important;
+    padding: 8px 14px !important;
+    border-radius: 30px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid var(--border-color) !important;
+    white-space: nowrap !important;
+    
+    /* Regras de Animação de Entrada e Saída */
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateX(0) scale(1) !important;
+    transform-origin: right center !important;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                visibility 0.35s ease !important;
+}
+
+/* Estado Fechado/Oculto do Menu (Suave) */
+.accessibility-menu.hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateX(25px) scale(0.9) !important; /* Desliza pra direita e encolhe */
+    pointer-events: none !important;
+}
+
+/* Botões Internos do Menu */
+.access-btn {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: var(--text-dark) !important;
+    padding: 8px 14px !important;
+    border-radius: 20px !important;
+    cursor: pointer !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    transition: all 0.2s ease !important;
+}
+
+.access-btn:hover {
+    background: var(--primary-color) !important;
+    color: #ffffff !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Modo Alto Contraste */
+body.alto-contraste .accessibility-menu {
+    background: #000000 !important;
+    border-color: #ffff00 !important;
+}
+
+body.alto-contraste .access-btn {
+    background: #111111 !important;
+    color: #ffff00 !important;
+    border-color: #ffff00 !important;
+}
+
+/* Ajustes de Fonte Globais */
+html {
+    font-size: 16px;
+    transition: font-size 0.2s ease;
+}
+
+.login-container {
+    overflow-y: auto;
+}
+
+/* ==========================================================================
+   MODO ALTO CONTRASTE (Compatível com o script alto-contraste)
+   ========================================================================== */
+body.alto-contraste {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+}
+
+body.alto-contraste .login-container,
+body.alto-contraste .login-card,
+body.alto-contraste .login-right {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+body.alto-contraste .login-left {
+    background: #111111 !important;
+}
+
+body.alto-contraste h1, 
+body.alto-contraste h2, 
+body.alto-contraste p, 
+body.alto-contraste label,
+body.alto-contraste span {
+    color: #ffffff !important;
+}
+
+body.alto-contraste input[type="email"],
+body.alto-contraste input[type="password"] {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+    border-color: #ffff00 !important;
+}
+
+body.alto-contraste .btn-main {
+    background: #ffff00 !important;
+    color: #000000 !important;
+    font-weight: 700;
+}
+
+body.alto-contraste .accessibility-menu {
+    background: #000000;
+    border-color: #ffff00;
+}
+
+body.alto-contraste .access-btn {
+    background: #111111;
+    color: #ffff00;
+    border-color: #ffff00;
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE (Telas menores)
+   ========================================================================== */
+@media (max-width: 900px) {
+    .accessibility-wrapper {
+        bottom: 1.2rem;
+        right: 1.2rem;
+    }
+
+    .btn-accessibility {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+    }
+}
