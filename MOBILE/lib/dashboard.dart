@@ -86,7 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
       // Faz requisição GET para API
       final resposta = await http.get(
         Uri.parse(
-          'http://desktop-ts98lnj/industria_automotiva_api/public/api/dashboard',
+          'http://10.141.130.91/HydroFlow/public/api/dashboard',
         ),
         headers: {
           'Accept': 'application/json',

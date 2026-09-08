@@ -93,8 +93,8 @@
 
     <script src="https://unpkg.com/imask"></script>
     <script src="<?= base_url('assets/js/valida_login_usu.js') ?>"></script>
-    <script src="<?= base_url('assets/js/acessibilidade.js') ?>"></script>
-    <script src="<?= base_url('assets/js/alto_contraste.js') ?>"></script>
+    <script src="<?= base_url('assets/js/acessibilidade_login.js') ?>"></script>
+    <script src="<?= base_url('assets/js/alto_contraste_login.js') ?>"></script>
 
     <script>
         const togglePassword = document.querySelector('#togglePassword');

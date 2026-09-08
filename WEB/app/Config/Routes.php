@@ -18,6 +18,10 @@ $routes->post('cadastro/salvar', 'UsuarioController::salvar');
 // API (Em andamento fiott)
 $routes->group('api', ['filter' => 'cors'], function ($routes) {
 
+    //Dashboard
+    $routes->get('dashboard', 'api\dashboardController::index');
+
+
     // USUÁRIOS
     $routes->get('usuarios', 'api\usuarioController::index');
     $routes->get('usuarios/(:num)', 'api\usuarioController::show/$1');

@@ -37,12 +37,12 @@ class dadosSensoresController extends ResourceController
         }
 
         $dados = array_intersect_key($dados, array_flip([
-            'DDS_HORA', 'DDS_DATA', 'DDS_TEMP', 'DDS_UMIDADE', 'DDS_UMIDADE_SOLO', 'FK_SEN_ID'
+            'DDS_TEMP', 'DDS_UMIDADE', 'DDS_UMIDADE_SOLO', 'FK_SEN_ID'
         ]));
 
-        if (    empty($dados['DDS_HORA']) 
-            ||  empty($dados['DDS_DATA'])
-            ||  ! isset($dados['DDS_TEMP'])
+        if (   /* empty($dados['DDS_HORA']) 
+            ||  empty($dados['DDS_DATA'] */
+             ! isset($dados['DDS_TEMP'])
             ||  ! isset($dados['DDS_UMIDADE'])
             ||  ! isset($dados['DDS_UMIDADE_SOLO'])
             ||  empty($dados['FK_SEN_ID'])) {
@@ -75,7 +75,7 @@ class dadosSensoresController extends ResourceController
         }
 
         $dados = array_intersect_key($dados, array_flip([
-            'DDS_HORA', 'DDS_DATA', 'DDS_TEMP', 'DDS_UMIDADE', 'DDS_UMIDADE_SOLO', 'FK_SEN_ID'
+            'DDS_TEMP', 'DDS_UMIDADE', 'DDS_UMIDADE_SOLO', 'FK_SEN_ID'
         ]));
 
         if (empty($dados)) {

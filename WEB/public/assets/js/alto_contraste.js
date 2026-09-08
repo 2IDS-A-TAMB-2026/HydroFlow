@@ -1,21 +1,22 @@
-// Pega o botão e o body
-const btnContraste = document.getElementById('btn-contraste');
-const body = document.body;
+document.addEventListener('DOMContentLoaded', function () {
+    const btnContraste = document.getElementById('btn-contraste');
+    const body = document.body;
 
-// Verifica se o usuário já tinha deixado o alto contraste ligado antes
-if (localStorage.getItem('altoContraste') === 'ativado') {
-    body.classList.add('alto-contraste');
-}
+    if (!btnContraste) return; // Evita erro caso o botão não exista na tela
 
-// O que acontece quando clica no botão
-btnContraste.addEventListener('click', function() {
-    // Liga ou desliga a classe no body
-    body.classList.toggle('alto-contraste');
-    
-    // Salva a preferência do usuário no navegador
-    if (body.classList.contains('alto-contraste')) {
-        localStorage.setItem('altoContraste', 'ativado');
-    } else {
-        localStorage.setItem('altoContraste', 'desativado');
+    // Restaura preferência salva
+    if (localStorage.getItem('altoContraste') === 'ativado') {
+        body.classList.add('alto-contraste');
     }
+
+    // Toggle do contraste
+    btnContraste.addEventListener('click', function () {
+        body.classList.toggle('alto-contraste');
+
+        if (body.classList.contains('alto-contraste')) {
+            localStorage.setItem('altoContraste', 'ativado');
+        } else {
+            localStorage.setItem('altoContraste', 'desativado');
+        }
+    });
 });

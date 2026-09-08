@@ -43,7 +43,7 @@ class _SobreNosState extends State<SobreNos> {
     return Scaffold(
       backgroundColor: bgColor,
 
-      // 🔷 APPBAR PADRÃO
+      //  APPBAR PADRÃO
       appBar: AppBar(
         backgroundColor: appBarBg,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -64,7 +64,7 @@ class _SobreNosState extends State<SobreNos> {
         ],
       ),
 
-      // 🍔 MENU PADRÃO
+      //  MENU PADRÃO
       drawer: Drawer(
         child: Container(
           decoration: BoxDecoration(
@@ -161,7 +161,7 @@ class _SobreNosState extends State<SobreNos> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 🔥 HERO
+            //  HERO
             Stack(
               children: [
                 Image.asset(
