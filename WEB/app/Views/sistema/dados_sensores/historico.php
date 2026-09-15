@@ -60,7 +60,7 @@
 
     <div class="widget form-widget full-width-form ignore-pdf" style="margin-bottom: 20px; background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
         <h3 class="form-title" style="margin-bottom: 15px; font-size: 1.1rem; color: #1e3c72;">
-            <i class="fa-solid fa-chart-area"></i> Comportamento do Ambiente (Médias Diárias)
+            <i class="fa-solid fa-chart-area"></i> <?= esc($titulo_grafico ?? 'Comportamento do Ambiente (Médias Diárias)') ?>
         </h3>
         <div style="width: 100%; max-height: 280px; height: 280px;">
             <canvas id="chartMedicoesAmbiente"></canvas>
