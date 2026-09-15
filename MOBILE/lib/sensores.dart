@@ -18,19 +18,19 @@ class DarkPalette {
   static const Color textSecondary = Color(0xFFA9C0D6);
 }
 
-class RelatoriosensoresPage extends StatefulWidget {
-  const RelatoriosensoresPage({super.key});
+class RelatoriodispositivosPage extends StatefulWidget {
+  const RelatoriodispositivosPage({super.key});
 
   @override
-  State<RelatoriosensoresPage> createState() =>
-      _RelatoriosensoresPageState();
+  State<RelatoriodispositivosPage> createState() =>
+      _RelatoriodispositivosPageState();
 }
 
-class _RelatoriosensoresPageState extends State<RelatoriosensoresPage> {
+class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
   final ScrollController horizontalController = ScrollController();
 
-  // Lista que armazenará os sensores retornados pela API
-  List<dynamic> sensores = [];
+  // Lista que armazenará os dispositivos retornados pela API
+  List<dynamic> dispositivos = [];
 
   // Indica se os dados estão carregando
   bool carregando = true;
@@ -40,49 +40,56 @@ class _RelatoriosensoresPageState extends State<RelatoriosensoresPage> {
 
   // URL base da API
   final String apiUrl =
-      'http://10.141.130.50/HydroFlow/public/api/sensores';
+      'http://DESKTOP-38ILVP3/HydroFlow/public/api/dispositivos';
 
   @override
   void initState() {
     super.initState();
-    consultarSensores();
+    consultarDispositivos();
   }
 
-  Future<void> consultarSensores() async {
+  Future<void> consultarDispositivos() async {
     try {
       final resposta = await http.get(
         Uri.parse(apiUrl),
-        headers: {
-          'Accept': 'application/json',
-        },
+        headers: {'Accept': 'application/json'},
       );
 
       final resultado = jsonDecode(resposta.body);
 
       if (resposta.statusCode == 200) {
+        if (!mounted) return;
+
         setState(() {
-          // Caso a API retorne uma lista diretamente
           if (resultado is List) {
-            sensores = resultado;
-          }
-          // Caso futuramente a API utilize {"data": [...]}
-          else if (resultado is Map) {
-            sensores = resultado['data'] ?? [];
+            dispositivos = resultado;
+          } else if (resultado is Map) {
+            dispositivos = resultado['data'] ?? [];
           }
 
           carregando = false;
           erro = null;
         });
       } else {
-        setState(() {
-          erro = resultado is Map
-              ? resultado['message'] ?? 'Erro ao consultar sensores'
-              : 'Erro ao consultar sensores';
+        if (!mounted) return;
 
+        // Trata a mensagem de erro antes do setState para evitar ternários confusos
+        String mensagemErro = 'Erro ao consultar dispositivos';
+        if (resultado is Map) {
+          mensagemErro =
+              resultado['message'] ??
+              resultado['messages']?['error'] ??
+              'Erro ao consultar dispositivos';
+        }
+
+        setState(() {
+          erro = mensagemErro;
           carregando = false;
         });
       }
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         erro = 'Erro ao acessar API: $e';
         carregando = false;
@@ -90,10 +97,10 @@ class _RelatoriosensoresPageState extends State<RelatoriosensoresPage> {
     }
   }
 
-  Future<void> excluirSensor(dynamic sensorId) async {
+  Future<void> excluirDispositivo(dynamic dispositivoId) async {
     try {
       final resposta = await http.delete(
-        Uri.parse('$apiUrl/$sensorId'),
+        Uri.parse('$apiUrl/$dispositivoId'),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -114,33 +121,55 @@ class _RelatoriosensoresPageState extends State<RelatoriosensoresPage> {
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Sensor excluído com sucesso!'),
+          SnackBar(
+            content: Text(
+              resultado is Map
+                  ? resultado['mensagem'] ?? 'Dispositivo excluído com sucesso!'
+                  : 'Dispositivo excluído com sucesso!',
+            ),
           ),
         );
 
-        await consultarSensores();
+        await consultarDispositivos();
       } else {
         if (!mounted) return;
 
+        // Extrai a mensagem para uma variável antes de montar o SnackBar
+        String mensagemDetalhe = 'Erro desconhecido';
+        if (resultado is Map) {
+          mensagemDetalhe =
+              resultado['mensagem'] ??
+              resultado['message'] ??
+              resultado['messages']?['error'] ??
+              'Erro desconhecido';
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Erro ao excluir sensor: '
-              '${resultado is Map ? resultado['message'] ?? 'Erro desconhecido' : 'Erro desconhecido'}',
-            ),
+            content: Text('Erro ao excluir dispositivo: $mensagemDetalhe'),
           ),
         );
       }
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao acessar API: $e'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao acessar API: $e')));
     }
+  }
+
+  // A API monta o nome do dono via join (getDispositivoComDono).
+  // Como o alias pode variar, tentamos as chaves mais prováveis.
+  String nomeDono(dynamic dispositivo) {
+    if (dispositivo is! Map) return '';
+
+    return (dispositivo['nome_dono'] ??
+            dispositivo['dono_nome'] ??
+            dispositivo['USU_NOME'] ??
+            dispositivo['FK_USU_ID'] ??
+            '')
+        .toString();
   }
 
   @override
@@ -153,7 +182,7 @@ class _RelatoriosensoresPageState extends State<RelatoriosensoresPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Relatório de Sensores'),
+        title: const Text('Relatório de Dispositivos'),
         actions: [
           IconButton(
             onPressed: () {
@@ -162,7 +191,7 @@ class _RelatoriosensoresPageState extends State<RelatoriosensoresPage> {
                 erro = null;
               });
 
-              consultarSensores();
+              consultarDispositivos();
             },
             icon: const Icon(Icons.refresh),
           ),
@@ -170,230 +199,194 @@ class _RelatoriosensoresPageState extends State<RelatoriosensoresPage> {
       ),
 
       body: carregando
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? const Center(child: CircularProgressIndicator())
           : erro != null
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Text(
-                      erro!,
-                      textAlign: TextAlign.center,
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(erro!, textAlign: TextAlign.center),
+              ),
+            )
+          : dispositivos.isEmpty
+          ? const Center(child: Text('Nenhum dispositivo encontrado.'))
+          : Padding(
+              padding: const EdgeInsets.all(24),
+              child: Scrollbar(
+                controller: horizontalController,
+                thumbVisibility: true,
+                trackVisibility: true,
+                scrollbarOrientation: ScrollbarOrientation.bottom,
+                child: SingleChildScrollView(
+                  controller: horizontalController,
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    headingRowColor: WidgetStateProperty.all(
+                      const Color(0xFFE7F0F2),
                     ),
-                  ),
-                )
-              : sensores.isEmpty
-                  ? const Center(
-                      child: Text('Nenhum sensor encontrado.'),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Scrollbar(
-                        controller: horizontalController,
-                        thumbVisibility: true,
-                        trackVisibility: true,
-                        scrollbarOrientation:
-                            ScrollbarOrientation.bottom,
-                        child: SingleChildScrollView(
-                          controller: horizontalController,
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            headingRowColor:
-                                WidgetStateProperty.all(
-                              const Color(0xFFE7F0F2),
-                            ),
 
-                            border: TableBorder.all(
-                              color: const Color(0xFFE0E5E7),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                    border: TableBorder.all(
+                      color: const Color(0xFFE0E5E7),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
 
-                            columns: const [
-                              DataColumn(
-                                label: Text(
-                                  'ID',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-
-                              DataColumn(
-                                label: Text(
-                                  'NOME',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-
-                              DataColumn(
-                                label: Text(
-                                  'STATUS',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-
-                              DataColumn(
-                                label: Text(
-                                  'TIPO',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-
-                              DataColumn(
-                                label: Text(
-                                  'ID DISPOSITIVO',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-
-                              DataColumn(
-                                label: Text(
-                                  'Ações',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-
-                            rows: sensores.map<DataRow>((sensor) {
-                              return DataRow(
-                                cells: [
-                                  DataCell(
-                                    Text(
-                                      sensor['SEN_ID']?.toString() ?? '',
-                                    ),
-                                  ),
-
-                                  DataCell(
-                                    Text(
-                                      sensor['SEN_NOME']?.toString() ?? '',
-                                    ),
-                                  ),
-
-                                  DataCell(
-                                    Text(
-                                      sensor['SEN_STATUS']
-                                              ?.toString() ??
-                                          '',
-                                    ),
-                                  ),
-
-                                  DataCell(
-                                    Text(
-                                      sensor['SEN_TIPO']?.toString() ?? '',
-                                    ),
-                                  ),
-
-                                  DataCell(
-                                    Text(
-                                      sensor['FK_DIS_ID']
-                                              ?.toString() ??
-                                          '',
-                                    ),
-                                  ),
-
-                                  DataCell(
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.edit,
-                                            color: Color.fromARGB(
-                                              255,
-                                              3,
-                                              83,
-                                              148,
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            final id =
-                                                sensor['SEN_ID'];
-
-                                            // Aqui você pode adicionar
-                                            // a navegação para edição
-                                            print(
-                                              'Editar sensor ID: $id',
-                                            );
-                                          },
-                                        ),
-
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () async {
-                                            final id =
-                                                sensor['SEN_ID'];
-
-                                            final confirmar =
-                                                await showDialog<bool>(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: const Text(
-                                                    'Excluir Sensor?',
-                                                  ),
-
-                                                  content: Text(
-                                                    'Deseja excluir o sensor '
-                                                    '${sensor['SEN_NOME']}?',
-                                                  ),
-
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(
-                                                          context,
-                                                          false,
-                                                        );
-                                                      },
-                                                      child: const Text(
-                                                        'Cancelar',
-                                                      ),
-                                                    ),
-
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(
-                                                          context,
-                                                          true,
-                                                        );
-                                                      },
-                                                      child: const Text(
-                                                        'Excluir',
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-
-                                            if (confirmar == true) {
-                                              await excluirSensor(id);
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }).toList(),
-                          ),
+                    columns: const [
+                      DataColumn(
+                        label: Text(
+                          'ID',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
-                    ),
+
+                      DataColumn(
+                        label: Text(
+                          'NOME',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                      DataColumn(
+                        label: Text(
+                          'DESCRIÇÃO',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                      DataColumn(
+                        label: Text(
+                          'STATUS',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                      DataColumn(
+                        label: Text(
+                          'NÍVEL DO TANQUE',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                      DataColumn(
+                        label: Text(
+                          'DONO',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                      DataColumn(
+                        label: Text(
+                          'Ações',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+
+                    rows: dispositivos.map<DataRow>((dispositivo) {
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Text(dispositivo['DIS_ID']?.toString() ?? ''),
+                          ),
+
+                          DataCell(
+                            Text(dispositivo['DIS_NOME']?.toString() ?? ''),
+                          ),
+
+                          DataCell(
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 260),
+                              child: Text(
+                                dispositivo['DIS_DESCRICAO']?.toString() ?? '',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+
+                          DataCell(
+                            Text(dispositivo['DIS_STATUS']?.toString() ?? ''),
+                          ),
+
+                          DataCell(
+                            Text(
+                              dispositivo['DIS_NIVEL_TANQUE'] != null
+                                  ? '${dispositivo['DIS_NIVEL_TANQUE']}%'
+                                  : '',
+                            ),
+                          ),
+
+                          DataCell(Text(nomeDono(dispositivo))),
+
+                          DataCell(
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Color.fromARGB(255, 3, 83, 148),
+                                  ),
+                                  onPressed: () {
+                                    final id = dispositivo['DIS_ID'];
+
+                                    // Aqui você pode adicionar
+                                    // a navegação para edição
+                                    print('Editar dispositivo ID: $id');
+                                  },
+                                ),
+
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () async {
+                                    final id = dispositivo['DIS_ID'];
+
+                                    final confirmar = await showDialog<bool>(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                            'Excluir Dispositivo?',
+                                          ),
+
+                                          content: Text(
+                                            'Deseja excluir o dispositivo '
+                                            '${dispositivo['DIS_NOME']}?',
+                                          ),
+
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, false);
+                                              },
+                                              child: const Text('Cancelar'),
+                                            ),
+
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, true);
+                                              },
+                                              child: const Text('Excluir'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+
+                                    if (confirmar == true) {
+                                      await excluirDispositivo(id);
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

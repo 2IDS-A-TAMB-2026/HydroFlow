@@ -5,6 +5,7 @@ namespace App\Controllers\Api;
 use App\Controllers\BaseController;
 use App\Models\DispositivoModel;
 use CodeIgniter\API\ResponseTrait;
+
 class DispositivoController extends BaseController
 {
     use ResponseTrait;
@@ -22,9 +23,9 @@ class DispositivoController extends BaseController
      */
     public function index()
     {
-        $busca         = $this->request->getGet('busca');
-        $donoId        = $this->request->getGet('dono_id') ?? 'todos';
-        $statusFiltro  = $this->request->getGet('status_filtro') ?? 'todos';
+        $busca        = $this->request->getGet('busca');
+        $donoId       = $this->request->getGet('dono_id') ?? 'todos';
+        $statusFiltro = $this->request->getGet('status_filtro') ?? 'todos';
 
         $query = $this->dispositivoModel;
 
@@ -54,16 +55,15 @@ class DispositivoController extends BaseController
 
     /**
      * GET /api/dispositivos/meus
-     * Dispositivos vinculados ao usuário logado (sessão), com join em SENSOR
-     * e filtros de busca/status/nivel — equivalente ao meusDispositivos() da tela web.
+     * Dispositivos vinculados ao usuário logado (sessão ou parâmetro/header), com join em SENSOR
+     * Fallback automático para o ID de usuário == 1 caso não esteja logado.
      */
     public function meus()
     {
-        if (!session()->get('logado') && !session()->get('id')) {
-            return $this->failUnauthorized('Acesso restrito. Faça login para continuar.');
-        }
-
-        $usuarioId = session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID');
+        // 1. Identificação do Usuário com fallback final para o ID 1
+        $usuarioId = $this->request->getHeaderLine('X-Usuario-Id')
+            ?: ($this->request->getGet('usuario_id')
+            ?: (session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID') ?? 1));
 
         $busca  = $this->request->getGet('busca');
         $status = $this->request->getGet('status');
@@ -125,7 +125,7 @@ class DispositivoController extends BaseController
 
     /**
      * POST /api/dispositivos
-     * Cria um novo dispositivo
+     * Cria um novo dispositivo vinculando ao usuário logado ou ao ID 1 se omitido
      */
     public function create()
     {
@@ -136,6 +136,12 @@ class DispositivoController extends BaseController
             return $this->fail('Nenhum dado enviado.', 400);
         }
 
+        // Define o FK_USU_ID com fallback automático para ID 1 caso não seja informado
+        if (empty($dados['FK_USU_ID'])) {
+            $dados['FK_USU_ID'] = $this->request->getHeaderLine('X-Usuario-Id')
+                ?: (session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID') ?? 1);
+        }
+
         if (!$this->dispositivoModel->save($dados)) {
             return $this->failValidationErrors($this->dispositivoModel->errors());
         }
@@ -143,9 +149,9 @@ class DispositivoController extends BaseController
         $id = $this->dispositivoModel->getInsertID();
 
         return $this->respondCreated([
-            'status'  => true,
+            'status'   => true,
             'mensagem' => 'Dispositivo cadastrado com sucesso!',
-            'data'    => $this->dispositivoModel->find($id),
+            'data'     => $this->dispositivoModel->find($id),
         ]);
     }
 

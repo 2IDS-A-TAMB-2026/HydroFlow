@@ -1566,3 +1566,124 @@ body.alto-contraste .data-table td [class*="status"] {
     border: none !important;
     opacity: 1 !important;
 }
+
+/* =========================================================
+   ACESSIBILIDADE - AUMENTAR / DIMINUIR FONTE
+   ========================================================= */
+
+body {
+    --escala-fonte: 1;
+}
+
+/* Textos principais */
+body.fonte-acessibilidade h1,
+body.fonte-acessibilidade h2,
+body.fonte-acessibilidade h3,
+body.fonte-acessibilidade h4,
+body.fonte-acessibilidade h5,
+body.fonte-acessibilidade h6,
+body.fonte-acessibilidade p,
+body.fonte-acessibilidade span,
+body.fonte-acessibilidade label,
+body.fonte-acessibilidade a,
+body.fonte-acessibilidade li,
+body.fonte-acessibilidade td,
+body.fonte-acessibilidade th,
+body.fonte-acessibilidade button,
+body.fonte-acessibilidade input,
+body.fonte-acessibilidade select,
+body.fonte-acessibilidade textarea {
+    font-size: calc(
+        1em * var(--escala-fonte)
+    ) !important;
+}
+
+
+/* Títulos que possuem tamanho próprio */
+body.fonte-acessibilidade .card h3 {
+    font-size: calc(
+        2.5rem * var(--escala-fonte)
+    ) !important;
+}
+
+body.fonte-acessibilidade .card p {
+    font-size: calc(
+        0.9rem * var(--escala-fonte)
+    ) !important;
+}
+
+
+/* Menu lateral */
+body.fonte-acessibilidade .nav-menu li a {
+    font-size: calc(
+        0.95rem * var(--escala-fonte)
+    ) !important;
+}
+
+body.fonte-acessibilidade .menu-section-title {
+    font-size: calc(
+        0.72rem * var(--escala-fonte)
+    ) !important;
+}
+
+body.fonte-acessibilidade .sidebar-user-name {
+    font-size: calc(
+        0.88rem * var(--escala-fonte)
+    ) !important;
+}
+
+body.fonte-acessibilidade .sidebar-user-role {
+    font-size: calc(
+        0.75rem * var(--escala-fonte)
+    ) !important;
+}
+
+
+/* Tabelas */
+body.fonte-acessibilidade .data-table th,
+body.fonte-acessibilidade .data-table td {
+    font-size: calc(
+        0.95rem * var(--escala-fonte)
+    ) !important;
+}
+
+
+/* Formulários */
+body.fonte-acessibilidade .form-group label {
+    font-size: calc(
+        0.9rem * var(--escala-fonte)
+    ) !important;
+}
+
+body.fonte-acessibilidade .form-group input,
+body.fonte-acessibilidade .form-group select {
+    font-size: calc(
+        0.95rem * var(--escala-fonte)
+    ) !important;
+}
+
+
+/* Botões */
+body.fonte-acessibilidade .btn-submit,
+body.fonte-acessibilidade .btn-voltar,
+body.fonte-acessibilidade .btn-cancelar,
+body.fonte-acessibilidade .btn-add-user,
+body.fonte-acessibilidade .adm-btn-submit,
+body.fonte-acessibilidade .profile-btn-submit {
+    font-size: calc(
+        1rem * var(--escala-fonte)
+    ) !important;
+}
+
+
+/* Botões de acessibilidade permanecem com tamanho normal */
+.btn-acessibilidade {
+    font-size: 0.9rem !important;
+}
+
+
+/* Impede o aumento do ícone do botão */
+.btn-acessibilidade i {
+    font-size: inherit !important;
+}
+

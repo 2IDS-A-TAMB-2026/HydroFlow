@@ -1,27 +1,37 @@
-// Aguarda a página carregar
-document.addEventListener("DOMContentLoaded", function() {
-    
-    // Seleciona os botões pelos IDs
-    const botaoAumentar = document.getElementById("aumentar-fonte");
-    const botaoDiminuir = document.getElementById("diminuir-fonte");
-    
-    let tamanhoAtual = 100; // Começa em 100%
-    const limiteMaximo = 150; // Não deixa aumentar mais que 150%
-    const limiteMinimo = 80;  // Não deixa diminuir menos que 80%
+document.addEventListener("DOMContentLoaded", function () {
 
-    // Função para Aumentar
-    botaoAumentar.addEventListener("click", function() {
-        if (tamanhoAtual < limiteMaximo) {
-            tamanhoAtual += 10; // Aumenta de 10% em 10%
-            document.documentElement.style.fontSize = tamanhoAtual + "%";
-        }
-    });
+    const botaoAumentar = document.getElementById("btnIncreaseFont");
+    const botaoDiminuir = document.getElementById("btnDecreaseFont");
 
-    // Função para Diminuir
-    botaoDiminuir.addEventListener("click", function() {
-        if (tamanhoAtual > limiteMinimo) {
-            tamanhoAtual -= 10; // Diminui de 10% em 10%
-            document.documentElement.style.fontSize = tamanhoAtual + "%";
-        }
-    });
+    let tamanhoFonte = 100;
+
+    const limiteMaximo = 150;
+    const limiteMinimo = 80;
+
+    function aplicarTamanhoFonte() {
+        document.documentElement.style.fontSize = tamanhoFonte + "%";
+    }
+
+    if (botaoAumentar) {
+        botaoAumentar.addEventListener("click", function () {
+
+            if (tamanhoFonte < limiteMaximo) {
+                tamanhoFonte += 10;
+                aplicarTamanhoFonte();
+            }
+
+        });
+    }
+
+    if (botaoDiminuir) {
+        botaoDiminuir.addEventListener("click", function () {
+
+            if (tamanhoFonte > limiteMinimo) {
+                tamanhoFonte -= 10;
+                aplicarTamanhoFonte();
+            }
+
+        });
+    }
+
 });

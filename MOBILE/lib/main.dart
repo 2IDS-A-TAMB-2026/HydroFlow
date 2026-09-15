@@ -66,7 +66,8 @@ class HydroflowApp extends StatelessWidget {
         '/nova_senha': (context) => const NovaSenhaPage(),
         '/cadastro_plantas': (context) => const CadastroPlantaPage(),
         '/plantas': (context) => const PlantasPage(),
-        '/sensores': (context) => const RelatoriosensoresPage(),
+        '/equipamentos': (context) => const RelatoriodispositivosPage(),
+        '/historico': (context) => const HistoricoPage()
       },
     );
   }

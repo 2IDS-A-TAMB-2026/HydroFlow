@@ -66,33 +66,37 @@
             </a>
 
             <!-- Botão contraste -->
-            <button>
+            <button
                 id="btn-contraste"
                 class="btn-acessibilidade"
+                type="button"
                 aria-label="Ativar ou desativar alto contraste"
                 title="Contraste"
+            >
                 ◐
             </button>
 
             <!-- Aumentar fonte -->
-            <button>
-                id="aumentar-fonte"
+            <button
+                id="btnIncreaseFont"
                 class="btn-acessibilidade"
+                type="button"
                 aria-label="Aumentar tamanho da fonte"
                 title="Aumentar fonte"
+            >
                 +
             </button>
 
             <!-- Diminuir fonte -->
-            <button>
-                id="diminuir-fonte"
+            <button
+                id="btnDecreaseFont"
                 class="btn-acessibilidade"
+                type="button"
                 aria-label="Diminuir tamanho da fonte"
                 title="Diminuir fonte"
+            >
                 -
             </button>
-
-            
 
             <!-- Login -->
             <a href="login.html" aria-label="Ir para página de login">
@@ -102,3 +106,5 @@
         </nav>
 
     </header>
+
+    

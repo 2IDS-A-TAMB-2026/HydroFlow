@@ -86,7 +86,7 @@
 
             <!-- Aumentar fonte -->
             <button 
-                id="aumentar-fonte"
+                id="btnIncreaseFont"
                 class="btn-acessibilidade"
                 aria-label="Aumentar tamanho da fonte"
                 title="Aumentar fonte"
@@ -96,7 +96,7 @@
 
             <!-- Diminuir fonte -->
             <button 
-                id="diminuir-fonte"
+                id="btnDecreaseFont"
                 class="btn-acessibilidade"
                 aria-label="Diminuir tamanho da fonte"
                 title="Diminuir fonte"

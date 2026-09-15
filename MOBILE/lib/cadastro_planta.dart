@@ -182,7 +182,6 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                       height: 30,
                       color: high ? DarkPalette.surfaceBorder : Colors.grey[300],
                     ),
-
                     /// SEÇÃO 1
                     Text(
                       "Informações da Planta",

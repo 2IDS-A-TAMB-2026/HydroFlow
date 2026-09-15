@@ -8,13 +8,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="<?= base_url('assets/css/login.css') ?>">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-back {
+            color: inherit;
+            text-decoration: none;
+            font-size: 0.7em;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .logo-back:hover {
+            opacity: 1;
+            transform: translateX(-3px);
+        }
+    </style>
 </head>
 <body>
 
     <div class="login-container">
         
         <div class="login-left">
-            <div class="logo">Hydro<span>Flow</span></div>
+            <div class="logo">
+        <a href="<?= base_url('/') ?>" class="logo-back" aria-label="Voltar para a página inicial">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+            Hydro<span>Flow</span>
+        </div>
             
             <div class="left-content">
                 <span class="badge"><i class="fa-solid fa-droplet"></i> Plataforma de Gestão</span>
@@ -44,7 +70,7 @@
                     <div class="input-group">
                         <div class="label-row">
                             <label for="password">Senha</label>
-                            <a href="<?= base_url('esqueci-senha') ?>" class="forgot-password">Esqueceu a senha?</a>
+                            <!--<a href="<?= base_url('esqueci-senha') ?>" class="forgot-password">Esqueceu a senha?</a>-->
                         </div>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-lock input-icon"></i>

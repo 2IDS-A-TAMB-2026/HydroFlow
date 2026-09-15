@@ -468,11 +468,12 @@ input:focus {
 .accessibility-menu {
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 2px !important;
     background: #ffffff !important;
-    padding: 8px 14px !important;
-    border-radius: 30px !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    padding: 6px !important;
+    border-radius: 999px !important;
+    box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.18),
+                0 2px 8px rgba(15, 23, 42, 0.06) !important;
     border: 1px solid var(--border-color) !important;
     white-space: nowrap !important;
     
@@ -496,36 +497,86 @@ input:focus {
 
 /* Botões Internos do Menu */
 .access-btn {
-    background: #f1f5f9 !important;
-    border: 1px solid #cbd5e1 !important;
-    color: var(--text-dark) !important;
-    padding: 8px 14px !important;
-    border-radius: 20px !important;
+    position: relative !important;
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-muted) !important;
+    padding: 10px 16px !important;
+    border-radius: 999px !important;
     cursor: pointer !important;
-    font-size: 0.8rem !important;
+    font-size: 0.82rem !important;
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
-    gap: 6px !important;
-    transition: all 0.2s ease !important;
+    gap: 7px !important;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease !important;
+}
+
+/* Separador sutil entre os botões, sem precisar de markup extra */
+.access-btn + .access-btn {
+    margin-left: 2px !important;
+}
+
+.access-btn + .access-btn::before {
+    content: "" !important;
+    position: absolute !important;
+    left: -3px !important;
+    top: 22% !important;
+    height: 56% !important;
+    width: 1px !important;
+    background: var(--border-color) !important;
+}
+
+.access-btn i,
+.access-btn svg {
+    font-size: 0.85rem !important;
+    color: var(--primary-color) !important;
+    transition: color 0.2s ease !important;
 }
 
 .access-btn:hover {
-    background: var(--primary-color) !important;
+    background: #f0f9ff !important;
+    color: var(--primary-hover) !important;
+    transform: translateY(-1px) !important;
+}
+
+.access-btn:hover i,
+.access-btn:hover svg {
+    color: var(--primary-hover) !important;
+}
+
+.access-btn:active {
+    transform: translateY(0) !important;
+}
+
+/* Estado "ativo" (ex.: Alto Contraste ligado) — cor de marca cheia */
+.access-btn.active,
+.access-btn[aria-pressed="true"] {
+    background: var(--primary-gradient) !important;
     color: #ffffff !important;
-    border-color: var(--primary-color) !important;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35) !important;
 }
 
-/* Modo Alto Contraste */
-body.alto-contraste .accessibility-menu {
-    background: #000000 !important;
-    border-color: #ffff00 !important;
+.access-btn.active i,
+.access-btn.active svg,
+.access-btn[aria-pressed="true"] i,
+.access-btn[aria-pressed="true"] svg {
+    color: #ffffff !important;
 }
 
-body.alto-contraste .access-btn {
-    background: #111111 !important;
-    color: #ffff00 !important;
-    border-color: #ffff00 !important;
+.access-btn:focus-visible {
+    outline: 2px solid var(--primary-color) !important;
+    outline-offset: 2px !important;
+}
+
+@media (max-width: 900px) {
+    .accessibility-menu {
+        gap: 0 !important;
+    }
+    .access-btn {
+        padding: 8px 10px !important;
+        font-size: 0.75rem !important;
+    }
 }
 
 /* Ajustes de Fonte Globais */
@@ -536,57 +587,6 @@ html {
 
 .login-container {
     overflow-y: auto;
-}
-
-/* ==========================================================================
-   MODO ALTO CONTRASTE (Compatível com o script alto-contraste)
-   ========================================================================== */
-body.alto-contraste {
-    background-color: #000000 !important;
-    color: #ffff00 !important;
-}
-
-body.alto-contraste .login-container,
-body.alto-contraste .login-card,
-body.alto-contraste .login-right {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-}
-
-body.alto-contraste .login-left {
-    background: #111111 !important;
-}
-
-body.alto-contraste h1, 
-body.alto-contraste h2, 
-body.alto-contraste p, 
-body.alto-contraste label,
-body.alto-contraste span {
-    color: #ffffff !important;
-}
-
-body.alto-contraste input[type="email"],
-body.alto-contraste input[type="password"] {
-    background-color: #000000 !important;
-    color: #ffff00 !important;
-    border-color: #ffff00 !important;
-}
-
-body.alto-contraste .btn-main {
-    background: #ffff00 !important;
-    color: #000000 !important;
-    font-weight: 700;
-}
-
-body.alto-contraste .accessibility-menu {
-    background: #000000;
-    border-color: #ffff00;
-}
-
-body.alto-contraste .access-btn {
-    background: #111111;
-    color: #ffff00;
-    border-color: #ffff00;
 }
 
 /* ==========================================================================
@@ -603,4 +603,159 @@ body.alto-contraste .access-btn {
         height: 44px;
         font-size: 1.2rem;
     }
+}
+
+/* =========================================
+   ALTO CONTRASTE - PRETO E BRANCO
+   ========================================= */
+
+body.alto-contraste {
+    background-color: #071627 !important;
+    color: #FFFFFF !important;
+}
+
+/* Painéis principais do layout (CORREÇÃO: classes reais do projeto) */
+body.alto-contraste .login-container,
+body.alto-contraste .login-left,
+body.alto-contraste .login-right {
+    background: #071627 !important;
+    background-color: #071627 !important;
+    color: #FFFFFF !important;
+    border-color: #38bdf8 !important;
+}
+
+/* Card de login: fundo azul escuro + borda azul brilhante com glow */
+body.alto-contraste .login-card {
+    background: #0b2036 !important;
+    background-color: #0b2036 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #38bdf8 !important;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.45),
+                0 0 60px rgba(56, 189, 248, 0.15) !important;
+}
+
+/* Textos */
+body.alto-contraste h1,
+body.alto-contraste h2,
+body.alto-contraste h3,
+body.alto-contraste h4,
+body.alto-contraste h5,
+body.alto-contraste h6,
+body.alto-contraste p,
+body.alto-contraste span,
+body.alto-contraste label,
+body.alto-contraste li,
+body.alto-contraste a {
+    color: #FFFFFF !important;
+}
+
+/* Links */
+body.alto-contraste a:hover {
+    color: #FFFFFF !important;
+    text-decoration: underline;
+}
+
+/* Botões */
+body.alto-contraste button,
+body.alto-contraste .btn,
+body.alto-contraste input[type="submit"] {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 2px solid #FFFFFF !important;
+}
+
+/* Botão principal (usa gradiente via variável, precisa de override próprio) */
+body.alto-contraste .btn-main {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    border: 2px solid #FFFFFF !important;
+    box-shadow: none !important;
+}
+
+/* CORREÇÃO: texto/ícone dentro de botões claros ficavam brancos (herdando a
+   regra genérica "span/i/svg = branco"), sumindo sobre o fundo branco do
+   botão. Forçamos a cor de todos os filhos a seguir o botão. */
+body.alto-contraste button,
+body.alto-contraste button *,
+body.alto-contraste .btn,
+body.alto-contraste .btn *,
+body.alto-contraste .btn-main,
+body.alto-contraste .btn-main *,
+body.alto-contraste input[type="submit"] {
+    color: #000000 !important;
+}
+
+/* Hover dos botões */
+body.alto-contraste button:hover,
+body.alto-contraste .btn:hover,
+body.alto-contraste input[type="submit"]:hover {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #FFFFFF !important;
+}
+
+body.alto-contraste button:hover *,
+body.alto-contraste .btn:hover *,
+body.alto-contraste .btn-main:hover,
+body.alto-contraste .btn-main:hover * {
+    color: #FFFFFF !important;
+}
+
+/* Campos de formulário */
+body.alto-contraste input,
+body.alto-contraste select,
+body.alto-contraste textarea {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #FFFFFF !important;
+}
+
+/* Placeholder */
+body.alto-contraste input::placeholder,
+body.alto-contraste textarea::placeholder {
+    color: #FFFFFF !important;
+}
+
+/* Cards e caixas (CORREÇÃO: classes reais do projeto tratadas acima com azul;
+   aqui ficam apenas os genéricos que não têm estilo próprio) */
+body.alto-contraste .card,
+body.alto-contraste .box,
+body.alto-contraste section,
+body.alto-contraste .container {
+    background-color: #071627 !important;
+    color: #FFFFFF !important;
+    border-color: #38bdf8 !important;
+}
+
+/* Ícones */
+body.alto-contraste i,
+body.alto-contraste svg {
+    color: #FFFFFF !important;
+}
+
+/* Imagens */
+body.alto-contraste img {
+    filter: grayscale(100%) contrast(120%);
+}
+
+/* Footer */
+body.alto-contraste footer {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-top: 2px solid #FFFFFF !important;
+}
+
+/* Menu / navbar */
+body.alto-contraste nav,
+body.alto-contraste header {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-bottom: 2px solid #FFFFFF !important;
+}
+
+/* Elementos que usam fundo colorido */
+body.alto-contraste [style*="background"],
+body.alto-contraste [style*="background-color"] {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
 }

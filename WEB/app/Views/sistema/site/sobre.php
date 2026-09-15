@@ -101,11 +101,11 @@
                     ◐ 
             </button>
 
-            <button id="aumentar-fonte" class="btn-acessibilidade">
+            <button id="btnIncreaseFont" class="btn-acessibilidade">
                     +
             </button>
 
-            <button id="diminuir-fonte" class="btn-acessibilidade">
+            <button id="btnDecreaseFont" class="btn-acessibilidade">
                     -
             </button>
             <a href="<?= base_url('login')?>">Login</a>

@@ -46,6 +46,9 @@ $routes->group('api', ['filter' => 'cors'], function ($routes) {
 
     $routes->delete('dados_sensores/(:num)', 'api\dadosSensoresController::delete/$1');
 
+    // Dispositivo
+
+
     // SENSORES
     $routes->get('sensores', 'Api\SensoresController::index');
     $routes->get('sensores/(:num)', 'Api\SensoresController::show/$1');
@@ -53,7 +56,7 @@ $routes->group('api', ['filter' => 'cors'], function ($routes) {
 });
 
 $routes->group('api/dispositivos', function ($routes) {
-    $routes->get('/', 'Api\DispositivoController::index');
+    $routes->get('/', 'Api\DispositivoController::meus');
     $routes->get('meus', 'Api\DispositivoController::meus');
     $routes->get('(:num)', 'Api\DispositivoController::show/$1');
     $routes->post('/', 'Api\DispositivoController::create');

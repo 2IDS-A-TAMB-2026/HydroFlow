@@ -61,7 +61,7 @@
 //     try {
 //       final resposta = await http.get(
 //         Uri.parse(
-//           'http://10.141.130.50/HydroFlow/public/api/plantas',
+//           'http://.50/HydroFlow/public/api/plantas',
 //         ),
 //         headers: {
 //           'Accept': 'application/json',

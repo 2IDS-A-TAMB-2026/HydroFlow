@@ -44,8 +44,7 @@ class _DashboardPageState extends State<DashboardPage> {
   // Timer para atualização automática
   Timer? pollingTimer;
 
-  static const Duration intervaloAtualizacao =
-      Duration(seconds: 15);
+  static const Duration intervaloAtualizacao = Duration(seconds: 15);
 
   @override
   void initState() {
@@ -54,12 +53,9 @@ class _DashboardPageState extends State<DashboardPage> {
     consultarDashboard();
 
     // Atualizar automaticamente
-    pollingTimer = Timer.periodic(
-      intervaloAtualizacao,
-      (_) {
-        consultarDashboard(mostrarLoading: false);
-      },
-    );
+    pollingTimer = Timer.periodic(intervaloAtualizacao, (_) {
+      consultarDashboard(mostrarLoading: false);
+    });
   }
 
   @override
@@ -72,9 +68,7 @@ class _DashboardPageState extends State<DashboardPage> {
   /// CONSULTAR API
   /// ─────────────────────────────────────────────
 
-  Future<void> consultarDashboard({
-    bool mostrarLoading = true,
-  }) async {
+  Future<void> consultarDashboard({bool mostrarLoading = true}) async {
     if (mostrarLoading) {
       setState(() {
         carregando = true;
@@ -85,12 +79,8 @@ class _DashboardPageState extends State<DashboardPage> {
     try {
       // Faz requisição GET para API
       final resposta = await http.get(
-        Uri.parse(
-          'http://10.141.130.91/HydroFlow/public/api/dashboard',
-        ),
-        headers: {
-          'Accept': 'application/json',
-        },
+        Uri.parse('http://DESKTOP-38ILVP3/HydroFlow/public/api/dashboard'),
+        headers: {'Accept': 'application/json'},
       );
 
       // Converter resposta para JSON
@@ -113,18 +103,20 @@ class _DashboardPageState extends State<DashboardPage> {
           }
 
           */
-          dashboardData =
-              Map<String, dynamic>.from(resultado['data'] ?? resultado);
-
-          carregando = false;
-          erro = null;
+          final kpis = Map<String, dynamic>.from(
+            resultado['data']?['kpis'] ?? {},
+          );
+          setState(() {
+            dashboardData = kpis;
+            carregando = false;
+            erro = null;
+          });
         });
       } else {
         if (!mounted) return;
 
         setState(() {
-          erro = resultado['message'] ??
-              'Erro ao consultar dashboard';
+          erro = resultado['message'] ?? 'Erro ao consultar dashboard';
 
           carregando = false;
         });
@@ -150,10 +142,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
     if (!mounted) return;
 
-    Navigator.pushReplacementNamed(
-      context,
-      '/login',
-    );
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   @override
@@ -163,27 +152,16 @@ class _DashboardPageState extends State<DashboardPage> {
     final high = acc.isHighContrast;
     final f = acc.fontSizeFactor;
 
-    final bgPage = high
-        ? DarkPalette.background
-        : const Color(0xFFF5F6FA);
+    final bgPage = high ? DarkPalette.background : const Color(0xFFF5F6FA);
 
-    final bgContainer = high
-        ? DarkPalette.surface
-        : Colors.white;
+    final bgContainer = high ? DarkPalette.surface : Colors.white;
 
-    final appBarBg = high
-        ? DarkPalette.surface
-        : azul;
+    final appBarBg = high ? DarkPalette.surface : azul;
 
-    final txtPrincipal = high
-        ? Colors.cyanAccent
-        : azul;
+    final txtPrincipal = high ? Colors.cyanAccent : azul;
 
     final appBarBorder = high
-        ? const BorderSide(
-            color: DarkPalette.surfaceBorder,
-            width: 2,
-          )
+        ? const BorderSide(color: DarkPalette.surfaceBorder, width: 2)
         : BorderSide.none;
 
     return Scaffold(
@@ -192,20 +170,12 @@ class _DashboardPageState extends State<DashboardPage> {
       /// ─────────────────────────────────────────
       /// APP BAR
       /// ─────────────────────────────────────────
-
       appBar: AppBar(
-        title: Text(
-          "Painel Principal",
-          style: TextStyle(
-            fontSize: 20 * f,
-          ),
-        ),
+        title: Text("Painel Principal", style: TextStyle(fontSize: 20 * f)),
         backgroundColor: appBarBg,
         foregroundColor: Colors.white,
         elevation: 0,
-        shape: Border(
-          bottom: appBarBorder,
-        ),
+        shape: Border(bottom: appBarBorder),
         actions: [
           IconButton(
             tooltip: 'Atualizar',
@@ -224,132 +194,120 @@ class _DashboardPageState extends State<DashboardPage> {
       /// ─────────────────────────────────────────
       /// BODY
       /// ─────────────────────────────────────────
-
       body: carregando
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-
+          ? const Center(child: CircularProgressIndicator())
           /// ERRO
           : erro != null
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center,
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 50 * f,
+                      color: high ? Colors.redAccent : Colors.red,
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    Text(
+                      "Erro ao carregar dados",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: high ? Colors.redAccent : Colors.red,
+                        fontSize: 18 * f,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      erro ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14 * f),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        consultarDashboard();
+                      },
+                      icon: const Icon(Icons.refresh),
+                      label: const Text("Tentar novamente"),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          /// DASHBOARD
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Visão Geral",
+                    style: TextStyle(
+                      fontSize: 20 * f,
+                      fontWeight: FontWeight.bold,
+                      color: txtPrincipal,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
                       children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 50 * f,
-                          color: high
-                              ? Colors.redAccent
-                              : Colors.red,
+                        cardMetric(
+                          "Plantas",
+                          dashboardData?['total_plantas']?.toString() ?? '0',
+                          Icons.park,
+                          bgContainer,
+                          high,
+                          f,
                         ),
 
-                        const SizedBox(height: 12),
-
-                        Text(
-                          "Erro ao carregar dados",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: high
-                                ? Colors.redAccent
-                                : Colors.red,
-                            fontSize: 18 * f,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        cardMetric(
+                          "Dispositivos Ativos",
+                          dashboardData?['total_ativos']?.toString() ?? '0',
+                          Icons.memory,
+                          bgContainer,
+                          high,
+                          f,
                         ),
 
-                        const SizedBox(height: 8),
-
-                        Text(
-                          erro ?? '',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14 * f,
-                          ),
+                        cardMetric(
+                          "Alertas",
+                          dashboardData?['total_alertas']?.toString() ?? '0',
+                          Icons.warning_amber,
+                          bgContainer,
+                          high,
+                          f,
                         ),
 
-                        const SizedBox(height: 16),
-
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            consultarDashboard();
-                          },
-                          icon: const Icon(Icons.refresh),
-                          label: const Text(
-                            "Tentar novamente",
-                          ),
+                        cardMetric(
+                          "Consumo (L)",
+                          dashboardData?['consumo_total_litros']?.toString() ??
+                              '0',
+                          Icons.water_drop,
+                          bgContainer,
+                          high,
+                          f,
                         ),
                       ],
                     ),
                   ),
-                )
-
-              /// DASHBOARD
-              : Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Visão Geral",
-                        style: TextStyle(
-                          fontSize: 20 * f,
-                          fontWeight: FontWeight.bold,
-                          color: txtPrincipal,
-                        ),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      Expanded(
-                        child: GridView.count(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          children: [
-                            cardMetric(
-                              "Plantas",
-                              dashboardData?['qtdPlantas']
-                                      ?.toString() ??
-                                  '0',
-                              Icons.park,
-                              bgContainer,
-                              high,
-                              f,
-                            ),
-
-                            cardMetric(
-                              "Irrigações",
-                              dashboardData?['qtdIrrigacoes']
-                                      ?.toString() ??
-                                  '0',
-                              Icons.water_drop,
-                              bgContainer,
-                              high,
-                              f,
-                            ),
-
-                            cardMetric(
-                              "Dispositivos",
-                              dashboardData?[
-                                          'dispositivosAtivos']
-                                      ?.toString() ??
-                                  '0',
-                              Icons.memory,
-                              bgContainer,
-                              high,
-                              f,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                ],
+              ),
+            ),
     );
   }
 
@@ -373,10 +331,7 @@ class _DashboardPageState extends State<DashboardPage> {
         borderRadius: BorderRadius.circular(12),
 
         border: high
-            ? Border.all(
-                color: DarkPalette.surfaceBorder,
-                width: 1.5,
-              )
+            ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5)
             : null,
 
         boxShadow: high
@@ -391,17 +346,10 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
 
       child: Column(
-        mainAxisAlignment:
-            MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
 
         children: [
-          Icon(
-            icon,
-            size: 36 * f,
-            color: high
-                ? Colors.cyanAccent
-                : azul,
-          ),
+          Icon(icon, size: 36 * f, color: high ? Colors.cyanAccent : azul),
 
           const SizedBox(height: 8),
 
@@ -410,9 +358,7 @@ class _DashboardPageState extends State<DashboardPage> {
             style: TextStyle(
               fontSize: 22 * f,
               fontWeight: FontWeight.bold,
-              color: high
-                  ? DarkPalette.textPrimary
-                  : Colors.black87,
+              color: high ? DarkPalette.textPrimary : Colors.black87,
             ),
           ),
 
@@ -423,9 +369,7 @@ class _DashboardPageState extends State<DashboardPage> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14 * f,
-              color: high
-                  ? DarkPalette.textSecondary
-                  : Colors.black54,
+              color: high ? DarkPalette.textSecondary : Colors.black54,
             ),
           ),
         ],
@@ -437,10 +381,7 @@ class _DashboardPageState extends State<DashboardPage> {
   /// DRAWER
   /// ─────────────────────────────────────────────
 
-  Widget buildDrawer(
-    bool high,
-    double f,
-  ) {
+  Widget buildDrawer(bool high, double f) {
     return Drawer(
       child: Container(
         decoration: BoxDecoration(
@@ -448,16 +389,11 @@ class _DashboardPageState extends State<DashboardPage> {
               ? const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    DarkPalette.background,
-                    DarkPalette.surface,
-                  ],
+                  colors: [DarkPalette.background, DarkPalette.surface],
                 )
               : null,
 
-          color: high
-              ? null
-              : azul,
+          color: high ? null : azul,
         ),
 
         child: Column(
@@ -467,9 +403,7 @@ class _DashboardPageState extends State<DashboardPage> {
             Text(
               "HYDROFLOW",
               style: TextStyle(
-                color: high
-                    ? Colors.cyanAccent
-                    : Colors.white,
+                color: high ? Colors.cyanAccent : Colors.white,
                 fontSize: 24 * f,
                 fontWeight: FontWeight.bold,
               ),
@@ -477,60 +411,26 @@ class _DashboardPageState extends State<DashboardPage> {
 
             const SizedBox(height: 20),
 
-            Divider(
-              color: high
-                  ? DarkPalette.surfaceBorder
-                  : Colors.white24,
-            ),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
 
-            item(
-              Icons.home,
-              "Painel",
-              '/dashboard',
-              f,
-            ),
+            item(Icons.home, "Painel", '/dashboard', f),
 
-            item(
-              Icons.park,
-              "Plantas",
-              '/plantas',
-              f,
-            ),
+            item(Icons.park, "Plantas", '/plantas', f),
 
-            item(
-              Icons.history,
-              "Histórico",
-              '/historico',
-              f,
-            ),
+            item(Icons.history, "Histórico", '/historico', f),
 
-            item(
-              Icons.memory,
-              "Equipamentos",
-              '/equipamentos',
-              f,
-            ),
+            item(Icons.memory, "Equipamentos", '/equipamentos', f),
 
             const Spacer(),
 
-            Divider(
-              color: high
-                  ? DarkPalette.surfaceBorder
-                  : Colors.white24,
-            ),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
 
             ListTile(
-              leading: const Icon(
-                Icons.logout,
-                color: Colors.white,
-              ),
+              leading: const Icon(Icons.logout, color: Colors.white),
 
               title: Text(
                 "Sair",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14 * f,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 14 * f),
               ),
 
               onTap: logout,
@@ -547,33 +447,19 @@ class _DashboardPageState extends State<DashboardPage> {
   /// ITEM DO DRAWER
   /// ─────────────────────────────────────────────
 
-  Widget item(
-    IconData icon,
-    String label,
-    String route,
-    double f,
-  ) {
+  Widget item(IconData icon, String label, String route, double f) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: Colors.white,
-      ),
+      leading: Icon(icon, color: Colors.white),
 
       title: Text(
         label,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 14 * f,
-        ),
+        style: TextStyle(color: Colors.white, fontSize: 14 * f),
       ),
 
       onTap: () {
         Navigator.pop(context);
 
-        Navigator.pushReplacementNamed(
-          context,
-          route,
-        );
+        Navigator.pushReplacementNamed(context, route);
       },
     );
   }

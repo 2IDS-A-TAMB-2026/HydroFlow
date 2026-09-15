@@ -8,14 +8,17 @@ if (localStorage.getItem('altoContraste') === 'ativado') {
 }
 
 // O que acontece quando clica no botão
-btnContraste.addEventListener('click', function() {
-    // Liga ou desliga a classe no body
-    body.classList.toggle('alto-contraste');
-    
-    // Salva a preferência do usuário no navegador
-    if (body.classList.contains('alto-contraste')) {
-        localStorage.setItem('altoContraste', 'ativado');
-    } else {
-        localStorage.setItem('altoContraste', 'desativado');
-    }
-});
+if (btnContraste) {
+    btnContraste.addEventListener('click', function () {
+
+        // Liga ou desliga o alto contraste
+        body.classList.toggle('alto-contraste');
+
+        // Salva a preferência
+        if (body.classList.contains('alto-contraste')) {
+            localStorage.setItem('altoContraste', 'ativado');
+        } else {
+            localStorage.setItem('altoContraste', 'desativado');
+        }
+    });
+}

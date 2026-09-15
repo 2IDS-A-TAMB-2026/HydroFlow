@@ -37,8 +37,6 @@ class Filters extends BaseFilters
 
         //filtro de autenticação HYDROFLOW
         'auth' => \App\Filters\AuthFilter::class,
-
-        'cors' => \App\Filters\Cors::class,
     ];
 
     /**
@@ -77,6 +75,7 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'cors',
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
