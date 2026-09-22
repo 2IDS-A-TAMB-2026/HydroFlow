@@ -1025,7 +1025,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
             item(Icons.park, "Plantas", '/plantas', f),
 
-            item(Icons.history, "Histórico", '/historico', f),
+            item(Icons.history, "Histórico de Ativação", '/historico', f),
+
+            item(Icons.history, "Histórico de Medição", '/dados_sensores', f),
 
             item(Icons.memory, "Equipamentos", '/equipamentos', f),
 

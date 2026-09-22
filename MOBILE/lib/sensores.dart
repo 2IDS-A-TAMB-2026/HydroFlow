@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'accessibility_provider.dart';
 import 'package:tcc/botao_acessibilidade.dart';
 
@@ -41,6 +42,8 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
   // URL base da API
   final String apiUrl =
       'http://DESKTOP-38ILVP3/HydroFlow/public/api/dispositivos';
+
+  static const azul = Color(0xFF002855);
 
   @override
   void initState() {
@@ -172,6 +175,20 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
         .toString();
   }
 
+  // ---------------- LOGOUT ----------------
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    if (!context.mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+      (route) => false,
+    );
+  }
+
   @override
   void dispose() {
     horizontalController.dispose();
@@ -180,9 +197,23 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Escutando as configurações do Provider de acessibilidade
+    final acc = Provider.of<AccessibilityProvider>(context);
+    final high = acc.isHighContrast;
+    final f = acc.fontSizeFactor;
+
+    final appBarBg = high ? DarkPalette.surface : azul;
+    final appBarBorder = high
+        ? const BorderSide(color: DarkPalette.surfaceBorder, width: 2)
+        : BorderSide.none;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Relatório de Dispositivos'),
+        backgroundColor: appBarBg,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: Border(bottom: appBarBorder),
         actions: [
           IconButton(
             onPressed: () {
@@ -195,8 +226,11 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
             },
             icon: const Icon(Icons.refresh),
           ),
+          const BotaoAcessibilidade(),
         ],
       ),
+
+      drawer: _buildDrawer(context, high, f),
 
       body: carregando
           ? const Center(child: CircularProgressIndicator())
@@ -388,5 +422,84 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
               ),
             ),
     );
+  }
+
+  // ---------------- DRAWER ----------------
+  Widget _buildDrawer(BuildContext context, bool high, double f) {
+    return Drawer(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: high
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [DarkPalette.background, DarkPalette.surface],
+                )
+              : null,
+          color: high ? null : azul,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 80),
+            Text(
+              "HYDROFLOW",
+              style: TextStyle(
+                color: high ? Colors.cyanAccent : Colors.white,
+                fontSize: 24 * f,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
+
+            _drawerItem(context, Icons.home, "Painel", f, () {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            }),
+            _drawerItem(context, Icons.park, "Plantas", f, () {
+              Navigator.pushReplacementNamed(context, '/plantas');
+            }),
+            _drawerItem(context, Icons.history, "Histórico de Ativações", f, () {
+              Navigator.pushReplacementNamed(context, '/historico');
+            }),
+            _drawerItem(context, Icons.history, "Histórico de Mediçoes", f, () {
+              Navigator.pushReplacementNamed(context, '/dados_sensores');
+            }),
+            _drawerItem(context, Icons.memory, "Equipamentos", f, () {
+              Navigator.pushReplacementNamed(context, '/equipamentos');
+            }),
+
+            const Spacer(),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
+
+            _drawerItem(context, Icons.logout, "Sair", f, () {
+              _logout(context);
+            }),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    double f,
+    VoidCallback onTap,
+  ) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
+    );
+  }
+
+  // Correção do nome interno do método auxiliar chamado pelo drawer
+  Widget _drawerItem(BuildContext context, IconData icon, String title, double f, VoidCallback onTap) {
+    return _buildDrawerItem(context, icon, title, f, onTap);
   }
 }

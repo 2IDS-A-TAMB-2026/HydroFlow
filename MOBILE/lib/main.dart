@@ -14,6 +14,7 @@ import 'cadastro_planta.dart';
 import 'plantas.dart';
 import 'sensores.dart';
 import 'historico.dart';
+import 'relatorio_dados_sensores.dart';
 
 void main() {
   runApp(
@@ -67,7 +68,8 @@ class HydroflowApp extends StatelessWidget {
         '/cadastro_plantas': (context) => const CadastroPlantaPage(),
         '/plantas': (context) => const PlantasPage(),
         '/equipamentos': (context) => const RelatoriodispositivosPage(),
-        '/historico': (context) => const HistoricoPage()
+        '/historico': (context) => const HistoricoPage(),
+        '/dados_sensores': (context) => const Relatoriodados_sensoresPage()
       },
     );
   }

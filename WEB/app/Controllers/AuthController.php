@@ -1,36 +1,35 @@
 <?php
-    namespace App\Controllers;
+namespace App\Controllers;
 
-    use App\Controllers\BaseController;
-    use App\Models\UsuarioModel;
+use App\Controllers\BaseController;
+use App\Models\UsuarioModel;
 
-    class AuthController extends BaseController{
-        public function autenticar(){
-            $model = new UsuarioModel();
+class AuthController extends BaseController {
+    public function autenticar() {
+        $model = new UsuarioModel();
 
-            $usuario = $model
-                ->where('USU_EMAIL', $this->request->getPost('email'))->first();
-    
-            if($usuario){
-                if($this->request->getPost('senha') == $usuario['USU_SENHA']){
-                    session()->set([
-                        'USU_ID' => $usuario['USU_ID'],
-                        'USU_NOME' => $usuario['USU_NOME'],
-                        'logado' => true
-                    ]);
+        $usuario = $model
+            ->where('USU_EMAIL', $this->request->getPost('email'))
+            ->first();
 
-                    return redirect()->to('/dashboard');
-                }
-            }
-            session()->setFlashdata('erro','Usuário ou senha inválidos');
+        // 1. Verifica se o usuário existe
+        // 2. Compara a senha informada no POST com o hash do banco via password_verify()
+        if ($usuario && password_verify($this->request->getPost('senha'), $usuario['USU_SENHA'])) {
+            session()->set([
+                'USU_ID'   => $usuario['USU_ID'],
+                'USU_NOME' => $usuario['USU_NOME'],
+                'logado'   => true
+            ]);
 
-            return redirect()->to('/login');
+            return redirect()->to('/dashboard');
         }
 
-        public function logout(){
-            session()->destroy();
-
-            return redirect()->to('/login');
-        }
+        session()->setFlashdata('erro', 'Usuário ou senha inválidos');
+        return redirect()->to('/login');
     }
-?>
+
+    public function logout() {
+        session()->destroy();
+        return redirect()->to('/login');
+    }
+}

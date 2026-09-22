@@ -9,12 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  fl_chart: ^0.68.0 # Ou a versão mais recente
+  pdf: ^3.10.8           # Geração de PDF
+  printing: ^5.13.0      # Visualização e Download do PDF
+  excel: ^4.0.3          # Exportação para Excel (.xlsx)
+  path_provider: ^2.1.3  # Salvamento local de arquivos
+  http: ^1.2.0           # Requisições API
+  provider: ^6.1.2       # Acessibilidade / Temas
   font_awesome_flutter: ^11.0.0
   brasil_fields: ^1.5.0
-  fl_chart: ^1.0.0
   shared_preferences: ^2.2.2
-  http: ^1.5.0
-  provider: ^6.1.5+1
 
 dev_dependencies:
   flutter_test:

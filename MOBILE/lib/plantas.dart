@@ -555,8 +555,9 @@ class _PlantasPageState extends State<PlantasPage> {
 
             _item(Icons.home, "Painel", '/dashboard', f),
             _item(Icons.park, "Plantas", '/plantas', f),
-            _item(Icons.history, "Histórico", '/historico', f),
-            _item(Icons.memory, "Equipamentos", '/equipamentos', f),
+            _item(Icons.history, "Histórico de Ativação", '/historico', f),
+            _item(Icons.history, "Histórico de Medição", '/dados_senores', f),
+            _item(Icons.memory, "Dispositivos", '/dispositivos', f),
 
             const Spacer(),
             Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),

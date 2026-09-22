@@ -16,7 +16,7 @@ $routes->get('cadastro', 'Home::irParaCadastro');
 $routes->post('cadastro/salvar', 'UsuarioController::salvar');
 
 // API (Em andamento fiott)
-$routes->group('api', ['filter' => 'cors'], function ($routes) {
+$routes->group('api', function ($routes) {
 
     //Dashboard
     $routes->get('dashboard', 'api\dashboardController::index');
@@ -53,6 +53,8 @@ $routes->group('api', ['filter' => 'cors'], function ($routes) {
     $routes->get('sensores', 'Api\SensoresController::index');
     $routes->get('sensores/(:num)', 'Api\SensoresController::show/$1');
 
+
+    $routes->post('login', 'Api\UsuarioController::login');
 });
 
 $routes->group('api/dispositivos', function ($routes) {

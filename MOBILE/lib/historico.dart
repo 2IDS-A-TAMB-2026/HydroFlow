@@ -1045,8 +1045,11 @@ class _HistoricoPageState extends State<HistoricoPage> {
             _drawerItem(context, Icons.park, "Plantas", f, () {
               Navigator.pushReplacementNamed(context, '/plantas');
             }),
-            _drawerItem(context, Icons.history, "Histórico", f, () {
+            _drawerItem(context, Icons.history, "Histórico de Ativação", f, () {
               Navigator.pushReplacementNamed(context, '/historico');
+            }),
+             _drawerItem(context, Icons.history, "Histórico de Medição", f, () {
+              Navigator.pushReplacementNamed(context, '/dados_sensores');
             }),
             _drawerItem(context, Icons.memory, "Equipamentos", f, () {
               Navigator.pushReplacementNamed(context, '/equipamentos');
