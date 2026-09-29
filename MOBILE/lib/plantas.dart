@@ -4,6 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'accessibility_provider.dart';
 import 'botao_acessibilidade.dart';
 
@@ -132,12 +135,150 @@ class _PlantasPageState extends State<PlantasPage> {
     });
   }
 
-  Future<void> _logout() async {
+  /// ─────────────────────────────────────────────
+  /// EXPORTAÇÃO PARA PDF
+  /// Exporta o que está na tela (respeita busca e filtro de tipo)
+  /// ─────────────────────────────────────────────
+  Future<void> _exportarPdf() async {
+    if (plantasFiltradas.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Não há plantas para exportar.")),
+      );
+      return;
+    }
+
+    try {
+      final pdf = pw.Document();
+      final agora = DateTime.now();
+      final dataHoje =
+          "${agora.day.toString().padLeft(2, '0')}/${agora.month.toString().padLeft(2, '0')}/${agora.year}";
+
+      pdf.addPage(
+        pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(32),
+          build: (pw.Context ctx) {
+            return [
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
+                children: [
+                  pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text(
+                        "HYDROFLOW - SISTEMA DE IRRIGAÇÃO",
+                        style: pw.TextStyle(
+                          fontSize: 18,
+                          fontWeight: pw.FontWeight.bold,
+                          color: PdfColors.blue900,
+                        ),
+                      ),
+                      pw.Text(
+                        "Relatório de Plantas Cadastradas",
+                        style: const pw.TextStyle(
+                          fontSize: 14,
+                          color: PdfColors.grey700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  pw.Text(
+                    "Data: $dataHoje",
+                    style: const pw.TextStyle(
+                      fontSize: 10,
+                      color: PdfColors.grey600,
+                    ),
+                  ),
+                ],
+              ),
+              pw.SizedBox(height: 10),
+              pw.Divider(color: PdfColors.grey400),
+              pw.SizedBox(height: 15),
+
+              pw.TableHelper.fromTextArray(
+                headers: [
+                  'ID',
+                  'Nome da Planta',
+                  'Tipo',
+                  'Cultura',
+                  'Parâmetros',
+                  'Dispositivo',
+                ],
+                data: plantasFiltradas.map((p) {
+                  return [
+                    (p['id'] ?? '').toString(),
+                    (p['nome'] ?? '').toString(),
+                    (p['tipo'] ?? '').toString(),
+                    (p['cultura'] ?? '').toString(),
+                    (p['parametro'] ??
+                            "${p['volume_agua'] ?? '0'} L (a cada ${p['intervalo_dias'] ?? '1'} dia(s))")
+                        .toString(),
+                    (p['dispositivo'] ?? '').toString(),
+                  ];
+                }).toList(),
+                headerStyle: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColors.white,
+                  fontSize: 10,
+                ),
+                headerDecoration: const pw.BoxDecoration(
+                  color: PdfColors.blue900,
+                ),
+                rowDecoration: const pw.BoxDecoration(
+                  border: pw.Border(
+                    bottom: pw.BorderSide(color: PdfColors.grey300, width: .5),
+                  ),
+                ),
+                cellAlignment: pw.Alignment.centerLeft,
+                cellPadding: const pw.EdgeInsets.symmetric(
+                  horizontal: 6,
+                  vertical: 6,
+                ),
+                cellStyle: const pw.TextStyle(fontSize: 9),
+              ),
+
+              pw.SizedBox(height: 20),
+              pw.Align(
+                alignment: pw.Alignment.centerRight,
+                child: pw.Text(
+                  "Total de plantas exportadas: ${plantasFiltradas.length}",
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.grey700,
+                  ),
+                ),
+              ),
+            ];
+          },
+        ),
+      );
+
+      // Abre a pré-visualização / download / impressão do PDF
+      await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdf.save(),
+        name: 'plantas_hydroflow.pdf',
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erro ao gerar o PDF: $e")),
+      );
+    }
+  }
+
+  Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
-    if (!mounted) return;
-    Navigator.pushReplacementNamed(context, '/login');
+    if (!context.mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+      (route) => false,
+    );
   }
 
   @override
@@ -168,7 +309,7 @@ class _PlantasPageState extends State<PlantasPage> {
       ),
 
       /// MENU SANDUÍCHE LATERAL (DRAWER)
-      drawer: _buildDrawer(high, f),
+      drawer: _buildDrawer(context, high, f),
 
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -603,7 +744,7 @@ class _PlantasPageState extends State<PlantasPage> {
             ),
             const SizedBox(width: 8),
             OutlinedButton.icon(
-              onPressed: () {},
+              onPressed: _exportarPdf,
               icon: const Icon(Icons.download, size: 16),
               label: const Text("Exportar PDF"),
             ),
@@ -614,7 +755,9 @@ class _PlantasPageState extends State<PlantasPage> {
   }
 
   /// MENU SANDUÍCHE (DRAWER)
-  Widget _buildDrawer(bool high, double f) {
+
+  // ---------------- DRAWER ----------------
+  Widget _buildDrawer(BuildContext context, bool high, double f) {
     return Drawer(
       child: Container(
         decoration: BoxDecoration(
@@ -640,18 +783,29 @@ class _PlantasPageState extends State<PlantasPage> {
             ),
             const SizedBox(height: 20),
             Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
-            _itemDrawer(Icons.home, "Painel", '/dashboard', f),
-            _itemDrawer(Icons.park, "Plantas", '/plantas', f),
-            _itemDrawer(Icons.history, "Histórico de Ativação", '/historico', f),
-            _itemDrawer(Icons.memory, "Dispositivos", '/dispositivos', f),
+
+            _drawerItem(context, Icons.home, "Painel", f, () {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            }),
+            _drawerItem(context, Icons.park, "Plantas", f, () {
+              Navigator.pushReplacementNamed(context, '/plantas');
+            }),
+            _drawerItem(context, Icons.history, "Histórico de Ativação", f, () {
+              Navigator.pushReplacementNamed(context, '/historico');
+            }),
+            _drawerItem(context, Icons.show_chart, "Histórico de Medição", f, () {
+              Navigator.pushReplacementNamed(context, '/dados_sensores');
+            }),
+            _drawerItem(context, Icons.memory, "Equipamentos", f, () {
+              Navigator.pushReplacementNamed(context, '/equipamentos');
+            }),
+
             const Spacer(),
             Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.white),
-              title: Text("Sair",
-                  style: TextStyle(color: Colors.white, fontSize: 14 * f)),
-              onTap: _logout,
-            ),
+
+            _drawerItem(context, Icons.logout, "Sair", f, () {
+              _logout(context);
+            }),
             const SizedBox(height: 20),
           ],
         ),
@@ -659,13 +813,13 @@ class _PlantasPageState extends State<PlantasPage> {
     );
   }
 
-  Widget _itemDrawer(IconData icon, String label, String route, double f) {
+  Widget _drawerItem(BuildContext context, IconData icon, String title, double f, VoidCallback onTap) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
-      title: Text(label, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
+      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
       onTap: () {
         Navigator.pop(context);
-        Navigator.pushReplacementNamed(context, route);
+        onTap();
       },
     );
   }

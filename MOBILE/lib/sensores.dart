@@ -39,7 +39,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
   String? erro;
 
   final String apiUrl =
-      'http://DESKTOP-38ILVP3/HydroFlow/public/api/dispositivos';
+      'http://10.141.131.59/HydroFlow/public/api/dispositivos';
 
   static const azul = Color(0xFF002855);
 
@@ -561,33 +561,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
           ],
 
           const SizedBox(height: 12),
-
-          // BOTÕES DE AÇÃO
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton.icon(
-                style: TextButton.styleFrom(
-                  foregroundColor: high ? Colors.cyanAccent : azul,
-                ),
-                icon: const Icon(Icons.edit, size: 18),
-                label: Text('Editar', style: TextStyle(fontSize: 13 * f)),
-                onPressed: () {
-                  final id = disp['DIS_ID'];
-                  print('Editar dispositivo ID: $id');
-                },
-              ),
-              const SizedBox(width: 8),
-              TextButton.icon(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.redAccent,
-                ),
-                icon: const Icon(Icons.delete_outline, size: 18),
-                label: Text('Excluir', style: TextStyle(fontSize: 13 * f)),
-                onPressed: () => _confirmarExclusao(disp),
-              ),
-            ],
-          )
+          
         ],
       ),
     );

@@ -20,16 +20,18 @@ body {
    ========================================================================== */
 .sidebar {
     width: 250px;
-    background: linear-gradient(to bottom, #1e3c72, #2a5298); /* Fundo azul escuro */
-    color: white;
+    /* Gradiente idêntico ao da tela de login (do tom escuro/petróleo ao tom médio) */
+    background: linear-gradient(160deg, #071f33 0%, #0d3b5c 50%, #0c4d75 100%);
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     
     /* --- MÁGICA PARA ACOMPANHAR O ROLAMENTO --- */
     position: sticky; 
     top: 0; /* Gruda no topo da tela */
-    height: 100vh; /* Garante que o azul tenha sempre 100% da altura da tela */
-    overflow-y: auto; /* Se a tela do PC for muito baixa, cria rolagem só pro menu */
+    height: 100vh; /* Garante 100% da altura da tela */
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15); /* Sombra suave para separar do conteúdo */
 }
 
 /* Esconder a barra de rolagem do menu caso ela apareça, mas mantendo a função */
@@ -46,45 +48,53 @@ body {
 
 /* --- NOVO: Card de Perfil do Usuário --- */
 .sidebar-user-card {
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
+    padding: 12px 18px;
+    display: flex !important;
+    flex-direction: row !important; /* Força o alinhamento lado a lado */
+    align-items: center !important; /* Centraliza verticalmente o avatar e o texto */
     gap: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.05);
+    margin: 10px 15px;
+    border-radius: 8px;
 }
 
 .sidebar-user-avatar {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.2);
+    width: 42px;
+    height: 42px;
+    min-width: 42px; /* Impede que o avatar encolha */
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
-    color: #fff;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .sidebar-user-info {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     overflow: hidden;
 }
 
 .sidebar-user-name {
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: #ffffff;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    margin: 0;
+    line-height: 1.2;
 }
 
 .sidebar-user-role {
     font-size: 0.75rem;
-    color: #b0bec5;
+    color: #2ecc71; /* Verde para indicar status Online */
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 /* --- NOVO: Separadores de Menu (Títulos de Seção) --- */
@@ -116,10 +126,12 @@ body {
     width: 20px;
 }
 
-.nav-menu li a:hover, .nav-menu li.active a {
-    background-color: white;
-    color: #1e3c72;
-    border-left: 4px solid #1e3c72;
+.nav-menu li a:hover, 
+.nav-menu li.active a {
+    background-color: rgba(255, 255, 255, 0.15); /* Fundo semi-transparente elegante */
+    color: #ffffff;
+    border-left: 4px solid #00a65a; /* Mantém o indicador verde ou azul claro */
+    backdrop-filter: blur(5px);
 }
 
 /* --- NOVO: Widget de Rodapé (Status IoT) --- */

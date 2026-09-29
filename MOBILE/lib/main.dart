@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,9 +50,25 @@ class HydroflowApp extends StatelessWidget {
       // 4. O segredo para funcionar em TODAS as páginas:
       // O builder aplica o fator de escala de texto globalmente.
       builder: (context, child) {
+        final mq = MediaQuery.of(context);
+
+        // Na web mobile (iPhone), o Flutter às vezes não recebe a área segura
+        // (padding.top == 0) e a AppBar fica por baixo da ilha/status bar.
+        // Este fallback corrige TODAS as telas de uma vez.
+        const double topoIphone = 47;
+        final precisaFallback = kIsWeb &&
+            defaultTargetPlatform == TargetPlatform.iOS &&
+            mq.padding.top == 0;
+
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
+          data: mq.copyWith(
             textScaler: TextScaler.linear(accessibility.fontSizeFactor),
+            padding: precisaFallback
+                ? mq.padding.copyWith(top: topoIphone)
+                : mq.padding,
+            viewPadding: precisaFallback
+                ? mq.viewPadding.copyWith(top: topoIphone)
+                : mq.viewPadding,
           ),
           child: child!,
         );

@@ -29,7 +29,7 @@ $routes->group('api', function ($routes) {
     // PLANTAS
     $routes->get('plantas', 'api\plantasController::index');
     $routes->get('plantas/(:num)', 'api\plantasController::show/$1');
-
+    $routes->post('plantas/novo', 'api\plantasController::novo');
     // HISTÓRICO
     $routes->get('historico', 'api\historicoController::index');
     $routes->get('historico/(:num)', 'api\historicoController::show/$1');

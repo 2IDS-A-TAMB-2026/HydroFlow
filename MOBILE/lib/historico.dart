@@ -41,7 +41,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
   String _query = "";
   static const azul = Color(0xFF002855);
 
-  final String apiUrl = 'http://10.0.2.2/HydroFlow/public/api/historico';
+  final String apiUrl = 'http://10.141.131.59/HydroFlow/public/api/historico';
 
   @override
   void initState() {
@@ -68,7 +68,8 @@ class _HistoricoPageState extends State<HistoricoPage> {
         });
       } else {
         setState(() {
-          _erro = 'Erro do servidor (${response.statusCode}). Verifique a rota do backend.';
+          _erro =
+              'Erro do servidor (${response.statusCode}). Verifique a rota do backend.';
           _carregando = false;
         });
       }
@@ -108,13 +109,19 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     ),
                     pw.Text(
                       "Relatório de Histórico de Ativações",
-                      style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey700),
+                      style: const pw.TextStyle(
+                        fontSize: 14,
+                        color: PdfColors.grey700,
+                      ),
                     ),
                   ],
                 ),
                 pw.Text(
                   "Data: ${DateTime.now().day.toString().padLeft(2, '0')}/${DateTime.now().month.toString().padLeft(2, '0')}/${DateTime.now().year}",
-                  style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
+                  style: const pw.TextStyle(
+                    fontSize: 10,
+                    color: PdfColors.grey600,
+                  ),
                 ),
               ],
             ),
@@ -124,16 +131,30 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
             // Tabela de Dados em PDF
             pw.TableHelper.fromTextArray(
-              headers: ['Status', 'Data / Hora', 'Setor / Cultura', 'Duração', 'Volume', 'Acionamento'],
+              headers: [
+                'Status',
+                'Data / Hora',
+                'Setor / Cultura',
+                'Duração',
+                'Volume',
+                'Acionamento',
+              ],
               data: dadosExportar.map((item) {
-                final status = item['IRR_STATUS'] ?? item['status'] ?? 'Concluído';
-                final dataHora = "${item['IRR_DATA'] ?? item['data'] ?? ''} ${item['IRR_HORA'] ?? item['hora'] ?? ''}".trim();
+                final status =
+                    item['IRR_STATUS'] ?? item['status'] ?? 'Concluído';
+                final dataHora =
+                    "${item['IRR_DATA'] ?? item['data'] ?? ''} ${item['IRR_HORA'] ?? item['hora'] ?? ''}"
+                        .trim();
                 final setor = item['nome_planta'] != null
                     ? "${item['nome_planta']} (${item['cultura'] ?? 'Geral'})"
-                    : (item['setor'] ?? 'Planta #${item['planta_id'] ?? item['id']}');
-                final duracao = "${item['IRR_DURACAO'] ?? item['duracao'] ?? '0'} min";
-                final volume = "${item['IRR_VOLUME'] ?? item['volume'] ?? '0'} L";
-                final tipo = item['IRR_ACIONAMENTO'] ?? item['tipo'] ?? 'Manual';
+                    : (item['setor'] ??
+                          'Planta #${item['planta_id'] ?? item['id']}');
+                final duracao =
+                    "${item['IRR_DURACAO'] ?? item['duracao'] ?? '0'} min";
+                final volume =
+                    "${item['IRR_VOLUME'] ?? item['volume'] ?? '0'} L";
+                final tipo =
+                    item['IRR_ACIONAMENTO'] ?? item['tipo'] ?? 'Manual';
 
                 return [
                   status.toString(),
@@ -157,7 +178,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
                 ),
               ),
               cellAlignment: pw.Alignment.centerLeft,
-              cellPadding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              cellPadding: const pw.EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 6,
+              ),
               cellStyle: const pw.TextStyle(fontSize: 10),
             ),
 
@@ -166,7 +190,11 @@ class _HistoricoPageState extends State<HistoricoPage> {
               alignment: pw.Alignment.centerRight,
               child: pw.Text(
                 "Total de registros exportados: ${dadosExportar.length}",
-                style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold, color: PdfColors.grey700),
+                style: pw.TextStyle(
+                  fontSize: 10,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColors.grey700,
+                ),
               ),
             ),
           ];
@@ -188,11 +216,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
     if (!context.mounted) return;
 
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/login',
-      (route) => false,
-    );
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   @override
@@ -214,11 +238,20 @@ class _HistoricoPageState extends State<HistoricoPage> {
         : BorderSide.none;
 
     final filtrados = _dados.where((item) {
-      final setor = (item['nome_planta'] ?? item['cultura'] ?? item['setor'] ?? '').toString().toLowerCase();
-      final status = (item['IRR_STATUS'] ?? item['status'] ?? '').toString().toLowerCase();
-      final data = "${item['IRR_DATA'] ?? item['data'] ?? ''} ${item['IRR_HORA'] ?? item['hora'] ?? ''}".toLowerCase();
+      final setor =
+          (item['nome_planta'] ?? item['cultura'] ?? item['setor'] ?? '')
+              .toString()
+              .toLowerCase();
+      final status = (item['IRR_STATUS'] ?? item['status'] ?? '')
+          .toString()
+          .toLowerCase();
+      final data =
+          "${item['IRR_DATA'] ?? item['data'] ?? ''} ${item['IRR_HORA'] ?? item['hora'] ?? ''}"
+              .toLowerCase();
 
-      return setor.contains(_query) || status.contains(_query) || data.contains(_query);
+      return setor.contains(_query) ||
+          status.contains(_query) ||
+          data.contains(_query);
     }).toList();
 
     return Scaffold(
@@ -269,7 +302,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
       color: high ? DarkPalette.surface : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: high ? const BorderSide(color: DarkPalette.surfaceBorder, width: 1.5) : BorderSide.none,
+        side: high
+            ? const BorderSide(color: DarkPalette.surfaceBorder, width: 1.5)
+            : BorderSide.none,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -301,20 +336,38 @@ class _HistoricoPageState extends State<HistoricoPage> {
                   _query = value.toLowerCase();
                 });
               },
-              style: TextStyle(color: high ? DarkPalette.textPrimary : Colors.black, fontSize: 14 * f),
+              style: TextStyle(
+                color: high ? DarkPalette.textPrimary : Colors.black,
+                fontSize: 14 * f,
+              ),
               decoration: InputDecoration(
                 hintText: "Buscar por setor, data ou status...",
-                hintStyle: TextStyle(color: high ? DarkPalette.textSecondary : Colors.black38, fontSize: 14 * f),
-                prefixIcon: Icon(Icons.search, color: high ? Colors.cyanAccent : Colors.black45),
+                hintStyle: TextStyle(
+                  color: high ? DarkPalette.textSecondary : Colors.black38,
+                  fontSize: 14 * f,
+                ),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: high ? Colors.cyanAccent : Colors.black45,
+                ),
                 filled: true,
-                fillColor: high ? DarkPalette.surfaceElevated : const Color(0xFFF5F7FA),
+                fillColor: high
+                    ? DarkPalette.surfaceElevated
+                    : const Color(0xFFF5F7FA),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: high ? DarkPalette.surfaceBorder : Colors.grey.withOpacity(0.3)),
+                  borderSide: BorderSide(
+                    color: high
+                        ? DarkPalette.surfaceBorder
+                        : Colors.grey.withOpacity(0.3),
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: high ? Colors.cyanAccent : azul, width: 2),
+                  borderSide: BorderSide(
+                    color: high ? Colors.cyanAccent : azul,
+                    width: 2,
+                  ),
                 ),
               ),
             ),
@@ -330,7 +383,11 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
     for (var item in _dados) {
       final dataStr = (item['IRR_DATA'] ?? item['data'] ?? '').toString();
-      final volNum = double.tryParse((item['IRR_VOLUME'] ?? item['volume'] ?? '0').toString()) ?? 0.0;
+      final volNum =
+          double.tryParse(
+            (item['IRR_VOLUME'] ?? item['volume'] ?? '0').toString(),
+          ) ??
+          0.0;
 
       if (dataStr.isNotEmpty) {
         String dataFormatada = dataStr;
@@ -339,13 +396,28 @@ class _HistoricoPageState extends State<HistoricoPage> {
           dataFormatada = "${partes[2]}/${partes[1]}";
         }
 
-        consumoPorData[dataFormatada] = (consumoPorData[dataFormatada] ?? 0) + volNum;
+        consumoPorData[dataFormatada] =
+            (consumoPorData[dataFormatada] ?? 0) + volNum;
       }
     }
 
     final List<String> datas = consumoPorData.isNotEmpty
         ? consumoPorData.keys.toList()
-        : ["01/05", "02/05", "03/05", "04/05", "05/05", "06/05", "07/05", "08/05", "09/05", "10/05", "11/05", "12/05", "13/05"];
+        : [
+            "01/05",
+            "02/05",
+            "03/05",
+            "04/05",
+            "05/05",
+            "06/05",
+            "07/05",
+            "08/05",
+            "09/05",
+            "10/05",
+            "11/05",
+            "12/05",
+            "13/05",
+          ];
 
     final List<double> valores = consumoPorData.isNotEmpty
         ? consumoPorData.values.toList()
@@ -361,7 +433,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
       color: high ? DarkPalette.surface : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: high ? const BorderSide(color: DarkPalette.surfaceBorder, width: 1.5) : BorderSide.none,
+        side: high
+            ? const BorderSide(color: DarkPalette.surfaceBorder, width: 1.5)
+            : BorderSide.none,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -391,11 +465,15 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     show: true,
                     drawVerticalLine: true,
                     getDrawingHorizontalLine: (value) => FlLine(
-                      color: high ? DarkPalette.surfaceBorder : Colors.grey.withOpacity(0.2),
+                      color: high
+                          ? DarkPalette.surfaceBorder
+                          : Colors.grey.withOpacity(0.2),
                       strokeWidth: 1,
                     ),
                     getDrawingVerticalLine: (value) => FlLine(
-                      color: high ? DarkPalette.surfaceBorder : Colors.grey.withOpacity(0.2),
+                      color: high
+                          ? DarkPalette.surfaceBorder
+                          : Colors.grey.withOpacity(0.2),
                       strokeWidth: 1,
                     ),
                   ),
@@ -408,7 +486,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
                           return Text(
                             "${value.toInt()} L",
                             style: TextStyle(
-                              color: high ? DarkPalette.textSecondary : Colors.grey[600],
+                              color: high
+                                  ? DarkPalette.textSecondary
+                                  : Colors.grey[600],
                               fontSize: 10 * f,
                             ),
                           );
@@ -426,7 +506,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
                               child: Text(
                                 datas[idx],
                                 style: TextStyle(
-                                  color: high ? DarkPalette.textSecondary : Colors.grey[600],
+                                  color: high
+                                      ? DarkPalette.textSecondary
+                                      : Colors.grey[600],
                                   fontSize: 10 * f,
                                 ),
                               ),
@@ -436,13 +518,19 @@ class _HistoricoPageState extends State<HistoricoPage> {
                         },
                       ),
                     ),
-                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
                   ),
                   borderData: FlBorderData(
                     show: true,
                     border: Border.all(
-                      color: high ? DarkPalette.surfaceBorder : Colors.grey.withOpacity(0.3),
+                      color: high
+                          ? DarkPalette.surfaceBorder
+                          : Colors.grey.withOpacity(0.3),
                     ),
                   ),
                   lineBarsData: [
@@ -505,7 +593,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
               Text(
                 _erro,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: high ? DarkPalette.textPrimary : Colors.red, fontSize: 14 * f),
+                style: TextStyle(
+                  color: high ? DarkPalette.textPrimary : Colors.red,
+                  fontSize: 14 * f,
+                ),
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
@@ -524,19 +615,28 @@ class _HistoricoPageState extends State<HistoricoPage> {
       color: high ? DarkPalette.surface : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: high ? const BorderSide(color: DarkPalette.surfaceBorder, width: 1.5) : BorderSide.none,
+        side: high
+            ? const BorderSide(color: DarkPalette.surfaceBorder, width: 1.5)
+            : BorderSide.none,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 10,
+              runSpacing: 10,
               children: [
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.assignment, color: high ? Colors.cyanAccent : azul),
+                    Icon(
+                      Icons.assignment,
+                      color: high ? Colors.cyanAccent : azul,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       "Registros de Irrigação",
@@ -548,15 +648,23 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     ),
                   ],
                 ),
-                // BOTÃO DE EXPORTAR PDF NO TOPO DA TABELA
+
                 ElevatedButton.icon(
-                  onPressed: filtrados.isEmpty ? null : () => _gerarPdf(filtrados),
+                  onPressed: filtrados.isEmpty
+                      ? null
+                      : () => _gerarPdf(filtrados),
                   icon: const Icon(Icons.picture_as_pdf, size: 18),
-                  label: Text("Exportar PDF", style: TextStyle(fontSize: 12 * f)),
+                  label: Text(
+                    "Exportar PDF",
+                    style: TextStyle(fontSize: 12 * f),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red[700],
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -577,10 +685,14 @@ class _HistoricoPageState extends State<HistoricoPage> {
                 : Container(
                     height: 320,
                     decoration: BoxDecoration(
-                      color: high ? DarkPalette.surfaceElevated : const Color(0xFFF9FAFB),
+                      color: high
+                          ? DarkPalette.surfaceElevated
+                          : const Color(0xFFF9FAFB),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: high ? DarkPalette.surfaceBorder : Colors.grey.withOpacity(0.3),
+                        color: high
+                            ? DarkPalette.surfaceBorder
+                            : Colors.grey.withOpacity(0.3),
                       ),
                     ),
                     child: Scrollbar(
@@ -591,7 +703,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
                           scrollDirection: Axis.horizontal,
                           child: DataTable(
                             headingRowColor: WidgetStateProperty.all(
-                              high ? DarkPalette.surface : const Color(0xFFEEF2F6),
+                              high
+                                  ? DarkPalette.surface
+                                  : const Color(0xFFEEF2F6),
                             ),
                             headingTextStyle: TextStyle(
                               color: high ? Colors.cyanAccent : azul,
@@ -599,7 +713,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
                               fontSize: 14 * f,
                             ),
                             dataTextStyle: TextStyle(
-                              color: high ? DarkPalette.textSecondary : Colors.black87,
+                              color: high
+                                  ? DarkPalette.textSecondary
+                                  : Colors.black87,
                               fontSize: 13 * f,
                             ),
                             columns: const [
@@ -611,21 +727,36 @@ class _HistoricoPageState extends State<HistoricoPage> {
                               DataColumn(label: Text("Acionamento")),
                             ],
                             rows: filtrados.map((item) {
-                              final dataHora = "${item['IRR_DATA'] ?? item['data'] ?? ''} ${item['IRR_HORA'] ?? item['hora'] ?? ''}".trim();
+                              final dataHora =
+                                  "${item['IRR_DATA'] ?? item['data'] ?? ''} ${item['IRR_HORA'] ?? item['hora'] ?? ''}"
+                                      .trim();
                               final setor = item['nome_planta'] != null
                                   ? "${item['nome_planta']} (${item['cultura'] ?? 'Geral'})"
-                                  : (item['setor'] ?? 'Planta #${item['planta_id'] ?? item['id']}');
-                              final duracao = "${item['IRR_DURACAO'] ?? item['duracao'] ?? '0'} min";
-                              final volume = "${item['IRR_VOLUME'] ?? item['volume'] ?? '0'}L";
-                              final tipo = item['IRR_ACIONAMENTO'] ?? item['tipo'] ?? 'Manual';
-                              final isAuto = tipo.toString().toLowerCase() == 'automático';
-                              final icon = isAuto ? Icons.smart_toy : Icons.touch_app;
-                              final status = item['IRR_STATUS'] ?? item['status'] ?? 'Concluído';
+                                  : (item['setor'] ??
+                                        'Planta #${item['planta_id'] ?? item['id']}');
+                              final duracao =
+                                  "${item['IRR_DURACAO'] ?? item['duracao'] ?? '0'} min";
+                              final volume =
+                                  "${item['IRR_VOLUME'] ?? item['volume'] ?? '0'}L";
+                              final tipo =
+                                  item['IRR_ACIONAMENTO'] ??
+                                  item['tipo'] ??
+                                  'Manual';
+                              final isAuto =
+                                  tipo.toString().toLowerCase() == 'automático';
+                              final icon = isAuto
+                                  ? Icons.smart_toy
+                                  : Icons.touch_app;
+                              final status =
+                                  item['IRR_STATUS'] ??
+                                  item['status'] ??
+                                  'Concluído';
 
                               Color statusColor = Colors.green;
                               if (status.toString().toLowerCase() == 'falha') {
                                 statusColor = Colors.red;
-                              } else if (status.toString().toLowerCase() == 'interrompido') {
+                              } else if (status.toString().toLowerCase() ==
+                                  'interrompido') {
                                 statusColor = Colors.orange;
                               }
 
@@ -666,7 +797,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
     bool high,
     double f,
   ) {
-    final Color highStatusColor = statusColor == Colors.green ? Colors.greenAccent : Colors.redAccent;
+    final Color highStatusColor = statusColor == Colors.green
+        ? Colors.greenAccent
+        : Colors.redAccent;
 
     return DataRow(
       cells: [
@@ -676,7 +809,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
             decoration: BoxDecoration(
               color: high ? highStatusColor.withOpacity(0.18) : statusColor,
               borderRadius: BorderRadius.circular(20),
-              border: high ? Border.all(color: highStatusColor, width: 1.5) : null,
+              border: high
+                  ? Border.all(color: highStatusColor, width: 1.5)
+                  : null,
             ),
             child: Text(
               status,
@@ -688,24 +823,32 @@ class _HistoricoPageState extends State<HistoricoPage> {
             ),
           ),
         ),
-        DataCell(Text(
-          data,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: high ? DarkPalette.textPrimary : Colors.black,
+        DataCell(
+          Text(
+            data,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: high ? DarkPalette.textPrimary : Colors.black,
+            ),
           ),
-        )),
+        ),
         DataCell(Text(setor)),
         DataCell(Text(duracao)),
         DataCell(Text(vol)),
-        DataCell(Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 16, color: high ? DarkPalette.textSecondary : Colors.black54),
-            const SizedBox(width: 5),
-            Text(tipo),
-          ],
-        )),
+        DataCell(
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: high ? DarkPalette.textSecondary : Colors.black54,
+              ),
+              const SizedBox(width: 5),
+              Text(tipo),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -747,9 +890,15 @@ class _HistoricoPageState extends State<HistoricoPage> {
             _drawerItem(context, Icons.history, "Histórico de Ativação", f, () {
               Navigator.pushReplacementNamed(context, '/historico');
             }),
-            _drawerItem(context, Icons.show_chart, "Histórico de Medição", f, () {
-              Navigator.pushReplacementNamed(context, '/dados_sensores');
-            }),
+            _drawerItem(
+              context,
+              Icons.show_chart,
+              "Histórico de Medição",
+              f,
+              () {
+                Navigator.pushReplacementNamed(context, '/dados_sensores');
+              },
+            ),
             _drawerItem(context, Icons.memory, "Equipamentos", f, () {
               Navigator.pushReplacementNamed(context, '/equipamentos');
             }),
@@ -767,10 +916,19 @@ class _HistoricoPageState extends State<HistoricoPage> {
     );
   }
 
-  Widget _drawerItem(BuildContext context, IconData icon, String title, double f, VoidCallback onTap) {
+  Widget _drawerItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    double f,
+    VoidCallback onTap,
+  ) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
+      title: Text(
+        title,
+        style: TextStyle(color: Colors.white, fontSize: 14 * f),
+      ),
       onTap: () {
         Navigator.pop(context);
         onTap();

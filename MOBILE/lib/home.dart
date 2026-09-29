@@ -128,8 +128,6 @@ class Home extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
 
-              // Gradiente em vez de overlay chapado: fica mais elegante
-              // e mantém o texto legível sem escurecer a foto inteira.
               Container(
                 height: 300,
                 decoration: BoxDecoration(

@@ -33,7 +33,7 @@ class _RelatoriohistoricoPageState extends State<RelatoriohistoricoPage> {
       //Faz uma requisição http do tipo GET para a API
       final resposta = await http.get(
         Uri.parse(
-          'http://desktop-38ilvp3/HydroFlow/public/api/historico' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
+          'http://10.141.131.59/HydroFlow/public/api/historico' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -73,7 +73,7 @@ class _RelatoriohistoricoPageState extends State<RelatoriohistoricoPage> {
       //Faz uma requisição http do tipo Delete para a API
       final resposta = await http.delete(
         Uri.parse(
-          'http://desktop-38ilvp3/HydroFlow/public/api/$historicoID' //MUDAR ESSA BAGAÇA
+          'http://10.141.131.59/HydroFlow/public/api/$historicoID' //MUDAR ESSA BAGAÇA
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -308,7 +308,7 @@ class _RelatoriohistoricoPageState extends State<RelatoriohistoricoPage> {
       //Faz uma requisição http do tipo GET para a API
       final resposta = await http.get(
         Uri.parse(
-          'http://desktop-38ilvp3/HydroFlow/public/api/historico' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
+          'http://10.141.131.59/HydroFlow/public/api/historico', 
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -348,7 +348,7 @@ class _RelatoriohistoricoPageState extends State<RelatoriohistoricoPage> {
       //Faz uma requisição http do tipo Delete para a API
       final resposta = await http.delete(
         Uri.parse(
-          'http://desktop-38ilvp3/HydroFlow/public/api/$historicoID' //MUDAR ESSA BAGAÇA
+          'http://10.141.131.59/HydroFlow/public/api/$historicoID'
         ),
         //informar para a API que os dados são em json
         headers: {

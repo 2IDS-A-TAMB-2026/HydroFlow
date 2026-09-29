@@ -56,8 +56,9 @@
                         <option value="">Todos os Tipos</option>
                         <option value="Ornamental" <?= (($filtroTipo ?? '') == 'Ornamental') ? 'selected' : '' ?>>Ornamental</option>
                         <option value="Frutífera" <?= (($filtroTipo ?? '') == 'Frutífera') ? 'selected' : '' ?>>Frutífera</option>
-                        <option value="Medicinal" <?= (($filtroTipo ?? '') == 'Medicinal') ? 'selected' : '' ?>>Medicinal</option>
+                        <option value="Grão/Cereal" <?= (($filtroTipo ?? '') == 'Medicinal') ? 'selected' : '' ?>>Medicinal</option>
                         <option value="Hortaliça" <?= (($filtroTipo ?? '') == 'Hortaliça') ? 'selected' : '' ?>>Hortaliça</option>
+                        <option value="Legumes" <?= (($filtroTipo ?? '') == 'Legumes') ? 'selected' : '' ?>>Legumes</option>
                     </select>
                 </div>
 

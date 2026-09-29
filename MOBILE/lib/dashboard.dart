@@ -79,7 +79,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
     try {
       final resposta = await http.get(
-        Uri.parse('http://DESKTOP-38ILVP3/HydroFlow/public/api/dashboard'),
+        Uri.parse('http://10.141.131.59/HydroFlow/public/api/dashboard'),
         headers: {'Accept': 'application/json'},
       );
 

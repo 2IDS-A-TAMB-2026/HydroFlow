@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -76,7 +77,7 @@ class _Relatoriodados_sensoresPageState extends State<Relatoriodados_sensoresPag
     });
 
     try {
-      final uri = Uri.parse('http://desktop-38ilvp3/HydroFlow/public/api/dados_sensores').replace(
+      final uri = Uri.parse('http://10.141.131.59/HydroFlow/public/api/dados_sensores').replace(
         queryParameters: {
           if (_dataInicialController.text.isNotEmpty) 'data_inicial': _dataInicialController.text,
           if (_dataFinalController.text.isNotEmpty) 'data_final': _dataFinalController.text,
@@ -275,6 +276,8 @@ class _Relatoriodados_sensoresPageState extends State<Relatoriodados_sensoresPag
           const BotaoAcessibilidade(),
         ],
       ),
+      drawer: _buildDrawer(context, high, f),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -740,6 +743,87 @@ class _Relatoriodados_sensoresPageState extends State<Relatoriodados_sensoresPag
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(4)),
       child: Text(text, style: TextStyle(color: fg, fontWeight: FontWeight.bold)),
+    );
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    if (!context.mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+      (route) => false,
+    );
+  }
+
+  // ---------------- DRAWER ----------------
+  Widget _buildDrawer(BuildContext context, bool high, double f) {
+    return Drawer(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: high
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [DarkPalette.background, DarkPalette.surface],
+                )
+              : null,
+          color: high ? null : azul,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 80),
+            Text(
+              "HYDROFLOW",
+              style: TextStyle(
+                color: high ? Colors.cyanAccent : Colors.white,
+                fontSize: 24 * f,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
+
+            _drawerItem(context, Icons.home, "Painel", f, () {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            }),
+            _drawerItem(context, Icons.park, "Plantas", f, () {
+              Navigator.pushReplacementNamed(context, '/plantas');
+            }),
+            _drawerItem(context, Icons.history, "Histórico de Ativação", f, () {
+              Navigator.pushReplacementNamed(context, '/historico');
+            }),
+            _drawerItem(context, Icons.show_chart, "Histórico de Medição", f, () {
+              Navigator.pushReplacementNamed(context, '/dados_sensores');
+            }),
+            _drawerItem(context, Icons.memory, "Equipamentos", f, () {
+              Navigator.pushReplacementNamed(context, '/equipamentos');
+            }),
+
+            const Spacer(),
+            Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
+
+            _drawerItem(context, Icons.logout, "Sair", f, () {
+              _logout(context);
+            }),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _drawerItem(BuildContext context, IconData icon, String title, double f, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
     );
   }
 }
