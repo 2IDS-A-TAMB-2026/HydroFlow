@@ -60,60 +60,56 @@ class _PlantasPageState extends State<PlantasPage> {
   /// ─────────────────────────────────────────────
   Future<void> _buscarPlantasDaApi() async {
     setState(() => isLoading = true);
+
     try {
-      // Substitua pelo endpoint real da sua API PHP
+      final prefs = await SharedPreferences.getInstance();
+
+      final usuarioJson = prefs.getString('usuarioLogado');
+
+      if (usuarioJson == null) {
+        throw Exception('Usuário não encontrado.');
+      }
+
+      final usuario = jsonDecode(usuarioJson);
+
+      final idUsuario = usuario['USU_ID'];
+
+      if (idUsuario == null) {
+        throw Exception('ID do usuário não encontrado.');
+      }
+
+      print('USUÁRIO LOGADO: $idUsuario');
+
       final response = await http.get(
-        Uri.parse('https://seu-dominio.com/api/plantas.php'),
+        Uri.parse(
+          'http://10.141.131.38/HydroFlow/public/api/plantas?usuario_id=$idUsuario',
+        ),
+        headers: {'Accept': 'application/json'},
       );
+
+      print('STATUS PLANTAS: ${response.statusCode}');
+      print('RESPOSTA PLANTAS: ${response.body}');
 
       if (response.statusCode == 200) {
         final List<dynamic> dados = jsonDecode(response.body);
+
         setState(() {
           plantas = dados;
           plantasFiltradas = dados;
           isLoading = false;
         });
       } else {
-        _carregarDadosMockadosDeSeguranca();
+        throw Exception('Erro na API: ${response.statusCode}');
       }
     } catch (e) {
-      // Fallback em caso de erro na rede ou offline
-      _carregarDadosMockadosDeSeguranca();
-    }
-  }
+      print('ERRO PLANTAS: $e');
 
-  void _carregarDadosMockadosDeSeguranca() {
-    final mock = [
-      {
-        "id": "1",
-        "nome": "Samambaia Real",
-        "tipo": "Ornamental",
-        "cultura": "Doméstica",
-        "parametro": "0.5 L (a cada 2 dia(s))",
-        "dispositivo": "Irrigation 1000"
-      },
-      {
-        "id": "33",
-        "nome": "Alface",
-        "tipo": "Frutífera",
-        "cultura": "Hortifrut",
-        "parametro": "20 L (a cada 22 dia(s))",
-        "dispositivo": "Irrigation 1000"
-      },
-      {
-        "id": "34",
-        "nome": "Pimenta",
-        "tipo": "Hortaliça",
-        "cultura": "Não informada",
-        "parametro": "20 L (a cada 20 dia(s))",
-        "dispositivo": "Irrigation 1000"
-      },
-    ];
-    setState(() {
-      plantas = mock;
-      plantasFiltradas = mock;
-      isLoading = false;
-    });
+      setState(() {
+        isLoading = false;
+        plantas = [];
+        plantasFiltradas = [];
+      });
+    }
   }
 
   /// ─────────────────────────────────────────────
@@ -207,14 +203,14 @@ class _PlantasPageState extends State<PlantasPage> {
                 ],
                 data: plantasFiltradas.map((p) {
                   return [
-                    (p['id'] ?? '').toString(),
-                    (p['nome'] ?? '').toString(),
-                    (p['tipo'] ?? '').toString(),
-                    (p['cultura'] ?? '').toString(),
+                    (p['PLANTA_ID'] ?? '').toString(),
+                    (p['PLANTA_NOME'] ?? '').toString(),
+                    (p['PLANTA_TIPO'] ?? '').toString(),
+                    (p['PLANTA_CULTURA'] ?? '').toString(),
                     (p['parametro'] ??
-                            "${p['volume_agua'] ?? '0'} L (a cada ${p['intervalo_dias'] ?? '1'} dia(s))")
+                            "${p['PLANTA_QTD_AGUA'] ?? '0'} L (a cada ${p['PLANTA_PERIDIOCIDADE'] ?? '1'} dia(s))")
                         .toString(),
-                    (p['dispositivo'] ?? '').toString(),
+                    (p['FK_DIS_ID'] ?? '').toString(),
                   ];
                 }).toList(),
                 headerStyle: pw.TextStyle(
@@ -262,9 +258,9 @@ class _PlantasPageState extends State<PlantasPage> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao gerar o PDF: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Erro ao gerar o PDF: $e")));
     }
   }
 
@@ -274,11 +270,7 @@ class _PlantasPageState extends State<PlantasPage> {
 
     if (!context.mounted) return;
 
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/login',
-      (route) => false,
-    );
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   @override
@@ -341,7 +333,9 @@ class _PlantasPageState extends State<PlantasPage> {
                               Text(
                                 "Cadastre e gerencie culturas",
                                 style: TextStyle(
-                                  color: high ? DarkPalette.textSecondary : Colors.grey,
+                                  color: high
+                                      ? DarkPalette.textSecondary
+                                      : Colors.grey,
                                   fontSize: 14 * f,
                                 ),
                               ),
@@ -350,12 +344,16 @@ class _PlantasPageState extends State<PlantasPage> {
                         ),
                         ElevatedButton.icon(
                           onPressed: () => Navigator.pushReplacementNamed(
-                              context, '/cadastro_plantas'),
+                            context,
+                            '/cadastro_plantas',
+                          ),
                           icon: Icon(Icons.add, size: 18 * f),
                           label: Text(
                             "Nova Planta",
                             style: TextStyle(
-                                fontSize: 14 * f, fontWeight: FontWeight.bold),
+                              fontSize: 14 * f,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: high
@@ -364,10 +362,13 @@ class _PlantasPageState extends State<PlantasPage> {
                             foregroundColor: Colors.white,
                             side: high
                                 ? const BorderSide(
-                                    color: Colors.cyanAccent, width: 1.5)
+                                    color: Colors.cyanAccent,
+                                    width: 1.5,
+                                  )
                                 : BorderSide.none,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                         ),
                       ],
@@ -383,9 +384,17 @@ class _PlantasPageState extends State<PlantasPage> {
                             ? Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(child: _buildChartDonut(high, f, bgContainer)),
+                                  Expanded(
+                                    child: _buildChartDonut(
+                                      high,
+                                      f,
+                                      bgContainer,
+                                    ),
+                                  ),
                                   const SizedBox(width: 16),
-                                  Expanded(child: _buildChartBar(high, f, bgContainer)),
+                                  Expanded(
+                                    child: _buildChartBar(high, f, bgContainer),
+                                  ),
                                 ],
                               )
                             : Column(
@@ -417,7 +426,10 @@ class _PlantasPageState extends State<PlantasPage> {
                         color: bgContainer,
                         borderRadius: BorderRadius.circular(10),
                         border: high
-                            ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5)
+                            ? Border.all(
+                                color: DarkPalette.surfaceBorder,
+                                width: 1.5,
+                              )
                             : null,
                       ),
                       child: SingleChildScrollView(
@@ -452,29 +464,50 @@ class _PlantasPageState extends State<PlantasPage> {
                           rows: plantasFiltradas.map((p) {
                             return DataRow(
                               cells: [
-                                DataCell(Text(p['id'].toString())),
-                                DataCell(Text(
-                                  p['nome'] ?? '',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                )),
-                                DataCell(Text(p['tipo'] ?? '')),
-                                DataCell(Text(p['cultura'] ?? '')),
-                                DataCell(Text(p['parametro'] ??
-                                    "${p['volume_agua'] ?? '0'} L (a cada ${p['intervalo_dias'] ?? '1'} dia(s))")),
-                                DataCell(Text(p['dispositivo'] ?? '')),
+                                DataCell(Text(p['PLANTA_ID'].toString())),
+
+                                DataCell(
+                                  Text(
+                                    p['PLANTA_NOME'] ?? '',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+
+                                DataCell(Text(p['PLANTA_TIPO'] ?? '')),
+
+                                DataCell(Text(p['PLANTA_CULTURA'] ?? '')),
+
+                                DataCell(
+                                  Text(
+                                    '${p['PLANTA_QTD_AGUA'] ?? '0'} L '
+                                    '(a cada ${p['PLANTA_PERIDIOCIDADE'] ?? '1'} dia(s))',
+                                  ),
+                                ),
+
+                                DataCell(Text(p['FK_DIS_ID'] ?? '')),
                                 DataCell(
                                   Row(
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.edit,
-                                            color: high ? Colors.cyanAccent : Colors.blue,
-                                            size: 18 * f),
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: high
+                                              ? Colors.cyanAccent
+                                              : Colors.blue,
+                                          size: 18 * f,
+                                        ),
                                         onPressed: () {},
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.delete,
-                                            color: high ? Colors.redAccent : Colors.red,
-                                            size: 18 * f),
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: high
+                                              ? Colors.redAccent
+                                              : Colors.red,
+                                          size: 18 * f,
+                                        ),
                                         onPressed: () {},
                                       ),
                                     ],
@@ -495,62 +528,108 @@ class _PlantasPageState extends State<PlantasPage> {
 
   /// WIDGET DO GRÁFICO DE ROSCA
   Widget _buildChartDonut(bool high, double f, Color bg) {
+    // Conta quantas plantas existem em cada cultura
+    final Map<String, int> culturas = {};
+
+    for (final planta in plantas) {
+      final cultura = (planta['PLANTA_CULTURA'] ?? 'Sem cultura').toString();
+
+      culturas[cultura] = (culturas[cultura] ?? 0) + 1;
+    }
+
+    // Se não tiver dados
+    if (culturas.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF),
+          ),
+        ),
+        child: const Center(child: Text('Nenhuma cultura cadastrada')),
+      );
+    }
+
+    final total = plantas.length;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-            color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF)),
+          color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.pie_chart,
-                  color: high ? Colors.cyanAccent : const Color(0xFF1E3C72),
-                  size: 18 * f),
+              Icon(
+                Icons.pie_chart,
+                color: high ? Colors.cyanAccent : const Color(0xFF1E3C72),
+                size: 18 * f,
+              ),
               const SizedBox(width: 8),
               Text(
                 "Variedade de Cultivo",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15 * f,
-                    color: high ? DarkPalette.textPrimary : const Color(0xFF1E3C72)),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15 * f,
+                  color: high
+                      ? DarkPalette.textPrimary
+                      : const Color(0xFF1E3C72),
+                ),
               ),
             ],
           ),
+
           const SizedBox(height: 20),
+
           SizedBox(
             height: 180,
             child: PieChart(
               PieChartData(
                 sectionsSpace: 2,
                 centerSpaceRadius: 40,
-                sections: [
-                  PieChartSectionData(
-                      color: const Color(0xFF1E3C72),
-                      value: 40,
-                      title: '40%',
-                      radius: 35,
-                      titleStyle: TextStyle(fontSize: 12 * f, color: Colors.white)),
-                  PieChartSectionData(
-                      color: const Color(0xFF2A5298),
-                      value: 30,
-                      title: '30%',
-                      radius: 35,
-                      titleStyle: TextStyle(fontSize: 12 * f, color: Colors.white)),
-                  PieChartSectionData(
-                      color: const Color(0xFF4A74B4),
-                      value: 30,
-                      title: '30%',
-                      radius: 35,
-                      titleStyle: TextStyle(fontSize: 12 * f, color: Colors.white)),
-                ],
+
+                sections: culturas.entries.map((entry) {
+                  final quantidade = entry.value;
+
+                  final percentual = (quantidade / total) * 100;
+
+                  return PieChartSectionData(
+                    value: quantidade.toDouble(),
+                    title: '${percentual.toStringAsFixed(0)}%',
+                    radius: 35,
+                    titleStyle: TextStyle(
+                      fontSize: 12 * f,
+                      color: Colors.white,
+                    ),
+                  );
+                }).toList(),
               ),
             ),
           ),
+
+          const SizedBox(height: 10),
+
+          // Legenda
+          ...culturas.entries.map((entry) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                '${entry.key}: ${entry.value} planta(s)',
+                style: TextStyle(
+                  fontSize: 12 * f,
+                  color: high ? DarkPalette.textSecondary : Colors.black87,
+                ),
+              ),
+            );
+          }),
         ],
       ),
     );
@@ -558,73 +637,130 @@ class _PlantasPageState extends State<PlantasPage> {
 
   /// WIDGET DO GRÁFICO DE BARRAS
   Widget _buildChartBar(bool high, double f, Color bg) {
+    // Pega somente plantas que possuem quantidade de água
+    final plantasComAgua = plantas.where((p) {
+      final agua = double.tryParse((p['PLANTA_QTD_AGUA'] ?? '0').toString());
+
+      return agua != null;
+    }).toList();
+
+    if (plantasComAgua.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF),
+          ),
+        ),
+        child: const Center(child: Text('Nenhum dado de consumo disponível')),
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-            color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF)),
+          color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.water_drop,
-                  color: high ? Colors.cyanAccent : const Color(0xFF1E3C72),
-                  size: 18 * f),
+              Icon(
+                Icons.water_drop,
+                color: high ? Colors.cyanAccent : const Color(0xFF1E3C72),
+                size: 18 * f,
+              ),
               const SizedBox(width: 8),
               Text(
-                "Top Consumo de Água (L por rega)",
+                "Consumo de Água (L por rega)",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15 * f,
-                    color: high ? DarkPalette.textPrimary : const Color(0xFF1E3C72)),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15 * f,
+                  color: high
+                      ? DarkPalette.textPrimary
+                      : const Color(0xFF1E3C72),
+                ),
               ),
             ],
           ),
+
           const SizedBox(height: 20),
+
           SizedBox(
             height: 180,
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
                 borderData: FlBorderData(show: false),
+
                 titlesData: FlTitlesData(
                   leftTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: true, reservedSize: 30)),
+                    sideTitles: SideTitles(showTitles: true, reservedSize: 30),
+                  ),
+
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
+
                       getTitlesWidget: (val, meta) {
-                        const labels = ['Alface', 'Pimenta', 'Couve'];
-                        if (val.toInt() < labels.length) {
-                          return Text(labels[val.toInt()],
+                        final index = val.toInt();
+
+                        if (index >= 0 && index < plantasComAgua.length) {
+                          final nome =
+                              plantasComAgua[index]['PLANTA_NOME']
+                                  ?.toString() ??
+                              '';
+
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              nome,
                               style: TextStyle(
-                                  fontSize: 10 * f,
-                                  color: high
-                                      ? DarkPalette.textSecondary
-                                      : Colors.black));
+                                fontSize: 10 * f,
+                                color: high
+                                    ? DarkPalette.textSecondary
+                                    : Colors.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
                         }
+
                         return const Text('');
                       },
                     ),
                   ),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
-                barGroups: [
-                  BarChartGroupData(x: 0, barRods: [
-                    BarChartRodData(toY: 20, color: const Color(0xFF2A5298), width: 16)
-                  ]),
-                  BarChartGroupData(x: 1, barRods: [
-                    BarChartRodData(toY: 15, color: const Color(0xFF2A5298), width: 16)
-                  ]),
-                  BarChartGroupData(x: 2, barRods: [
-                    BarChartRodData(toY: 8, color: const Color(0xFF2A5298), width: 16)
-                  ]),
-                ],
+
+                barGroups: List.generate(plantasComAgua.length, (index) {
+                  final planta = plantasComAgua[index];
+
+                  final agua =
+                      double.tryParse(
+                        (planta['PLANTA_QTD_AGUA'] ?? '0').toString(),
+                      ) ??
+                      0;
+
+                  return BarChartGroupData(
+                    x: index,
+                    barRods: [BarChartRodData(toY: agua, width: 16)],
+                  );
+                }),
               ),
             ),
           ),
@@ -641,22 +777,28 @@ class _PlantasPageState extends State<PlantasPage> {
         color: high ? DarkPalette.surface : const Color(0xFFF8F9FA),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-            color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF)),
+          color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.filter_alt,
-                  color: high ? DarkPalette.textSecondary : Colors.grey[700],
-                  size: 16 * f),
+              Icon(
+                Icons.filter_alt,
+                color: high ? DarkPalette.textSecondary : Colors.grey[700],
+                size: 16 * f,
+              ),
               const SizedBox(width: 6),
-              Text("Filtros de Busca Avançada",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14 * f,
-                      color: high ? DarkPalette.textPrimary : Colors.grey[800])),
+              Text(
+                "Filtros de Busca Avançada",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14 * f,
+                  color: high ? DarkPalette.textPrimary : Colors.grey[800],
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -670,7 +812,9 @@ class _PlantasPageState extends State<PlantasPage> {
                 child: DropdownButtonFormField<String>(
                   value: filtroTipo,
                   decoration: const InputDecoration(
-                      labelText: "Buscar por Tipo", border: OutlineInputBorder()),
+                    labelText: "Buscar por Tipo",
+                    border: OutlineInputBorder(),
+                  ),
                   items: ['Ornamental', 'Frutífera', 'Medicinal', 'Hortaliça']
                       .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                       .toList(),
@@ -683,11 +827,16 @@ class _PlantasPageState extends State<PlantasPage> {
               ElevatedButton(
                 onPressed: _aplicarFiltros,
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00A65A),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 20)),
-                child: Text("Filtrar",
-                    style: TextStyle(fontSize: 14 * f, color: Colors.white)),
+                  backgroundColor: const Color(0xFF00A65A),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 20,
+                  ),
+                ),
+                child: Text(
+                  "Filtrar",
+                  style: TextStyle(fontSize: 14 * f, color: Colors.white),
+                ),
               ),
               if (filtroTipo != null)
                 TextButton(
@@ -698,9 +847,9 @@ class _PlantasPageState extends State<PlantasPage> {
                     });
                   },
                   child: const Text("Limpar Filtro"),
-                )
+                ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -719,15 +868,18 @@ class _PlantasPageState extends State<PlantasPage> {
           child: TextField(
             controller: _buscaController,
             style: TextStyle(
-                fontSize: 14 * f,
-                color: high ? DarkPalette.textPrimary : Colors.black),
+              fontSize: 14 * f,
+              color: high ? DarkPalette.textPrimary : Colors.black,
+            ),
             decoration: InputDecoration(
               hintText: "Buscar por nome ou cultura...",
               prefixIcon: const Icon(Icons.search),
               filled: true,
               fillColor: bg,
               contentPadding: EdgeInsets.zero,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
           ),
         ),
@@ -739,8 +891,9 @@ class _PlantasPageState extends State<PlantasPage> {
               icon: const Icon(Icons.table_chart, size: 16),
               label: const Text("Exportar Excel"),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1F7246),
-                  foregroundColor: Colors.white),
+                backgroundColor: const Color(0xFF1F7246),
+                foregroundColor: Colors.white,
+              ),
             ),
             const SizedBox(width: 8),
             OutlinedButton.icon(
@@ -749,7 +902,7 @@ class _PlantasPageState extends State<PlantasPage> {
               label: const Text("Exportar PDF"),
             ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -793,9 +946,15 @@ class _PlantasPageState extends State<PlantasPage> {
             _drawerItem(context, Icons.history, "Histórico de Ativação", f, () {
               Navigator.pushReplacementNamed(context, '/historico');
             }),
-            _drawerItem(context, Icons.show_chart, "Histórico de Medição", f, () {
-              Navigator.pushReplacementNamed(context, '/dados_sensores');
-            }),
+            _drawerItem(
+              context,
+              Icons.show_chart,
+              "Histórico de Medição",
+              f,
+              () {
+                Navigator.pushReplacementNamed(context, '/dados_sensores');
+              },
+            ),
             _drawerItem(context, Icons.memory, "Equipamentos", f, () {
               Navigator.pushReplacementNamed(context, '/equipamentos');
             }),
@@ -813,10 +972,19 @@ class _PlantasPageState extends State<PlantasPage> {
     );
   }
 
-  Widget _drawerItem(BuildContext context, IconData icon, String title, double f, VoidCallback onTap) {
+  Widget _drawerItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    double f,
+    VoidCallback onTap,
+  ) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
+      title: Text(
+        title,
+        style: TextStyle(color: Colors.white, fontSize: 14 * f),
+      ),
       onTap: () {
         Navigator.pop(context);
         onTap();

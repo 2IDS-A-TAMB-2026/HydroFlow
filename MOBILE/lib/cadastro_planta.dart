@@ -27,7 +27,7 @@ class CadastroPlantaPage extends StatefulWidget {
 
 class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
   static const String _urlApi =
-      'http://10.141.131.59/HydroFlow/public/api/plantas/novo';
+      'http://10.141.131.38/HydroFlow/public/api/plantas/novo';
 
   final _formKey = GlobalKey<FormState>();
 

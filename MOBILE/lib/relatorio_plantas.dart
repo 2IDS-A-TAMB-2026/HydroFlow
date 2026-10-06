@@ -99,7 +99,7 @@
 //     try {
 //       final resposta = await http.delete(
 //         Uri.parse(
-//           'http://10.141.131.59/HydroFlow/public/api/plantas/$plantaID',
+//           'http://10.141.131.38/HydroFlow/public/api/plantas/$plantaID',
 //         ),
 //         headers: {
 //           'Accept': 'application/json',
@@ -653,7 +653,7 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
       //Faz uma requisição http do tipo GET para a API
       final resposta = await http.get(
         Uri.parse(
-          'http://10.141.131.59/HydroFlow/public/api/plantas' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
+          'http://10.141.131.38/HydroFlow/public/api/plantas' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -693,7 +693,7 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
       //Faz uma requisição http do tipo Delete para a API
       final resposta = await http.delete(
         Uri.parse(
-          'http://10.141.131.59/HydroFlow/public/api/$plantasID' //MUDAR ESSA BAGAÇA
+          'http://10.141.131.38/HydroFlow/public/api/$plantasID' //MUDAR ESSA BAGAÇA
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -928,7 +928,7 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
       //Faz uma requisição http do tipo GET para a API
       final resposta = await http.get(
         Uri.parse(
-          'http://10.141.131.59/HydroFlow/public/api/plantas' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
+          'http://10.141.131.38/HydroFlow/public/api/plantas' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -968,7 +968,7 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
       //Faz uma requisição http do tipo Delete para a API
       final resposta = await http.delete(
         Uri.parse(
-          'http://10.141.131.59/HydroFlow/public/api/plantas/$plantasID' //MUDAR ESSA BAGAÇA
+          'http://10.141.131.38/HydroFlow/public/api/plantas/$plantasID' //MUDAR ESSA BAGAÇA
         ),
         //informar para a API que os dados são em json
         headers: {

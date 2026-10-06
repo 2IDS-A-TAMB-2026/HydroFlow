@@ -41,7 +41,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
   String _query = "";
   static const azul = Color(0xFF002855);
 
-  final String apiUrl = 'http://10.141.131.59/HydroFlow/public/api/historico';
+  final String apiUrl = 'http://10.141.131.38/HydroFlow/public/api/historico';
 
   @override
   void initState() {

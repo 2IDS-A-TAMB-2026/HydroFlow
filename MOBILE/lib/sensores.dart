@@ -39,7 +39,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
   String? erro;
 
   final String apiUrl =
-      'http://10.141.131.59/HydroFlow/public/api/dispositivos';
+      'http://10.141.131.38/HydroFlow/public/api/dispositivos';
 
   static const azul = Color(0xFF002855);
 
@@ -67,21 +67,43 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
     });
 
     try {
+      // Pega o usuário que fez login
+      final prefs = await SharedPreferences.getInstance();
+
+      final usuarioJson = prefs.getString('usuarioLogado');
+
+      if (usuarioJson == null) {
+        throw Exception('Usuário não encontrado.');
+      }
+
+      final usuario = jsonDecode(usuarioJson);
+
+      final idUsuario = usuario['USU_ID'];
+
+      if (idUsuario == null) {
+        throw Exception('ID do usuário não encontrado.');
+      }
+
+      print('USUÁRIO LOGADO: $idUsuario');
+
+      // Consulta os dispositivos somente desse usuário
       final resposta = await http.get(
-        Uri.parse(apiUrl),
+        Uri.parse('$apiUrl?usuario_id=$idUsuario'),
         headers: {'Accept': 'application/json'},
       );
+
+      print('STATUS DISPOSITIVOS: ${resposta.statusCode}');
+      print('RESPOSTA DISPOSITIVOS: ${resposta.body}');
 
       final resultado = jsonDecode(resposta.body);
 
       if (resposta.statusCode == 200) {
-        if (!mounted) return;
-
         List<dynamic> lista = [];
-        if (resultado is List) {
-          lista = resultado;
-        } else if (resultado is Map) {
+
+        if (resultado is Map) {
           lista = resultado['data'] ?? [];
+        } else if (resultado is List) {
+          lista = resultado;
         }
 
         setState(() {
@@ -94,11 +116,11 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
           _filtrarDispositivos(searchController.text);
         }
       } else {
-        if (!mounted) return;
-
         String mensagemErro = 'Erro ao consultar dispositivos';
+
         if (resultado is Map) {
-          mensagemErro = resultado['message'] ??
+          mensagemErro =
+              resultado['message'] ??
               resultado['messages']?['error'] ??
               'Erro ao consultar dispositivos';
         }
@@ -109,6 +131,8 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
         });
       }
     } catch (e) {
+      print('ERRO DISPOSITIVOS: $e');
+
       if (!mounted) return;
 
       setState(() {
@@ -174,7 +198,8 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
 
         String mensagemDetalhe = 'Erro desconhecido';
         if (resultado is Map) {
-          mensagemDetalhe = resultado['mensagem'] ??
+          mensagemDetalhe =
+              resultado['mensagem'] ??
               resultado['message'] ??
               resultado['messages']?['error'] ??
               'Erro desconhecido';
@@ -202,12 +227,13 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
   String nomeDono(dynamic dispositivo) {
     if (dispositivo is! Map) return 'Não atribuído';
 
-    final dono = (dispositivo['nome_dono'] ??
-            dispositivo['dono_nome'] ??
-            dispositivo['USU_NOME'] ??
-            dispositivo['FK_USU_ID'] ??
-            '')
-        .toString();
+    final dono =
+        (dispositivo['nome_dono'] ??
+                dispositivo['dono_nome'] ??
+                dispositivo['USU_NOME'] ??
+                dispositivo['FK_USU_ID'] ??
+                '')
+            .toString();
 
     return dono.isEmpty ? 'Não atribuído' : dono;
   }
@@ -218,11 +244,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
 
     if (!context.mounted) return;
 
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/login',
-      (route) => false,
-    );
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   /// ─────────────────────────────────────────────
@@ -330,31 +352,33 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
             child: carregando
                 ? const Center(child: CircularProgressIndicator())
                 : erro != null
-                    ? _buildErrorView(high, f)
-                    : dispositivosFiltrados.isEmpty
-                        ? _buildEmptyView(high, f)
-                        : LayoutBuilder(
-                            builder: (context, constraints) {
-                              // Em ecrãs estreitos (Mobile), desenha Cards
-                              if (constraints.maxWidth < 700) {
-                                return ListView.builder(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                  itemCount: dispositivosFiltrados.length,
-                                  itemBuilder: (context, index) {
-                                    return _buildDeviceCard(
-                                      dispositivosFiltrados[index],
-                                      bgCard,
-                                      high,
-                                      f,
-                                    );
-                                  },
-                                );
-                              }
-                              // Em ecrãs largos (Tablet/Web), usa a Tabela Estilizada
-                              return _buildTableView(bgCard, high, f);
-                            },
+                ? _buildErrorView(high, f)
+                : dispositivosFiltrados.isEmpty
+                ? _buildEmptyView(high, f)
+                : LayoutBuilder(
+                    builder: (context, constraints) {
+                      // Em ecrãs estreitos (Mobile), desenha Cards
+                      if (constraints.maxWidth < 700) {
+                        return ListView.builder(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
+                          itemCount: dispositivosFiltrados.length,
+                          itemBuilder: (context, index) {
+                            return _buildDeviceCard(
+                              dispositivosFiltrados[index],
+                              bgCard,
+                              high,
+                              f,
+                            );
+                          },
+                        );
+                      }
+                      // Em ecrãs largos (Tablet/Web), usa a Tabela Estilizada
+                      return _buildTableView(bgCard, high, f);
+                    },
+                  ),
           ),
         ],
       ),
@@ -365,16 +389,12 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
   /// COMPONENTE: CARD DO DISPOSITIVO (MOBILE)
   /// ─────────────────────────────────────────────
 
-  Widget _buildDeviceCard(
-    dynamic disp,
-    Color bgCard,
-    bool high,
-    double f,
-  ) {
+  Widget _buildDeviceCard(dynamic disp, Color bgCard, bool high, double f) {
     final status = (disp['DIS_STATUS'] ?? 'Desconhecido').toString();
     final nivel = double.tryParse(disp['DIS_NIVEL_TANQUE']?.toString() ?? '');
 
-    final isAtivo = status.toLowerCase() == 'ativo' ||
+    final isAtivo =
+        status.toLowerCase() == 'ativo' ||
         status.toLowerCase() == 'operacional' ||
         status.toLowerCase() == 'ligado';
 
@@ -401,7 +421,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
                   color: Colors.black.withOpacity(0.03),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
-                )
+                ),
               ],
       ),
       child: Column(
@@ -416,8 +436,9 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: (high ? Colors.cyanAccent : azul)
-                            .withOpacity(0.1),
+                        color: (high ? Colors.cyanAccent : azul).withOpacity(
+                          0.1,
+                        ),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
@@ -459,8 +480,10 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
 
               // CHIP DE STATUS
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: statusColor.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(20),
@@ -500,19 +523,18 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
             children: [
               Row(
                 children: [
-                  Icon(Icons.person,
-                      size: 16 * f,
-                      color:
-                          high ? DarkPalette.textSecondary : Colors.grey[600]),
+                  Icon(
+                    Icons.person,
+                    size: 16 * f,
+                    color: high ? DarkPalette.textSecondary : Colors.grey[600],
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     nomeDono(disp),
                     style: TextStyle(
                       fontSize: 12 * f,
                       fontWeight: FontWeight.w600,
-                      color: high
-                          ? DarkPalette.textPrimary
-                          : Colors.grey[800],
+                      color: high ? DarkPalette.textPrimary : Colors.grey[800],
                     ),
                   ),
                 ],
@@ -520,10 +542,11 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
               if (nivel != null)
                 Row(
                   children: [
-                    Icon(Icons.water_drop,
-                        size: 16 * f,
-                        color:
-                            high ? Colors.cyanAccent : const Color(0xFF0288D1)),
+                    Icon(
+                      Icons.water_drop,
+                      size: 16 * f,
+                      color: high ? Colors.cyanAccent : const Color(0xFF0288D1),
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '${nivel.toInt()}% Tanque',
@@ -561,7 +584,6 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
           ],
 
           const SizedBox(height: 12),
-          
         ],
       ),
     );
@@ -597,26 +619,47 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
               ),
               columns: const [
                 DataColumn(
-                    label: Text('ID',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                  label: Text(
+                    'ID',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 DataColumn(
-                    label: Text('NOME',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                  label: Text(
+                    'NOME',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 DataColumn(
-                    label: Text('DESCRIÇÃO',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                  label: Text(
+                    'DESCRIÇÃO',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 DataColumn(
-                    label: Text('STATUS',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                  label: Text(
+                    'STATUS',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 DataColumn(
-                    label: Text('NÍVEL DO TANQUE',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                  label: Text(
+                    'NÍVEL DO TANQUE',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 DataColumn(
-                    label: Text('DONO',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                  label: Text(
+                    'DONO',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 DataColumn(
-                    label: Text('AÇÕES',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                  label: Text(
+                    'AÇÕES',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
               ],
               rows: dispositivosFiltrados.map<DataRow>((disp) {
                 final status = (disp['DIS_STATUS'] ?? '').toString();
@@ -651,8 +694,10 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
                       Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.edit,
-                                color: Color(0xFF035394)),
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Color(0xFF035394),
+                            ),
                             onPressed: () {
                               print('Editar ID: ${disp['DIS_ID']}');
                             },
@@ -685,8 +730,11 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline,
-                size: 48 * f, color: high ? Colors.redAccent : Colors.red),
+            Icon(
+              Icons.error_outline,
+              size: 48 * f,
+              color: high ? Colors.redAccent : Colors.red,
+            ),
             const SizedBox(height: 12),
             Text(
               "Erro ao carregar dados",
@@ -697,15 +745,17 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
               ),
             ),
             const SizedBox(height: 6),
-            Text(erro!,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 13 * f)),
+            Text(
+              erro!,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13 * f),
+            ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: consultarDispositivos,
               icon: const Icon(Icons.refresh),
               label: const Text("Tentar Novamente"),
-            )
+            ),
           ],
         ),
       ),
@@ -753,7 +803,9 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red, foregroundColor: Colors.white),
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               onPressed: () => Navigator.pop(context, true),
               child: const Text('Excluir'),
             ),
@@ -803,13 +855,24 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
             _drawerItem(context, Icons.park, "Plantas", f, () {
               Navigator.pushReplacementNamed(context, '/plantas');
             }),
-            _drawerItem(context, Icons.history, "Histórico de Ativações", f, () {
-              Navigator.pushReplacementNamed(context, '/historico');
-            }),
             _drawerItem(
-                context, Icons.show_chart, "Histórico de Medições", f, () {
-              Navigator.pushReplacementNamed(context, '/dados_sensores');
-            }),
+              context,
+              Icons.history,
+              "Histórico de Ativações",
+              f,
+              () {
+                Navigator.pushReplacementNamed(context, '/historico');
+              },
+            ),
+            _drawerItem(
+              context,
+              Icons.show_chart,
+              "Histórico de Medições",
+              f,
+              () {
+                Navigator.pushReplacementNamed(context, '/dados_sensores');
+              },
+            ),
             _drawerItem(context, Icons.memory, "Equipamentos", f, () {
               Navigator.pushReplacementNamed(context, '/equipamentos');
             }),
@@ -825,12 +888,19 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
     );
   }
 
-  Widget _drawerItem(BuildContext context, IconData icon, String title,
-      double f, VoidCallback onTap) {
+  Widget _drawerItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    double f,
+    VoidCallback onTap,
+  ) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
-      title:
-          Text(title, style: TextStyle(color: Colors.white, fontSize: 14 * f)),
+      title: Text(
+        title,
+        style: TextStyle(color: Colors.white, fontSize: 14 * f),
+      ),
       onTap: () {
         Navigator.pop(context);
         onTap();

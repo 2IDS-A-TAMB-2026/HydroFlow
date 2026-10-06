@@ -78,11 +78,37 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     try {
-      final resposta = await http.get(
-        Uri.parse('http://10.141.131.59/HydroFlow/public/api/dashboard'),
-        headers: {'Accept': 'application/json'},
-      );
+      final prefs = await SharedPreferences.getInstance();
 
+      final usuarioJson = prefs.getString('usuarioLogado');
+
+      if (usuarioJson == null) {
+        setState(() {
+          erro = 'Usuário não encontrado.';
+          carregando = false;
+        });
+        return;
+      }
+
+      final usuario = jsonDecode(usuarioJson);
+
+      final idUsuario = usuario['USU_ID'];
+
+      if (idUsuario == null) {
+        setState(() {
+          erro = 'ID do usuário não encontrado.';
+          carregando = false;
+        });
+        return;
+      }
+
+      final resposta = await http.get(
+        Uri.parse('http://10.141.131.38/HydroFlow/public/api/dashboard?usuario_id=$idUsuario'),
+        headers: {
+          'Accept': 'application/json',
+          //'X-Usuario-Id': idUsuario.toString(),
+        },
+      );
       final resultado = jsonDecode(resposta.body);
 
       if (resposta.statusCode == 200) {
@@ -177,160 +203,165 @@ class _DashboardPageState extends State<DashboardPage> {
       body: carregando
           ? const Center(child: CircularProgressIndicator())
           : erro != null
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 50 * f,
-                          color: high ? Colors.redAccent : Colors.red,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          "Erro ao carregar dados",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: high ? Colors.redAccent : Colors.red,
-                            fontSize: 18 * f,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          erro ?? '',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 14 * f),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            consultarDashboard();
-                          },
-                          icon: const Icon(Icons.refresh),
-                          label: const Text("Tentar novamente"),
-                        ),
-                      ],
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 50 * f,
+                      color: high ? Colors.redAccent : Colors.red,
                     ),
-                  ),
-                )
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(height: 12),
+                    Text(
+                      "Erro ao carregar dados",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: high ? Colors.redAccent : Colors.red,
+                        fontSize: 18 * f,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      erro ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14 * f),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        consultarDashboard();
+                      },
+                      icon: const Icon(Icons.refresh),
+                      label: const Text("Tentar novamente"),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Visão Geral",
-                            style: TextStyle(
-                              fontSize: 20 * f,
-                              fontWeight: FontWeight.bold,
-                              color: txtPrincipal,
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: high
-                                  ? DarkPalette.surfaceElevated
-                                  : Colors.blue.withOpacity(0.08),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.sync,
-                                    size: 14,
-                                    color: high ? Colors.cyanAccent : azul),
-                                const SizedBox(width: 4),
-                                Text(
-                                  "Ao vivo",
-                                  style: TextStyle(
-                                    fontSize: 11 * f,
-                                    fontWeight: FontWeight.w600,
-                                    color: high ? Colors.cyanAccent : azul,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // CARDS DE MÉTRICAS
-                      GridView.count(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 1.15,
-                        children: [
-                          cardMetric(
-                            "Plantas",
-                            dashboardData?['total_plantas']?.toString() ?? '0',
-                            Icons.park_rounded,
-                            high ? Colors.greenAccent : const Color(0xFF2E7D32),
-                            bgContainer,
-                            high,
-                            f,
-                          ),
-                          cardMetric(
-                            "Dispositivos",
-                            dashboardData?['total_ativos']?.toString() ?? '0',
-                            Icons.memory_rounded,
-                            high ? Colors.cyanAccent : const Color(0xFF0288D1),
-                            bgContainer,
-                            high,
-                            f,
-                          ),
-                          cardMetric(
-                            "Alertas",
-                            dashboardData?['total_alertas']?.toString() ?? '0',
-                            Icons.warning_amber_rounded,
-                            high ? Colors.orangeAccent : const Color(0xFFED6C02),
-                            bgContainer,
-                            high,
-                            f,
-                          ),
-                          cardMetric(
-                            "Consumo (L)",
-                            dashboardData?['consumo_total_litros']?.toString() ?? '0',
-                            Icons.water_drop_rounded,
-                            high ? Colors.tealAccent : const Color(0xFF00897B),
-                            bgContainer,
-                            high,
-                            f,
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
                       Text(
-                        "Análise Radar de Operação",
+                        "Visão Geral",
                         style: TextStyle(
-                          fontSize: 18 * f,
+                          fontSize: 20 * f,
                           fontWeight: FontWeight.bold,
                           color: txtPrincipal,
                         ),
                       ),
-
-                      const SizedBox(height: 12),
-
-                      // GRÁFICO DE RADAR NORMALIZADO
-                      buildKpiRadarChart(bgContainer, high, f),
-
-                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: high
+                              ? DarkPalette.surfaceElevated
+                              : Colors.blue.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.sync,
+                              size: 14,
+                              color: high ? Colors.cyanAccent : azul,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Ao vivo",
+                              style: TextStyle(
+                                fontSize: 11 * f,
+                                fontWeight: FontWeight.w600,
+                                color: high ? Colors.cyanAccent : azul,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ),
+
+                  const SizedBox(height: 16),
+
+                  // CARDS DE MÉTRICAS
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 1.15,
+                    children: [
+                      cardMetric(
+                        "Plantas",
+                        dashboardData?['total_plantas']?.toString() ?? '0',
+                        Icons.park_rounded,
+                        high ? Colors.greenAccent : const Color(0xFF2E7D32),
+                        bgContainer,
+                        high,
+                        f,
+                      ),
+                      cardMetric(
+                        "Dispositivos",
+                        dashboardData?['total_ativos']?.toString() ?? '0',
+                        Icons.memory_rounded,
+                        high ? Colors.cyanAccent : const Color(0xFF0288D1),
+                        bgContainer,
+                        high,
+                        f,
+                      ),
+                      cardMetric(
+                        "Alertas",
+                        dashboardData?['total_alertas']?.toString() ?? '0',
+                        Icons.warning_amber_rounded,
+                        high ? Colors.orangeAccent : const Color(0xFFED6C02),
+                        bgContainer,
+                        high,
+                        f,
+                      ),
+                      cardMetric(
+                        "Consumo (L)",
+                        dashboardData?['consumo_total_litros']?.toString() ??
+                            '0',
+                        Icons.water_drop_rounded,
+                        high ? Colors.tealAccent : const Color(0xFF00897B),
+                        bgContainer,
+                        high,
+                        f,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  Text(
+                    "Análise Radar de Operação",
+                    style: TextStyle(
+                      fontSize: 18 * f,
+                      fontWeight: FontWeight.bold,
+                      color: txtPrincipal,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // GRÁFICO DE RADAR NORMALIZADO
+                  buildKpiRadarChart(bgContainer, high, f),
+
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
     );
   }
 
@@ -381,11 +412,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   color: accentColor.withOpacity(high ? 0.2 : 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  icon,
-                  size: 22 * f,
-                  color: accentColor,
-                ),
+                child: Icon(icon, size: 22 * f, color: accentColor),
               ),
               Container(
                 width: 8,
@@ -394,7 +421,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   color: accentColor,
                   shape: BoxShape.circle,
                 ),
-              )
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -524,7 +551,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -563,7 +590,12 @@ class _DashboardPageState extends State<DashboardPage> {
             item(Icons.home, "Painel", '/dashboard', f),
             item(Icons.park, "Plantas", '/plantas', f),
             item(Icons.history, "Histórico de Ativação", '/historico', f),
-            item(Icons.show_chart, "Histórico de Medição", '/dados_sensores', f),
+            item(
+              Icons.show_chart,
+              "Histórico de Medição",
+              '/dados_sensores',
+              f,
+            ),
             item(Icons.memory, "Equipamentos", '/equipamentos', f),
             const Spacer(),
             Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
@@ -691,7 +723,9 @@ class _RadarChartPainter extends CustomPainter {
       final ly = center.dy + labelRadius * sin(angle);
 
       final val = metricas[i].valorReal;
-      final strVal = val % 1 == 0 ? val.toInt().toString() : val.toStringAsFixed(1);
+      final strVal = val % 1 == 0
+          ? val.toInt().toString()
+          : val.toStringAsFixed(1);
       final textSpan = TextSpan(
         text: "${metricas[i].label}\n($strVal)",
         style: TextStyle(

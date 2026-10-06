@@ -71,73 +71,138 @@ class _Relatoriodados_sensoresPageState extends State<Relatoriodados_sensoresPag
   // 1. REQUISIÇÃO API COM FILTROS
   // ===========================================================================
   Future<void> consultardados_sensores() async {
-    setState(() {
-      carregando = true;
-      erro = null;
-    });
+  setState(() {
+    carregando = true;
+    erro = null;
+  });
 
-    try {
-      final uri = Uri.parse('http://10.141.131.59/HydroFlow/public/api/dados_sensores').replace(
-        queryParameters: {
-          if (_dataInicialController.text.isNotEmpty) 'data_inicial': _dataInicialController.text,
-          if (_dataFinalController.text.isNotEmpty) 'data_final': _dataFinalController.text,
-          if (_tempMinController.text.isNotEmpty) 'temp_min': _tempMinController.text,
-          if (_umidadeMaxController.text.isNotEmpty) 'umidade_max': _umidadeMaxController.text,
-          if (_statusFiltro != 'todos') 'status_filtro': _statusFiltro,
-        },
-      );
+  try {
+    // Pega o usuário que foi salvo no login
+    final prefs = await SharedPreferences.getInstance();
 
-      final resposta = await http.get(
-        uri,
-        headers: {'Accept': 'application/json'},
-      );
+    final usuarioJson = prefs.getString('usuarioLogado');
 
-      if (resposta.statusCode == 200) {
-        final dynamic rawJson = jsonDecode(resposta.body);
+    if (usuarioJson == null) {
+      throw Exception('Usuário não encontrado.');
+    }
 
-        List<dynamic> listData = [];
-        if (rawJson is List) {
-          listData = rawJson;
-        } else if (rawJson is Map && rawJson.containsKey('data')) {
-          listData = rawJson['data'] ?? [];
-        }
+    final usuario = jsonDecode(usuarioJson);
 
-        List<String> labels = [];
-        List<double> temps = [];
-        List<double> umids = [];
+    final idUsuario = usuario['USU_ID'];
 
-        for (var element in listData) {
-          final item = Map<String, dynamic>.from(element as Map);
+    if (idUsuario == null) {
+      throw Exception('ID do usuário não encontrado.');
+    }
 
-          String dataStr = item['DDS_DATA']?.toString() ?? '';
-          double tempVal = double.tryParse(item['DDS_TEMP']?.toString().replaceAll(',', '.') ?? '') ?? 0.0;
-          double umidVal = double.tryParse(item['DDS_UMIDADE']?.toString().replaceAll(',', '.') ?? '') ?? 0.0;
+    print('USUÁRIO LOGADO: $idUsuario');
 
-          labels.add(dataStr);
-          temps.add(tempVal);
-          umids.add(umidVal);
-        }
+    // Monta os parâmetros da API
+    final parametros = <String, String>{
+      'usuario_id': idUsuario.toString(),
 
-        setState(() {
-          dados_sensores = listData;
-          chartLabels = labels;
-          tempValues = temps;
-          umidValues = umids;
-          carregando = false;
-        });
-      } else {
-        setState(() {
-          erro = 'Erro na requisição: ${resposta.statusCode}';
-          carregando = false;
-        });
+      if (_dataInicialController.text.isNotEmpty)
+        'data_inicial': _dataInicialController.text,
+
+      if (_dataFinalController.text.isNotEmpty)
+        'data_final': _dataFinalController.text,
+
+      if (_tempMinController.text.isNotEmpty)
+        'temp_min': _tempMinController.text,
+
+      if (_umidadeMaxController.text.isNotEmpty)
+        'umidade_max': _umidadeMaxController.text,
+
+      if (_statusFiltro != 'todos')
+        'status_filtro': _statusFiltro,
+    };
+
+    // Monta a URL
+    final uri = Uri.parse(
+      'http://10.141.131.38/HydroFlow/public/api/dados_sensores',
+    ).replace(
+      queryParameters: parametros,
+    );
+
+    print('URL DOS SENSORES: $uri');
+
+    // Faz a requisição
+    final resposta = await http.get(
+      uri,
+      headers: {
+        'Accept': 'application/json',
+      },
+    );
+
+    print('STATUS SENSORES: ${resposta.statusCode}');
+    print('RESPOSTA SENSORES: ${resposta.body}');
+
+    if (resposta.statusCode == 200) {
+      final dynamic rawJson = jsonDecode(resposta.body);
+
+      List<dynamic> listData = [];
+
+      if (rawJson is List) {
+        listData = rawJson;
+      } else if (rawJson is Map && rawJson.containsKey('data')) {
+        listData = rawJson['data'] ?? [];
       }
-    } catch (e) {
+
+      List<String> labels = [];
+      List<double> temps = [];
+      List<double> umids = [];
+
+      for (var element in listData) {
+        final item = Map<String, dynamic>.from(element as Map);
+
+        String dataStr =
+            item['DDS_DATA']?.toString() ?? '';
+
+        double tempVal = double.tryParse(
+              item['DDS_TEMP']
+                      ?.toString()
+                      .replaceAll(',', '.') ??
+                  '',
+            ) ??
+            0.0;
+
+        double umidVal = double.tryParse(
+              item['DDS_UMIDADE']
+                      ?.toString()
+                      .replaceAll(',', '.') ??
+                  '',
+            ) ??
+            0.0;
+
+        labels.add(dataStr);
+        temps.add(tempVal);
+        umids.add(umidVal);
+      }
+
       setState(() {
-        erro = 'Erro de conexão: $e';
+        dados_sensores = listData;
+        chartLabels = labels;
+        tempValues = temps;
+        umidValues = umids;
+        carregando = false;
+      });
+    } else {
+      setState(() {
+        erro =
+            'Erro na requisição: ${resposta.statusCode}';
         carregando = false;
       });
     }
+  } catch (e) {
+    print('ERRO SENSORES: $e');
+
+    if (!mounted) return;
+
+    setState(() {
+      erro = 'Erro de conexão: $e';
+      carregando = false;
+    });
   }
+}
 
   // ===========================================================================
   // 2. EXPORTAÇÃO EXCEL (.XLSX)
