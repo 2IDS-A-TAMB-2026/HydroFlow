@@ -49,11 +49,11 @@
         border-bottom: 1px solid #f1f3f5;
     }
     .data-table tbody tr {
-        background-color: #ffffff !important;
+        background-color: #ffffff ;
         transition: background-color 0.2s ease;
     }
     .data-table tbody tr:hover {
-        background-color: #f8f9fa !important;
+        background-color: #f8f9fa ;
     }
     .dashboard-row {
         display: flex;
@@ -254,6 +254,210 @@
         color: #ff5555 !important;
         border: 2px solid #ff5555 !important;
     }
+
+    /* =========================================================
+   CARDS DOS DISPOSITIVOS - ESTILO MOBILE
+   NÃO ALTERA IDs, CLASSES OU BOTÕES EXISTENTES
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    /* Esconde apenas o cabeçalho da tabela */
+    .data-table thead {
+        display: none;
+    }
+
+    .data-table,
+    .data-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    /* Cada dispositivo vira um card */
+    .data-table tbody tr {
+        display: block;
+        position: relative;
+        background: #ffffff !important;
+        border: 1px solid #e8edf2 !important;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 14px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .data-table tbody tr:hover {
+        background: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Todas as células */
+    .data-table tbody td {
+        display: block;
+        width: auto !important;
+        padding: 0 !important;
+        border: none !important;
+        text-align: left !important;
+        box-sizing: border-box;
+    }
+
+    /* ID */
+    .data-table tbody td:nth-child(1) {
+        color: #777;
+        font-size: 0.72rem;
+        margin-left: 47px;
+        margin-top: -2px;
+        margin-bottom: 10px;
+    }
+
+    /* Nome */
+    .data-table tbody td:nth-child(2) {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-left: 47px;
+        margin-top: -2px;
+    }
+
+    /* Ícone visual antes do nome */
+    .data-table tbody td:nth-child(2)::before {
+        content: "\f2db";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+
+        position: absolute;
+        left: 14px;
+        top: 14px;
+
+        width: 34px;
+        height: 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #e9eef4;
+        color: #1e3c72;
+        border-radius: 9px;
+
+        font-size: 0.9rem;
+    }
+
+    /* Descrição */
+    .data-table tbody td:nth-child(3) {
+        color: #666;
+        font-size: 0.78rem;
+        margin-top: 7px;
+        padding-bottom: 10px !important;
+        border-bottom: 1px solid #e5e7eb !important;
+    }
+
+    /* Nível */
+    .data-table tbody td:nth-child(4) {
+        position: relative;
+        margin-top: 11px;
+        padding-left: 20px !important;
+        padding-right: 2px !important;
+
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #0785b8;
+    }
+
+    /* Ícone de gota */
+    .data-table tbody td:nth-child(4)::before {
+        content: "\f043";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+
+        position: absolute;
+        left: 0;
+        top: 1px;
+
+        color: #0785b8;
+    }
+
+    /* Valor em litros */
+    .data-table tbody td:nth-child(4) small {
+        color: #0785b8 !important;
+        font-size: 0.78rem;
+    }
+
+    /* Barra de progresso */
+    .data-table tbody td:nth-child(4)::after {
+        content: "";
+        display: block;
+
+        width: 100%;
+        height: 5px;
+
+        margin-top: 8px;
+
+        background: #e5e7eb;
+        border-radius: 10px;
+
+        /* A barra será preenchida pelo JS futuramente */
+    }
+
+    /* Status */
+    .data-table tbody td:nth-child(5) {
+        position: absolute;
+        top: 17px;
+        right: 45px;
+
+        width: auto !important;
+    }
+
+    .data-table tbody td:nth-child(5) .status-badge {
+        font-size: 0.65rem;
+        padding: 3px 9px;
+        border-radius: 15px;
+
+        border: 1px solid #86d7ad;
+        background: #e8f8ef;
+        color: #177245;
+    }
+
+    /* Botão de detalhes - CONTINUA EXISTINDO */
+    .data-table tbody td:nth-child(6) {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+
+        width: auto !important;
+    }
+
+    .data-table tbody td:nth-child(6) .btn-view-details {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 28px;
+        height: 28px;
+
+        padding: 0 !important;
+
+        color: #1e3c72 !important;
+        font-size: 0.9rem !important;
+    }
+
+    .data-table tbody td:nth-child(6) .btn-view-details:hover {
+        transform: scale(1.1);
+    }
+
+    /* Esconde o botão no layout visual? NÃO.
+       Ele permanece disponível e clicável. */
+
+    /* Container da tabela */
+    .table-responsive {
+        overflow-x: visible !important;
+    }
+
+    /* Deixa o card principal mais compacto */
+    .unified-card {
+        padding: 15px;
+        border-radius: 12px;
+    }
+}
 </style>
 
 <main style="padding: 20px; font-family: Arial, sans-serif;">

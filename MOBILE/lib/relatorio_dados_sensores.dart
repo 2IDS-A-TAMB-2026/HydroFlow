@@ -118,7 +118,7 @@ class _Relatoriodados_sensoresPageState extends State<Relatoriodados_sensoresPag
 
     // Monta a URL
     final uri = Uri.parse(
-      'http://10.141.131.38/HydroFlow/public/api/dados_sensores',
+      'http://10.141.131.48/HydroFlow/public/api/dados_sensores',
     ).replace(
       queryParameters: parametros,
     );
@@ -857,9 +857,6 @@ class _Relatoriodados_sensoresPageState extends State<Relatoriodados_sensoresPag
             }),
             _drawerItem(context, Icons.park, "Plantas", f, () {
               Navigator.pushReplacementNamed(context, '/plantas');
-            }),
-            _drawerItem(context, Icons.history, "Histórico de Ativação", f, () {
-              Navigator.pushReplacementNamed(context, '/historico');
             }),
             _drawerItem(context, Icons.show_chart, "Histórico de Medição", f, () {
               Navigator.pushReplacementNamed(context, '/dados_sensores');

@@ -82,7 +82,7 @@ class _PlantasPageState extends State<PlantasPage> {
 
       final response = await http.get(
         Uri.parse(
-          'http://10.141.131.38/HydroFlow/public/api/plantas?usuario_id=$idUsuario',
+          'http://10.141.131.48/HydroFlow/public/api/plantas?usuario_id=$idUsuario',
         ),
         headers: {'Accept': 'application/json'},
       );
@@ -942,9 +942,6 @@ class _PlantasPageState extends State<PlantasPage> {
             }),
             _drawerItem(context, Icons.park, "Plantas", f, () {
               Navigator.pushReplacementNamed(context, '/plantas');
-            }),
-            _drawerItem(context, Icons.history, "Histórico de Ativação", f, () {
-              Navigator.pushReplacementNamed(context, '/historico');
             }),
             _drawerItem(
               context,

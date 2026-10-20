@@ -53,8 +53,8 @@ class PlantasController extends ResourceController
         $idUsuarioLogado = session()->get('id') 
                         ?? session()->get('id_usuario') 
                         ?? session()->get('USU_ID') 
-                        ?? $this->request->getGet('usuario_id') 
-                        ?? 1; // Fallback ID 1
+                        ?? $this->request->getGet('usuario_id') ;
+                        // Fallback ID 1
 
         $planta = $this->model->find($id);
 

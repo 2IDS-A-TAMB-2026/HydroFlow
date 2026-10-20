@@ -39,7 +39,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
   String? erro;
 
   final String apiUrl =
-      'http://10.141.131.38/HydroFlow/public/api/dispositivos';
+      'http://10.141.131.48/HydroFlow/public/api/dispositivos';
 
   static const azul = Color(0xFF002855);
 
@@ -855,15 +855,6 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
             _drawerItem(context, Icons.park, "Plantas", f, () {
               Navigator.pushReplacementNamed(context, '/plantas');
             }),
-            _drawerItem(
-              context,
-              Icons.history,
-              "Histórico de Ativações",
-              f,
-              () {
-                Navigator.pushReplacementNamed(context, '/historico');
-              },
-            ),
             _drawerItem(
               context,
               Icons.show_chart,

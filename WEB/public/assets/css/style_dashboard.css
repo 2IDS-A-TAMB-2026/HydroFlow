@@ -331,107 +331,142 @@ body {
    --- COMPONENTE: GRID INFERIOR (TABELA) ---
    ========================================================================== */
 /* Força o widget da tabela a se comportar como um contêiner Flexbox */
+/* --- CONTAINER E TABELA (MANTENDO SUA LÓGICA DE ALTURA) --- */
 .table-widget {
     display: flex;
     flex-direction: column;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f0f2f5;
 }
 
-/* Faz a tabela ocupar toda a altura restante dentro do widget */
+.table-widget h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 10px;
+}
+
+/* Tabela ocupando a altura restante */
 .table-widget table { 
     width: 100%; 
     border-collapse: collapse; 
-    text-align: center; 
+    text-align: left; /* Alinhamento à esquerda fica mais moderno em listas */
     margin-top: 10px;
-    flex: 1; /* Força a tabela a esticar verticalmente acompanhando o gráfico */
+    flex: 1; 
 }
 
 .table-widget th { 
-    border-bottom: 2px solid #eee; 
-    padding-bottom: 10px; 
-    color: #555; 
+    border-bottom: 1px solid #e2e8f0; 
+    padding: 10px 12px; 
+    color: #94a3b8;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
 }
 
-/* Faz as linhas (tr) dividirem o espaço vertical disponível por igual */
+/* Divisão vertical proporcional mantida */
 .table-widget tbody tr {
-    height: calc(100% / 5); /* Divide a altura total de forma perfeita entre as 5 linhas */
+    height: calc(100% / 5); 
+    transition: background-color 0.15s ease;
+}
+
+/* Efeito sutil ao passar o mouse na linha inteira */
+.table-widget tbody tr:hover {
+    background-color: #f8fafc;
 }
 
 .table-widget td { 
-    padding: 12px 0; 
-    border-bottom: 1px solid #eee; 
-    font-size: 0.9rem; 
-    vertical-align: middle; /* Mantém os textos centralizados verticalmente */
+    padding: 12px; 
+    border-bottom: 1px solid #f1f5f9; 
+    font-size: 0.88rem; 
+    color: #334155;
+    vertical-align: middle; 
+}
+
+/* Opcional: Destacar a coluna da Planta */
+.table-widget td strong {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+/* Última linha sem borda inferior para acabamento limpo */
+.table-widget tbody tr:last-child td {
+    border-bottom: none;
 }
 
 /* ==========================================================================
-   --- BADGES DE STATUS PREMIUM COM ÍCONES (SEM CORRER O PHP) ---
+   --- BADGES DE STATUS PREMIUM COM ÍCONES (ESTILO SAAS MODERNO) ---
    ========================================================================== */
 .table-widget table tbody tr td .badge-green,
 .table-widget table tbody tr td .badge-red,
 .table-widget table tbody tr td .badge-yellow {
-    display: inline-flex;       /* Mudado para flex para alinhar o ícone perfeitamente com o texto */
+    display: inline-flex; 
     align-items: center;
     justify-content: center;
-    gap: 6px;                   /* Distância perfeita entre o ícone e a palavra */
-    padding: 5px 14px;          /* Ajustado para não colar nas linhas */
-    font-size: 0.72rem;
+    gap: 6px; 
+    padding: 5px 12px; 
+    font-size: 0.70rem;
     font-weight: 700;
-    letter-spacing: 0.8px;
-    border-radius: 30px;        /* Estilo pílula moderno */
+    letter-spacing: 0.6px;
+    border-radius: 20px; /* Pílula suave */
     text-align: center;
-    min-width: 115px;           /* Largura ideal para acomodar o ícone + texto sem quebrar linha */
+    min-width: 110px; 
     text-transform: uppercase;
     transition: all 0.2s ease;
     cursor: default;
 }
 
-/* --- EFECTO HOVER SUAVE NA LINHA --- */
+/* Hover suave mantido */
 .table-widget table tbody tr:hover td .badge-green,
 .table-widget table tbody tr:hover td .badge-red,
 .table-widget table tbody tr:hover td .badge-yellow {
-    transform: scale(1.03);
+    transform: translateY(-1px);
 }
 
-/* --- ESTRUTURA BASE PARA OS ÍCONES (FONT AWESOME VIA CSS) --- */
+/* Base dos Ícones Font Awesome */
 .table-widget table tbody tr td .badge-green::before,
 .table-widget table tbody tr td .badge-red::before,
 .table-widget table tbody tr td .badge-yellow::before {
-    font-family: "Font Awesome 6 Free"; /* Ativa os ícones do Font Awesome */
-    font-weight: 900;                   /* Garante que o ícone carregue na versão sólida */
-    font-size: 0.78rem;                 /* Tamanho ideal do ícone em relação ao texto */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900; 
+    font-size: 0.75rem; 
 }
 
-/* --- ESTILOS E ÍCONES INDIVIDUAIS --- */
+/* --- PALETA DE CORES MODERNA (TONS PASTÉIS COM ALTO CONTRASTE) --- */
 
-/* IRRIGADO (Ícone: Check / correto) */
+/* IRRIGADO */
 .table-widget table tbody tr td .badge-green { 
-    background-color: #e6f7ed; 
-    color: #1e7e34; 
-    border: 1px solid #c3e6cb;
+    background-color: #dcfce7; 
+    color: #15803d; 
+    border: 1px solid #bbf7d0;
 }
 .table-widget table tbody tr td .badge-green::before {
-    content: "\f00c"; /* Código do ícone 'fa-check' */
+    content: "\f00c";
 }
 
-/* FALHA (Ícone: X / erro) */
+/* FALHA */
 .table-widget table tbody tr td .badge-red { 
-    background-color: #fde8e9; 
-    color: #bd2130; 
-    border: 1px solid #f5c6cb;
+    background-color: #fee2e2; 
+    color: #b91c1c; 
+    border: 1px solid #fecaca;
 }
 .table-widget table tbody tr td .badge-red::before {
-    content: "\f00d"; /* Código do ícone 'fa-xmark' */
+    content: "\f00d";
 }
 
-/* ALERTA (Ícone: Exclamação / triângulo) */
+/* ALERTA */
 .table-widget table tbody tr td .badge-yellow { 
-    background-color: #fff3cd; 
-    color: #856404; /* Contraste perfeito que arrumamos */
-    border: 1px solid #ffeeba;
+    background-color: #fef3c7; 
+    color: #b45309; 
+    border: 1px solid #fde68a;
 }
 .table-widget table tbody tr td .badge-yellow::before {
-    content: "\f071"; /* Código do ícone 'fa-triangle-exclamation' */
-    font-size: 0.70rem; /* Ajuste leve porque esse ícone é naturalmente maior */
+    content: "\f071";
+    font-size: 0.68rem;
 }
 /* ==================== COMPONENTE: GRÁFICO ==================== */
 .chart-title { 

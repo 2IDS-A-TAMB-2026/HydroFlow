@@ -103,7 +103,7 @@ class _DashboardPageState extends State<DashboardPage> {
       }
 
       final resposta = await http.get(
-        Uri.parse('http://10.141.131.38/HydroFlow/public/api/dashboard?usuario_id=$idUsuario'),
+        Uri.parse('http://10.141.131.48/HydroFlow/public/api/dashboard?usuario_id=$idUsuario'),
         headers: {
           'Accept': 'application/json',
           //'X-Usuario-Id': idUsuario.toString(),
@@ -589,7 +589,6 @@ class _DashboardPageState extends State<DashboardPage> {
             Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
             item(Icons.home, "Painel", '/dashboard', f),
             item(Icons.park, "Plantas", '/plantas', f),
-            item(Icons.history, "Histórico de Ativação", '/historico', f),
             item(
               Icons.show_chart,
               "Histórico de Medição",

@@ -20,7 +20,7 @@ class DashboardController extends BaseController
         // 1. Identificação do Usuário (fallback final para o ID 1)
         $idUsuarioLogado = $this->request->getHeaderLine('X-Usuario-Id')
             ?: ($this->request->getGet('usuario_id')
-            ?: (session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID') ?? 1));
+            ?: (session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID')));
 
         // 2. Instanciação dos Models e conexão com o DB
         $dispositivoModel = new DispositivoModel();

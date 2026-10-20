@@ -27,7 +27,7 @@ class CadastroPlantaPage extends StatefulWidget {
 
 class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
   static const String _urlApi =
-      'http://10.141.131.38/HydroFlow/public/api/plantas/novo';
+      'http://10.141.131.48/HydroFlow/public/api/plantas/novo';
 
   final _formKey = GlobalKey<FormState>();
 
@@ -577,8 +577,6 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
             Divider(color: high ? DarkPalette.surfaceBorder : Colors.white24),
             _drawerItem(Icons.home, "Painel", '/dashboard', f),
             _drawerItem(Icons.eco, "Plantas", '/plantas', f),
-            _drawerItem(
-                Icons.history, "Histórico de Ativação", '/historico', f),
             _drawerItem(
                 Icons.history, "Histórico de Medição", '/dados_sensores', f),
             _drawerItem(Icons.memory, "sensores", '/sensores', f),

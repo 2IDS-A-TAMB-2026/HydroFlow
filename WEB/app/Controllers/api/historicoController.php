@@ -7,20 +7,39 @@ class historicoController extends ResourceController {
     protected $modelName = 'App\\Models\\HistoricoIrrigacaoModel';
     protected $format    = 'json';
 
-    public function index() {
-        try {
-            // Usa o JOIN correto ajustado para a tabela PLANTA e DISPOSITIVO
-            $dados = $this->model
-                ->select('HISTORICO_IRRIGACAO.*, PLANTA.PLANTA_NOME as nome_planta, PLANTA.PLANTA_CULTURA as cultura')
-                ->join('PLANTA', 'PLANTA.PLANTA_ID = HISTORICO_IRRIGACAO.FK_PLANTA_ID', 'left')
-                ->findAll();
+   public function index()
+{
+    try {
 
-            return $this->respond($dados);
-        } catch (\Throwable $e) {
-            // Em caso de erro, retorna a mensagem em JSON sem quebrar a API
-            return $this->failServerError($e->getMessage());
+        $idUsuarioLogado = $this->request->getGet('usuario_id');
+
+        if (!$idUsuarioLogado) {
+            return $this->failValidationErrors(
+                'ID do usuário não informado.'
+            );
         }
+
+        $filtros = [
+            'data_inicial' => $this->request->getGet('data_inicial'),
+            'data_final' => $this->request->getGet('data_final'),
+            'setor_filtro' => $this->request->getGet('setor_filtro'),
+            'status_filtro' => $this->request->getGet('status_filtro'),
+        ];
+
+        $dados = $this->model->getHistoricoCompleto(
+            $idUsuarioLogado,
+            $filtros
+        );
+
+        return $this->respond($dados);
+
+    } catch (\Throwable $e) {
+
+        return $this->failServerError(
+            $e->getMessage()
+        );
     }
+}
 
     public function show($id = null) {
         $historico = $this->model->find($id);

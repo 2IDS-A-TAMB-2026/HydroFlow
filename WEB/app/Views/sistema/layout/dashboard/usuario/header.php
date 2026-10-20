@@ -72,13 +72,6 @@
                 </li>
 
                 <li>
-                    <a href="<?= base_url('/historico') ?>" aria-label="Ir para histórico">
-                        <i class="fa-solid fa-faucet" aria-hidden="true"></i>
-                        Irrigações
-                    </a>
-                </li>
-
-                <li>
                     <a href="<?= base_url('dados_sensores') ?>" aria-label="Ir para histórico">
                         <i class="fas fa-history" aria-hidden="true"></i>
                         Medições

@@ -63,7 +63,7 @@ class DispositivoController extends BaseController
         // 1. Identificação do Usuário com fallback final para o ID 1
         $usuarioId = $this->request->getHeaderLine('X-Usuario-Id')
             ?: ($this->request->getGet('usuario_id')
-            ?: (session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID') ?? 1));
+            ?: (session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID')));
 
         $busca  = $this->request->getGet('busca');
         $status = $this->request->getGet('status');
@@ -139,7 +139,7 @@ class DispositivoController extends BaseController
         // Define o FK_USU_ID com fallback automático para ID 1 caso não seja informado
         if (empty($dados['FK_USU_ID'])) {
             $dados['FK_USU_ID'] = $this->request->getHeaderLine('X-Usuario-Id')
-                ?: (session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID') ?? 1);
+                ?: (session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID'));
         }
 
         if (!$this->dispositivoModel->save($dados)) {

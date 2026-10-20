@@ -13,9 +13,22 @@ class dadosSensoresController extends ResourceController
     protected $format = 'json';
 
     public function index()
-    {
-        return $this->respond($this->model->findAll());
+{
+    // Pega o ID do usuário enviado pelo Flutter
+    $idUsuarioLogado = $this->request->getGet('usuario_id');
+
+    if (!$idUsuarioLogado) {
+        return $this->failValidationErrors(
+            'ID do usuário não informado.'
+        );
     }
+
+    // Busca somente os dados dos sensores
+    // ligados aos dispositivos desse usuário
+    $dados = $this->model->getMedicoesPorUsuario($idUsuarioLogado);
+
+    return $this->respond($dados);
+}
 
     public function show($id = null)
     {

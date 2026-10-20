@@ -16,7 +16,7 @@ $routes->get('cadastro', 'Home::irParaCadastro');
 $routes->post('cadastro/salvar', 'UsuarioController::salvar');
 
 // API (Em andamento fiott)
-$routes->group('api', function ($routes) {
+$routes->group('api', ['filter' => 'cors:default'], function ($routes) {
 
     //Dashboard
     $routes->get('dashboard', 'api\dashboardController::index');
