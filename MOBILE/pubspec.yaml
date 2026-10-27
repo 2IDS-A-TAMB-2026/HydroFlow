@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fl_chart: ^0.68.0 # Ou a versão mais recente
+  fl_chart: ^1.2.0 # Ou a versão mais recente
   pdf: ^3.10.8           # Geração de PDF
   printing: ^5.13.0      # Visualização e Download do PDF
   excel: ^4.0.3          # Exportação para Excel (.xlsx)

@@ -39,7 +39,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
   String? erro;
 
   final String apiUrl =
-      'http://10.141.131.48/HydroFlow/public/api/dispositivos';
+      'http://10.141.131.57/HydroFlow/public/api/dispositivos';
 
   static const azul = Color(0xFF002855);
 
@@ -142,21 +142,36 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
     }
   }
 
-  void _filtrarDispositivos(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        dispositivosFiltrados = dispositivos;
-      } else {
-        dispositivosFiltrados = dispositivos.where((disp) {
-          final nome = (disp['DIS_NOME'] ?? '').toString().toLowerCase();
-          final dono = nomeDono(disp).toLowerCase();
-          final status = (disp['DIS_STATUS'] ?? '').toString().toLowerCase();
-          final q = query.toLowerCase();
+  String _normalizarBusca(String texto) {
+    const comAcento = 'áàâãäéèêëíìîïóòôõöúùûüçñ';
+    const semAcento = 'aaaaaeeeeiiiiooooouuuucn';
+    var resultado = texto.trim().toLowerCase();
+    for (var i = 0; i < comAcento.length; i++) {
+      resultado = resultado.replaceAll(comAcento[i], semAcento[i]);
+    }
+    return resultado;
+  }
 
-          return nome.contains(q) || dono.contains(q) || status.contains(q);
-        }).toList();
-      }
-    });
+  void _filtrarDispositivos(String query) {
+    final q = _normalizarBusca(query);
+    final filtrados = dispositivos.where((disp) {
+      if (disp is! Map) return false;
+      final item = Map<String, dynamic>.from(disp);
+      final nome = _normalizarBusca(
+        '${item['DIS_NOME'] ?? item['nome_dispositivo'] ?? item['NOME'] ?? ''}',
+      );
+      final dono = _normalizarBusca(nomeDono(item));
+      final status = _normalizarBusca('${item['DIS_STATUS'] ?? item['status'] ?? ''}');
+      final id = _normalizarBusca('${item['DIS_ID'] ?? item['ID'] ?? ''}');
+      return q.isEmpty ||
+          nome.contains(q) ||
+          dono.contains(q) ||
+          status.contains(q) ||
+          id.contains(q);
+    }).toList();
+
+    if (!mounted) return;
+    setState(() => dispositivosFiltrados = filtrados);
   }
 
   Future<void> excluirDispositivo(dynamic dispositivoId) async {
@@ -732,7 +747,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
           children: [
             Icon(
               Icons.error_outline,
-              size: 48 * f,
+              size: 57 * f,
               color: high ? Colors.redAccent : Colors.red,
             ),
             const SizedBox(height: 12),

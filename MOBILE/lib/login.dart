@@ -534,7 +534,7 @@ class _LoginMobilePageState
   // Se a rota no seu Routes.php não for exatamente esta, ajuste aqui
   // (ex: $routes->post('usuarios/login', 'Api\UsuarioController::login');)
   static const String urlLogin =
-      'http://10.141.131.48/HydroFlow/public/api/login';
+      'http://10.141.131.57/HydroFlow/public/api/login';
 
   bool _obscureText = true;
 
@@ -925,7 +925,7 @@ class _LoginMobilePageState
                           },
 
                           child: Text(
-                            'Esqueci a senha',
+                            "",
                             style:
                                 TextStyle(
                               color:

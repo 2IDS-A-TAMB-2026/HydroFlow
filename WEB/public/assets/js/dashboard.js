@@ -1,44 +1,51 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const ctx = document.getElementById('vendasChart').getContext('2d');
-    
-    const vendasChart = new Chart(ctx, {
-        type: 'bar',
+document.addEventListener("DOMContentLoaded", function () {
+    // Procura pelo canvas do radar
+    const canvas = document.getElementById('kpiRadarChart');
+    if (!canvas) return;
+
+    // Pega os dados dos atributos data-* passados pelo PHP
+    const ativos   = parseFloat(canvas.dataset.ativos)   || 0;
+    const alertas  = parseFloat(canvas.dataset.alertas)  || 0;
+    const plantas  = parseFloat(canvas.dataset.plantas)  || 0;
+    const inativos = parseFloat(canvas.dataset.inativos) || 0;
+
+    const ctx = canvas.getContext('2d');
+
+    new Chart(ctx, {
+        type: 'radar',
         data: {
-            // Datas exatas da imagem
-            labels: ['31/08/2018', '03/09/2018'],
+            labels: [
+                'Dispositivos Ativos',
+                'Alertas Não Verificados',
+                'Plantas Cadastradas',
+                'Dispositivos Inativos'
+            ],
             datasets: [{
-                label: 'Vendas',
-                // Valores da imagem
-                data: [2.00, 66.00],
-                // Cor do gráfico (Azul claro da imagem)
-                backgroundColor: 'rgba(179, 223, 255, 0.9)', 
-                borderColor: 'rgba(100, 180, 255, 1)',
-                borderWidth: 1,
-                barPercentage: 0.4 // Deixa a barra mais fina, similar ao print
+                label: 'Métricas do Sistema',
+                data: [ativos, alertas, plantas, inativos],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(54, 162, 235, 1)'
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false // Esconde a legenda para ficar igual à foto
+            scales: {
+                r: {
+                    angleLines: {
+                        display: true
+                    },
+                    suggestedMin: 0
                 }
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 70, // Limite superior para parecer com a imagem
-                    title: {
-                        display: true,
-                        text: 'R$ Total Geral'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Data'
-                    }
+            plugins: {
+                legend: {
+                    position: 'bottom'
                 }
             }
         }

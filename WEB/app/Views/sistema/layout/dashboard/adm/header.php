@@ -12,6 +12,9 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     >
 
+    <link rel="icon" type="image/png"
+      href="<?= base_url('assets/images/logo.png') ?>">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="<?= base_url('assets/js/imprime.js') ?>"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -90,14 +93,6 @@
                         Malha de Sensores
                     </a>
                 </li>
-
-                <li>
-                    <a href="<?= base_url('admin/perfil') ?>" aria-label="Ir para configurações do perfil">
-                        <i class="fa-solid fa-user-gear" aria-hidden="true"></i>
-                        Perfil
-                    </a>
-                </li>
-
                 <div class="menu-section-title">Sessão</div>
                 <li>
                     <?php if (session()->get('logado_adm')): ?>

@@ -91,13 +91,6 @@
                     <canvas id="chartStatus"></canvas>
                 </div>
             </div>
-            
-            <div class="dashboard-col" style="flex: 2;">
-                <span style="font-size: 0.9rem; font-weight: bold; color: #666; margin-bottom: 15px;">Nível Atual dos Tanques (%)</span>
-                <div style="width: 100%; height: 220px; position: relative;">
-                    <canvas id="chartTanques"></canvas>
-                </div>
-            </div>
         </div>
     </div>
     <?php endif; ?>
@@ -314,113 +307,7 @@ new Chart(ctxStatus, {
             }
         }
     }
-});
-
-    // Configuração do Gráfico de Nível dos Tanques (Barras)
-    // Configuração do Gráfico de Nível dos Tanques (Barras Dinâmicas e Ordenadas)
-const ctxTanques = document.getElementById('chartTanques').getContext('2d');
-
-// 1. Pegamos os dados originais vindos do PHP
-const dadosOriginais = <?= json_encode($grafico_tanques) ?>;
-
-// 2. Juntamos as labels e valores em um array de objetos para conseguir ordenar
-let listaTanques = [];
-if (dadosOriginais && dadosOriginais.labels) {
-    for (let i = 0; i < dadosOriginais.labels.length; i++) {
-        listaTanques.push({
-            nome: dadosOriginais.labels[i],
-            nivel: parseFloat(dadosOriginais.valores[i])
-        });
-    }
-}
-
-// 3. Ordena a lista em ordem CRESCENTE (menor nível para o maior)
-listaTanques.sort((a, b) => a.nivel - b.nivel);
-
-// 4. Separa novamente em arrays para o Chart.js usar
-const labelsOrdenadas = listaTanques.map(item => item.nome);
-const valoresOrdenados = listaTanques.map(item => item.nivel);
-
-// 5. Renderiza o gráfico com as regras visuais personalizadas
-new Chart(ctxTanques, {
-    type: 'bar',
-    data: {
-        labels: labelsOrdenadas,
-        datasets: [{
-            label: 'Nível Atual',
-            data: valoresOrdenados,
-            borderWidth: 1.5,
-            borderRadius: 6, // Deixa o topo das barras arredondado e moderno
-            borderSkipped: 'start',
-            
-            // FUNÇÃO DE COR CONDICIONAL (Roda para cada barra individualmente)
-            backgroundColor: function(context) {
-                const value = context.dataset.data[context.dataIndex];
-                if (value < 30) {
-                    return 'rgba(211, 47, 47, 0.85)';  // Vermelho Crítico (< 30%)
-                } else if (value <= 50) {
-                    return 'rgba(245, 124, 0, 0.85)';  // Laranja/Amarelo Atenção (30% a 50%)
-                } else {
-                    return 'rgba(30, 136, 229, 0.85)';  // Azul Seguro (> 50%)
-                }
-            },
-            borderColor: function(context) {
-                const value = context.dataset.data[context.dataIndex];
-                if (value < 30) {
-                    return '#d32f2f';
-                } else if (value <= 50) {
-                    return '#f57c00';
-                } else {
-                    return '#1e88e5';
-                }
-            },
-            // Efeito visual ao passar o mouse por cima
-            hoverBackgroundColor: function(context) {
-                const value = context.dataset.data[context.dataIndex];
-                if (value < 30) return '#b71c1c';
-                if (value <= 50) return '#e65100';
-                return '#1565c0';
-            }
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false }, // Remove aquela legenda redundante do topo
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        return ` Nível: ${context.parsed.y}%`;
-                    }
-                }
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 100,
-                grid: {
-                    color: '#f1f3f5' // Linhas horizontais bem sutis de fundo
-                },
-                ticks: {
-                    callback: function(value) { return value + '%'; },
-                    font: { size: 11, family: 'Arial' }
-                }
-            },
-            x: {
-                grid: { display: false }, // Remove as linhas verticais para limpar o visual
-                ticks: {
-                    maxRotation: 25,
-                    minRotation: 15,
-                    font: { size: 10, weight: '600' },
-                    color: '#444'
-                }
-            }
-        }
-    }
-});
-    
+});    
     <?php endif; ?>
 
     // ---------------- LÓGICA DE EXCLUSÃO (SWAL) ----------------

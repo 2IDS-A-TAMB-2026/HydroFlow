@@ -49,20 +49,11 @@
                     </div>
                     
                     <div class="input-group">
-                        <div class="label-row">
-                            <label for="password">Senha</label>
-                            <a href="<?= base_url('esqueci-senha') ?>" class="forgot-password">Esqueceu a senha?</a>
-                        </div>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-lock input-icon"></i>
                             <input type="password" id="password" placeholder="••••••••" required name="senha">
                             <i class="fa-regular fa-eye toggle-password" id="togglePassword"></i>
                         </div>
-                    </div>
-
-                    <div class="remember-box">
-                        <input type="checkbox" id="remember" name="remember">
-                        <label for="remember">Lembrar de mim</label>
                     </div>
                     
                     <button type="submit" class="btn-main">
@@ -71,7 +62,6 @@
                     </button>
                 </form>
 
-                <p class="signup-link">Ainda não tem uma conta? <a href="<?= base_url('cadastro') ?>">Cadastre-se</a></p>
             </div>
         </div>
         

@@ -103,7 +103,7 @@ class _DashboardPageState extends State<DashboardPage> {
       }
 
       final resposta = await http.get(
-        Uri.parse('http://10.141.131.48/HydroFlow/public/api/dashboard?usuario_id=$idUsuario'),
+        Uri.parse('http://10.141.131.57/HydroFlow/public/api/dashboard?usuario_id=$idUsuario'),
         headers: {
           'Accept': 'application/json',
           //'X-Usuario-Id': idUsuario.toString(),
@@ -231,13 +231,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       style: TextStyle(fontSize: 14 * f),
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        consultarDashboard();
-                      },
-                      icon: const Icon(Icons.refresh),
-                      label: const Text("Tentar novamente"),
-                    ),
+                    
                   ],
                 ),
               ),
@@ -264,27 +258,13 @@ class _DashboardPageState extends State<DashboardPage> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: high
-                              ? DarkPalette.surfaceElevated
-                              : Colors.blue.withOpacity(0.08),
+                          
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.sync,
-                              size: 14,
-                              color: high ? Colors.cyanAccent : azul,
-                            ),
+                            
                             const SizedBox(width: 4),
-                            Text(
-                              "Ao vivo",
-                              style: TextStyle(
-                                fontSize: 11 * f,
-                                fontWeight: FontWeight.w600,
-                                color: high ? Colors.cyanAccent : azul,
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -329,16 +309,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         high,
                         f,
                       ),
-                      cardMetric(
-                        "Consumo (L)",
-                        dashboardData?['consumo_total_litros']?.toString() ??
-                            '0',
-                        Icons.water_drop_rounded,
-                        high ? Colors.tealAccent : const Color(0xFF00897B),
-                        bgContainer,
-                        high,
-                        f,
-                      ),
+                      
                     ],
                   ),
 
@@ -479,11 +450,6 @@ class _DashboardPageState extends State<DashboardPage> {
         label: "Alertas",
         valorReal: _kpiComoDouble('total_alertas'),
         maxEsperado: 15, // Limite de referência para alertas
-      ),
-      _MetricaRadar(
-        label: "Consumo",
-        valorReal: _kpiComoDouble('consumo_total_litros'),
-        maxEsperado: 10000, // Limite de referência em litros
       ),
     ];
 

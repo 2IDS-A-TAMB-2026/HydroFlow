@@ -33,7 +33,7 @@ class Home extends StatelessWidget {
       backgroundColor: high ? DarkPalette.background : offWhite,
 
       appBar: AppBar(
-        backgroundColor: high ? DarkPalette.surface : azulRoyal,
+        backgroundColor: high ? DarkPalette.surface : Home.azulPrimario,
         elevation: 0,
         shape: high
             ? const Border(bottom: BorderSide(color: DarkPalette.surfaceBorder, width: 2))
@@ -353,7 +353,7 @@ class Home extends StatelessWidget {
           // FOOTER
           Container(
             padding: const EdgeInsets.all(30),
-            color: high ? DarkPalette.surface : azulRoyal,
+            color: high ? DarkPalette.surface : azulPrimario,
             child: Center(
               child: Text(
                 "© 2026 HydroFlow • Tecnologia Sustentável",
@@ -457,17 +457,6 @@ class Home extends StatelessWidget {
       ),
     );
   }
-
-  // CORRIGIDO: antes usava um Border não uniforme (largura 6 à esquerda e
-  // 0/1 nos outros lados) junto com borderRadius. Essa combinação faz o
-  // Flutter falhar ao pintar a borda e, junto com ela, o conteúdo (texto)
-  // deixava de ser desenhado — por isso os cards apareciam vazios,
-  // principalmente no modo escuro (onde os outros 3 lados passavam a ter
-  // largura 1 em vez de 0, evidenciando o problema).
-  //
-  // Agora a barrinha colorida da esquerda é um widget separado (Container
-  // de 6px dentro de um Row), e a borda do Container principal é sempre
-  // uniforme (Border.all), o que é seguro de combinar com borderRadius.
   Widget buildBox(String title, String desc, Color corBorda, bool high, double f) {
     return Container(
       constraints: const BoxConstraints(minHeight: 140),
@@ -486,11 +475,6 @@ class Home extends StatelessWidget {
               ],
       ),
       clipBehavior: Clip.antiAlias,
-      // IMPORTANTE: IntrinsicHeight calcula a altura do Row a partir do
-      // conteúdo antes de esticar os filhos. Sem isso, o Row com
-      // CrossAxisAlignment.stretch tenta esticar para uma altura
-      // "infinita" (já que está dentro de uma ListView), o que quebra
-      // o layout da tela inteira — foi esse o erro da versão anterior.
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,

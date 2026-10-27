@@ -15,7 +15,7 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = 'http://localhost/Hydroflow/public';
+    public string $baseURL = 'http://10.141.131.57/Hydroflow/public';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

@@ -7,6 +7,7 @@ use App\Models\AdmModel;
 use App\Models\UsuarioModel; 
 use App\Models\DispositivoModel;
 use App\Models\HistoricoIrrigacaoModel;
+use App\Models\DadosSensoresModel;
 
 class AdmController extends BaseController
 {
@@ -39,15 +40,13 @@ class AdmController extends BaseController
         $dados['total_alertas']  = $this->historicoModel->where('IRR_STATUS', 'Falha')->countAllResults();
         $dados['total_usuarios'] = $this->usuarioModel->countAllResults();
 
-        // 2. Últimas 8 irrigações gerais do sistema
-        $dados['ultimas_irrigacoes'] = $this->historicoModel
-            ->select('HISTORICO_IRRIGACAO.*, PLANTA.PLANTA_NOME as nome_planta, DISPOSITIVO.DIS_NOME as nome_dispositivo, USUARIO.USU_NOME as nome_usuario')
-            ->join('PLANTA', 'PLANTA.PLANTA_ID = HISTORICO_IRRIGACAO.FK_PLANTA_ID')
-            ->join('DISPOSITIVO', 'DISPOSITIVO.DIS_ID = HISTORICO_IRRIGACAO.FK_DIS_ID')
-            ->join('USUARIO', 'USUARIO.USU_ID = HISTORICO_IRRIGACAO.FK_USU_ID')
-            ->orderBy('IRR_DATA DESC', 'IRR_HORA DESC')
-            ->limit(8)
-            ->findAll();
+        
+        // 2. Central de Monitoramento dos Dispositivos
+        // Central de Monitoramento
+        $sensoresModel = new DadosSensoresModel();
+
+        $dados['dispositivos_monitoramento'] =
+            $sensoresModel->getUltimaMedicaoPorDispositivo();
 
         // 3. Dados do Gráfico Global
         $graficoQuery = $this->historicoModel

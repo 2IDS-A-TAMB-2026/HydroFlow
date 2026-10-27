@@ -16,47 +16,73 @@ class PlantaController extends BaseController
     }
 
     // Listar todas as plantas com filtros aplicados
+    
     public function index()
-{
-    $idUsuarioLogado = session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID');
+    {
+        $idUsuarioLogado = session()->get('id')
+            ?? session()->get('id_usuario')
+            ?? session()->get('USU_ID');
 
-    if (!$idUsuarioLogado) {
-        return redirect()->to(base_url('login'))->with('erro', 'Por favor, faça login para acessar suas plantas.');
+        if (!$idUsuarioLogado) {
+            return redirect()->to(base_url('login'))
+                ->with('erro', 'Por favor, faça login para acessar suas plantas.');
+        }
+
+        $dispositivoModel = new DispositivoModel();
+
+        $dispositivos = $dispositivoModel
+            ->where('FK_USU_ID', $idUsuarioLogado)
+            ->findAll();
+
+        $filtroTipo        = $this->request->getGet('filtro_tipo');
+        $filtroParametro   = $this->request->getGet('filtro_parametro');
+        $filtroDispositivo = $this->request->getGet('filtro_dispositivo');
+
+        // Busca as plantas junto com o nome do dispositivo
+        $query = $this->plantaModel
+            ->select('PLANTA.*, DISPOSITIVO.DIS_NOME AS DIS_NOME')
+            ->join(
+                'DISPOSITIVO',
+                'DISPOSITIVO.DIS_ID = PLANTA.FK_DIS_ID',
+                'left'
+            )
+            ->where('PLANTA.FK_USU_ID', $idUsuarioLogado);
+
+        if (!empty($filtroTipo)) {
+            $query->where('PLANTA.PLANTA_TIPO', $filtroTipo);
+        }
+
+        if (!empty($filtroParametro)) {
+            $query->where('PLANTA.PLANTA_PERIDIOCIDADE', $filtroParametro);
+        }
+
+        if (!empty($filtroDispositivo)) {
+            $query->where('PLANTA.FK_DIS_ID', $filtroDispositivo);
+        }
+
+        $plantas = $query->findAll();
+
+        // Dados dos gráficos
+        $dadosTipos = $this->plantaModel
+            ->getQtdPorTipo($idUsuarioLogado);
+
+        $dadosConsumo = $this->plantaModel
+            ->getConsumoAguaPorPlanta($idUsuarioLogado, 5);
+
+        $data = [
+            'titulo'            => 'Minhas Plantas',
+            'plantas'           => $plantas,
+            'dispositivos'      => $dispositivos,
+            'filtroTipo'        => $filtroTipo,
+            'filtroParametro'   => $filtroParametro,
+            'filtroDispositivo' => $filtroDispositivo,
+            'dadosTipos'        => $dadosTipos,
+            'dadosConsumo'      => $dadosConsumo
+        ];
+
+        return view('sistema/planta/index', $data);
     }
 
-    $dispositivoModel = new DispositivoModel();
-    $dispositivos = $dispositivoModel->where('FK_USU_ID', $idUsuarioLogado)->findAll();
-
-    $filtroTipo        = $this->request->getGet('filtro_tipo');
-    $filtroParametro   = $this->request->getGet('filtro_parametro');
-    $filtroDispositivo = $this->request->getGet('filtro_dispositivo');
-
-    $query = $this->plantaModel->where('FK_USU_ID', $idUsuarioLogado);
-
-    if (!empty($filtroTipo)) { $query->where('PLANTA_TIPO', $filtroTipo); }
-    if (!empty($filtroParametro)) { $query->where('PLANTA_PERIDIOCIDADE', $filtroParametro); }
-    if (!empty($filtroDispositivo)) { $query->where('FK_DIS_ID', $filtroDispositivo); }
-
-    $plantas = $query->findAll();
-
-    // --- CAPTURA DE DADOS PARA OS GRÁFICOS ---
-    $dadosTipos   = $this->plantaModel->getQtdPorTipo($idUsuarioLogado);
-    $dadosConsumo = $this->plantaModel->getConsumoAguaPorPlanta($idUsuarioLogado, 5);
-
-    $data = [
-        'titulo'            => 'Minhas Plantas',
-        'plantas'           => $plantas,
-        'dispositivos'      => $dispositivos,
-        'filtroTipo'        => $filtroTipo,
-        'filtroParametro'   => $filtroParametro,
-        'filtroDispositivo' => $filtroDispositivo,
-        // Envia para a View os dados prontos para o JS de gráficos
-        'dadosTipos'        => $dadosTipos,
-        'dadosConsumo'      => $dadosConsumo
-    ];
-
-    return view('sistema/planta/index', $data);
-}
 
     // Página de Cadastro de Planta
     public function novo()

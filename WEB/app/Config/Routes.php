@@ -30,6 +30,20 @@ $routes->group('api', ['filter' => 'cors:default'], function ($routes) {
     $routes->get('plantas', 'api\plantasController::index');
     $routes->get('plantas/(:num)', 'api\plantasController::show/$1');
     $routes->post('plantas/novo', 'api\plantasController::novo');
+
+     // PRE-FLIGHT CORS (OPTIONS)
+    $routes->options('plantas', static function () {
+        return service('response')->setStatusCode(204);
+    });
+
+    $routes->options('plantas/(:num)', static function () {
+        return service('response')->setStatusCode(204);
+    });
+
+    $routes->put('plantas/(:num)', 'api\plantasController::atualizar/$1');
+    $routes->delete('plantas/(:num)', 'api\plantasController::delete/$1');
+
+
     // HISTÓRICO
     $routes->get('historico', 'api\historicoController::index');
     $routes->get('historico/(:num)', 'api\historicoController::show/$1');

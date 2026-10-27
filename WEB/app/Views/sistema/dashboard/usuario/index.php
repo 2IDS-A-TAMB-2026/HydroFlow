@@ -34,60 +34,12 @@
             <div class="card-footer"></div>
         </div>
     </section>
-
-
-    <section class="bottom-grid">
-        
-        <div class="widget table-widget">
-            <h3>Últimos Status de Irrigação</h3>
-            <table class="modern-table">
-                <thead>
-                    <tr>
-                        <th>Planta</th>
-                        <th>Dispositivo</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if(!empty($ultimas_irrigacoes) && is_array($ultimas_irrigacoes)): ?>
-                        <?php foreach($ultimas_irrigacoes as $irr): ?>
-                            <tr>
-                                <td><strong><?= esc($irr['nome_planta']) ?></strong></td>
-                                <td><?= esc($irr['nome_dispositivo']) ?></td>
-                                <td>
-                                    <?php 
-                                        $badgeClass = 'badge-green';
-                                        $textoBadge = 'IRRIGADO';
-                                        
-                                        if ($irr['IRR_STATUS'] === 'Falha') { 
-                                            $badgeClass = 'badge-red'; 
-                                            $textoBadge = 'FALHA'; 
-                                        }
-                                        if ($irr['IRR_STATUS'] === 'Interrompido' || $irr['IRR_STATUS'] === 'Alerta') { 
-                                            $badgeClass = 'badge-yellow'; 
-                                            $textoBadge = 'ALERTA'; 
-                                        }
-                                    ?>
-                                    <span class="<?= $badgeClass ?>"><?= $textoBadge ?></span>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="3" style="text-align: center; color: #888;">Nenhuma rega executada recentemente.</td>
-                        </tr>
-                    <?php endif; ?>
-            </tbody>
-            </table>
-        </div>
-
-        <div class="widget chart-widget" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); height: 100%;">
+        <div class="widget chart-widget" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); height: 60%;">
             <h3 class="chart-title"><i class="fa-solid fa-circle-nodes" style="color: #00a65a;"></i> Visão Geral do Ecossistema</h3>
             <div class="chart-container" style="position: relative; height: 380px; width: 100%;">
                 <canvas id="vendasChart"></canvas>
             </div>
         </div>
-    </section>
 </main>
 </div>
 

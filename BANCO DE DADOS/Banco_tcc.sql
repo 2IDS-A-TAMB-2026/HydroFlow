@@ -67,12 +67,15 @@ CREATE TABLE IF NOT EXISTS SENSOR(
     FOREIGN KEY(FK_DIS_ID) REFERENCES DISPOSITIVO(DIS_ID)
 );
 
+SELECT * FROM USUARIO;
+
 CREATE TABLE IF NOT EXISTS DADOS_SENSORES(
 	DDS_ID INTEGER AUTO_INCREMENT PRIMARY KEY,
     DDS_HORA TIME,
 	DDS_DATA DATE,
     DDS_TEMP DECIMAL (4,2) NOT NULL,
     DDS_UMIDADE DECIMAL(4 , 2) NOT NULL,
+    DDS_STATUS BOOL, 
     FK_SEN_ID INTEGER NOT NULL,
     FOREIGN KEY(FK_SEN_ID) REFERENCES SENSOR(SEN_ID)
 );
@@ -101,7 +104,7 @@ CREATE TABLE HISTORICO_IRRIGACAO (
 /*INSERTS*/
 INSERT INTO USUARIO (USU_BAIRRO, USU_NUM, USU_NOME, USU_STATUS, USU_CPF, USU_EMAIL, USU_SENHA, USU_CIDADE, USU_UF, USU_CEP)
 VALUES
-('Centro', '101', 'Ana Silva', 'ATIVO', '12345678901', 'ana.silva@email.com', 'senha123', 'São Paulo', 'SP', '01001000'),
+('Centro', '101', 'Ana Silva', 'ATIVO', '12345678901', 'ana.silva@email.com', '$2y$10$k7On97cGAPYENY/WBd7FlOq8JouPYWsby1u0T0Z.tY4sQjV7YFnhy', 'São Paulo', 'SP', '01001000'),
 ('Copacabana', '202', 'Bruno Souza', 'ATIVO', '23456789012', 'bruno.souza@email.com', 'bruno@2024', 'Rio de Janeiro', 'RJ', '22041001'),
 ('Savassi', '303', 'Carla Oliveira', 'INATIVO', '34567890123', 'carla.oli@email.com', 'carla!303', 'Belo Horizonte', 'MG', '30140010'),
 ('Batista Campos', '404', 'Diego Santos', 'ATIVO', '45678901234', 'diego.santos@email.com', 'd@123456', 'Belém', 'PA', '66033000'),

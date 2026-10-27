@@ -18,6 +18,9 @@
         rel="stylesheet"
     >
 
+    <link rel="icon" type="image/png"
+      href="<?= base_url('assets/images/logo.png') ?>">
+
     <!-- Ícones -->
     <link 
         rel="stylesheet"

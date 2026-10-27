@@ -130,7 +130,7 @@ body {
 .nav-menu li.active a {
     background-color: rgba(255, 255, 255, 0.15); /* Fundo semi-transparente elegante */
     color: #ffffff;
-    border-left: 4px solid #00a65a; /* Mantém o indicador verde ou azul claro */
+    border-left: 4px solid #0370bf; /* Mantém o indicador verde ou azul claro */
     backdrop-filter: blur(5px);
 }
 
@@ -836,7 +836,9 @@ body {
     color: #856404;
     border: 1px solid #ffeeba;
 }
-
+.grafRadar{
+    background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; width: 100%; box-sizing: border-box;
+}
 /* Ícones de Acionamento na Tabela */
 .data-table td i.fa-robot {
     color: #6c757d;
@@ -1053,15 +1055,21 @@ textarea.form-control {
     color: #777;
     font-size: 0.95rem;
 }
+
 .logout-btn {
     color: #ff4d4d !important;
     font-weight: bold;
 }
 
-.logout-btn:hover {
-    background-color: rgba(255, 77, 77, 0.1);
+/* Hover exclusivo do Logout */
+.nav-menu li a.logout-btn:hover {
+    background-color: #dc3545;
+    color: #ffffff !important;
+    border-left: 4px solid #b02a37;
     border-radius: 8px;
+    backdrop-filter: none;
 }
+
 
 /* ==========================================================================
    HYDROFLOW - CUSTOM ADMIN MANAGEMENT STYLES
@@ -1300,320 +1308,758 @@ textarea.form-control {
     color: #ffffff; /* O texto e o ícone ficam brancos */
 }
 
-
-/* ==========================================================================
-   HYDROFLOW - SISTEMA DE ALTO CONTRASTE (CORRIGIDO)
-   ========================================================================== */
-
-/* Fundo preto geral */
-body.alto-contraste {
-    background-color: #000000 !important;
-    color: #ffffff !important;
+.statusUsu {
+    background: #ffffff; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); 
+    padding: 20px; 
+    border: 1px solid #eef2f5; 
+    display: flex; 
+    align-items: center; 
+    min-height: 280px; 
+    box-sizing: border-box;
+}
+.mapaUsu {
+    background: #ffffff; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); 
+    padding: 20px; 
+    border: 1px solid #eef2f5; 
+    display: flex; 
+    flex-direction: column; 
+    min-height: 280px; 
+    justify-content: flex-start; 
+    box-sizing: border-box;
 }
 
-/* --- FORÇAR VISIBILIDADE DE TEXTOS (Ganha de seletores com !important antigos) --- */
-body.alto-contraste p,
-body.alto-contraste span,
+.statusSen{
+    background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 15px; border: 1px solid #eef2f5; display: flex; align-items: center; height: 140px;
+}
+.mapSen{
+    background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 15px; border: 1px solid #eef2f5; display: flex; align-items: center; height: 140px;
+}
+.ctUsu{
+    background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;
+
+}
+.ctSen{
+    background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;
+}
+.cmd{
+    background: white; padding: 25px; border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
+}
+.spanAtivoo{
+    display: inline-block;
+                                background: #d4edda;
+                                                    color: #155724; padding: 6px 11px;
+                                                    border-radius: 20px;
+                                                    font-size: 0.8rem; font-weight: bold;
+}
+.spanInativoo{
+    display: inline-block;
+                                                    background: #f8d7da;
+                                                    color: #721c24; padding: 6px 11px;
+                                                    border-radius: 20px;
+                                                    font-size: 0.8rem; font-weight: bold;
+}
+.varCult{
+    flex: 1; min-width: 300px; background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;
+}
+.topCon{
+    flex: 1; min-width: 300px; background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;
+}
+.filtroo{
+    background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin-bottom: 25px;
+}
+/* ==========================================================================
+   HYDROFLOW - TEMA ESCURO ACESSÍVEL
+   Paleta baseada no aplicativo mobile
+   ========================================================================== */
+
+body.alto-contraste {
+    --hc-background: #0A1A2B;
+    --hc-surface: #10263D;
+    --hc-elevated: #16324B;
+    --hc-border: #1E3B57;
+    --hc-text: #F2F6FA;
+    --hc-text-secondary: #A9C0D6;
+    --hc-focus: #4DD0E1;
+
+    background: var(--hc-background) !important;
+    color: var(--hc-text) !important;
+    color-scheme: dark;
+}
+
+/* --- FUNDO PRINCIPAL E CONTEÚDO --- */
+
+body.alto-contraste .dashboard-container,
+body.alto-contraste .main-content,
+body.alto-contraste main,
+body.alto-contraste .content,
+body.alto-contraste .page-content {
+    background: var(--hc-background) !important;
+    color: var(--hc-text) !important;
+}
+
+/* --- TEXTOS --- */
+
 body.alto-contraste h1,
 body.alto-contraste h2,
 body.alto-contraste h3,
 body.alto-contraste h4,
 body.alto-contraste h5,
 body.alto-contraste h6,
+body.alto-contraste p,
 body.alto-contraste label,
 body.alto-contraste th,
 body.alto-contraste td,
-body.alto-contraste .card h3,
-body.alto-contraste .card p,
-body.alto-contraste .nav-right,
-body.alto-contraste .photo-info h4,
-body.alto-contraste .photo-info p {
-    color: #ffffff !important;
-    background-color: transparent !important;
+body.alto-contraste .sidebar-user-name,
+body.alto-contraste .menu-section-title,
+body.alto-contraste .nav-menu a,
+body.alto-contraste .card-title {
+    color: var(--hc-text) !important;
 }
 
-/* --- BARRA SUPERIOR / CABEÇALHO --- */
+body.alto-contraste small,
+body.alto-contraste .text-muted,
+body.alto-contraste .description,
+body.alto-contraste .sidebar-user-role {
+    color: var(--hc-text-secondary) !important;
+}
+
+/* --- CABEÇALHO E BARRA SUPERIOR --- */
+
 body.alto-contraste header,
 body.alto-contraste .top-nav,
 body.alto-contraste .top-bar {
-    background-color: #000000 !important;
-    background: #000000 !important;
-    border: 2px solid #ffffff !important;
+    background: var(--hc-surface) !important;
+    color: var(--hc-text) !important;
+    border-color: var(--hc-border) !important;
     box-shadow: none !important;
 }
 
-/* Botão de abrir menu (hambúrguer) */
 body.alto-contraste .menu-btn {
-    color: #ffffff !important;
+    color: var(--hc-text) !important;
 }
 
-/* --- BOTOES DE ACESSIBILIDADE (+, -, ◐) --- */
-body.alto-contraste .btn-acessibilidade {
-    border-color: #ffffff !important;
-    color: #ffffff !important;
-    background-color: transparent !important;
-}
-body.alto-contraste .btn-acessibilidade:hover {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-}
+/* --- SIDEBAR --- */
 
-/* --- BARRA LATERAL (SIDEBAR) --- */
 body.alto-contraste .sidebar,
-body.alto-contraste aside { 
-    background-color: #000000 !important;
-    background: #000000 !important; 
-    border-right: 2px solid #ffffff !important;
+body.alto-contraste aside {
+    background: var(--hc-background) !important;
+    color: var(--hc-text) !important;
+    border-right: 1px solid var(--hc-border) !important;
+    box-shadow: none !important;
 }
 
-/* Links do menu lateral */
-body.alto-contraste .sidebar a,
+body.alto-contraste .logo,
+body.alto-contraste .sidebar-user-card,
+body.alto-contraste .sidebar-footer-widget {
+    background: var(--hc-surface) !important;
+    color: var(--hc-text) !important;
+    border-color: var(--hc-border) !important;
+}
+
+body.alto-contraste .sidebar-user-avatar {
+    background: var(--hc-elevated) !important;
+    color: var(--hc-text) !important;
+    border-color: var(--hc-border) !important;
+}
+
 body.alto-contraste .nav-menu li a {
-    color: #ffffff !important;
-    background-color: transparent !important;
+    background: transparent !important;
+    color: var(--hc-text) !important;
+    border-left: 4px solid transparent !important;
 }
 
-.modern-table th, 
-.modern-table td {
-    padding: 12px 15px;
-    vertical-align: middle; /* Impede os textos de subirem ou desalinharem */
-    text-align: left;       /* Mantém o padrão alinhado à esquerda como nos títulos */
-}
-
-/* Garante que o span em formato de pílula se comporte como bloco flexível alinhado */
-.modern-table td span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 12px;
-}
-
-/* Hover no menu lateral em Alto Contraste */
-body.alto-contraste .nav-menu li a:hover, 
+body.alto-contraste .nav-menu li a:hover,
 body.alto-contraste .nav-menu li.active a {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border-left: 4px solid #ffffff !important;
-}
-body.alto-contraste .nav-menu li a:hover i {
-    color: #000000 !important;
+    background: var(--hc-elevated) !important;
+    color: var(--hc-text) !important;
+    border-left-color: var(--hc-focus) !important;
 }
 
-/* Caixa de pesquisa da Sidebar e tabelas */
-body.alto-contraste .sidebar input,
-body.alto-contraste .search-bar input,
-body.alto-contraste .search-table input {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border: 2px solid #ffffff !important;
-}
-body.alto-contraste .search-bar input::placeholder,
-body.alto-contraste .search-table input::placeholder {
-    color: #aaaaaa !important;
+body.alto-contraste .nav-menu li a:hover i,
+body.alto-contraste .nav-menu li.active a i {
+    color: var(--hc-focus) !important;
 }
 
-/* --- CARDS KPI, WIDGETS E PAINÉIS --- */
+/* Logout: mantém a identificação vermelha */
+
+body.alto-contraste .nav-menu li a.logout-btn {
+    color: #FF7777 !important;
+}
+
+body.alto-contraste .nav-menu li a.logout-btn:hover {
+    background: #702B35 !important;
+    color: #FFFFFF !important;
+    border-left-color: #FF7777 !important;
+}
+
+body.alto-contraste .nav-menu li a.logout-btn:hover i {
+    color: #FFFFFF !important;
+}
+
+/* --- CARDS, PAINÉIS E WIDGETS --- */
+
 body.alto-contraste .card,
 body.alto-contraste .widget,
+body.alto-contraste .kpi-cards .card,
 body.alto-contraste .adm-card-container,
-body.alto-contraste .profile-card-container { 
-    background-color: #000000 !important;
-    background: #000000 !important;
-    border: 2px solid #ffffff !important;
+body.alto-contraste .profile-card-container,
+body.alto-contraste .card-big,
+body.alto-contraste .chart-container,
+body.alto-contraste .grafico-container,
+body.alto-contraste .status-container,
+body.alto-contraste .photo-info {
+    background: var(--hc-surface) !important;
+    color: var(--hc-text) !important;
+    border: 1px solid var(--hc-border) !important;
     box-shadow: none !important;
 }
 
-/* Ícones decorativos e marcas d'água dentro dos Cards */
+body.alto-contraste .card-icon,
 body.alto-contraste .card i,
-body.alto-contraste .card svg,
-body.alto-contraste .card-icon {
-    color: #ffffff !important;
-    opacity: 1 !important; /* Remove a transparência antiga de 0.15 para ficar totalmente visível */
+body.alto-contraste .widget i {
+    color: var(--hc-focus);
 }
 
-/* --- FORMULÁRIOS E INPUTS GERAIS --- */
+/* --- FORMULÁRIOS E PESQUISA --- */
+
 body.alto-contraste input,
 body.alto-contraste select,
-body.alto-contraste textarea {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border: 2px solid #ffffff !important;
-}
-body.alto-contraste input:focus,
-body.alto-contraste select:focus {
-    border-color: #ffff00 !important; /* Borda amarela no foco para destacar */
+body.alto-contraste textarea,
+body.alto-contraste .search-bar input,
+body.alto-contraste .search-table input {
+    background: var(--hc-background) !important;
+    color: var(--hc-text) !important;
+    border: 1px solid var(--hc-text-secondary) !important;
+    box-shadow: none !important;
 }
 
-/* Divisores de seção */
-body.alto-contraste .adm-section-divider,
-body.alto-contraste .profile-section-divider,
-body.alto-contraste .section-title {
-    border-bottom: 2px solid #ffffff !important;
+body.alto-contraste input::placeholder,
+body.alto-contraste textarea::placeholder,
+body.alto-contraste .search-bar input::placeholder,
+body.alto-contraste .search-table input::placeholder {
+    color: var(--hc-text-secondary) !important;
+    opacity: 1;
 }
-body.alto-contraste .adm-section-divider span,
-body.alto-contraste .profile-section-divider span {
-    color: #ffffff !important;
+
+body.alto-contraste option {
+    background: var(--hc-surface);
+    color: var(--hc-text);
 }
 
 /* --- TABELAS --- */
+
 body.alto-contraste table,
 body.alto-contraste .data-table,
-body.alto-contraste .users-table {
-    background-color: #000000 !important;
-    border: 2px solid #ffffff !important;
+body.alto-contraste .users-table,
+body.alto-contraste .modern-table {
+    background: var(--hc-surface) !important;
+    color: var(--hc-text) !important;
+    border-color: var(--hc-border) !important;
 }
 
-body.alto-contraste table thead {
-    background-color: #ffffff !important;
-}
-body.alto-contraste table th {
-    color: #000000 !important; /* Texto do cabeçalho preto já que o fundo da linha vira branco */
+body.alto-contraste table thead,
+body.alto-contraste .data-table thead,
+body.alto-contraste .users-table thead {
+    background: var(--hc-elevated) !important;
 }
 
-body.alto-contraste table tr,
+body.alto-contraste table th,
+body.alto-contraste .data-table th,
+body.alto-contraste .users-table th {
+    background: var(--hc-elevated) !important;
+    color: var(--hc-text) !important;
+    border-color: var(--hc-border) !important;
+}
+
 body.alto-contraste table td,
-body.alto-contraste .users-table td {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border-bottom: 1px solid #ffffff !important;
-}
-body.alto-contraste table tbody tr:hover {
-    background-color: #222222 !important; /* Linha levemente cinza ao passar o mouse */
+body.alto-contraste .data-table td,
+body.alto-contraste .users-table td,
+body.alto-contraste .modern-table td {
+    background: var(--hc-surface) !important;
+    color: var(--hc-text) !important;
+    border-color: var(--hc-border) !important;
 }
 
-/* --- BADGES E STATUS NA TABELA --- */
+body.alto-contraste table tbody tr:hover td,
+body.alto-contraste .data-table tbody tr:hover td {
+    background: var(--hc-elevated) !important;
+}
+
+/* Conteúdo interno das células */
+
+body.alto-contraste table td span,
+body.alto-contraste table td div {
+    color: inherit;
+}
+
+/* --- STATUS E ALERTAS --- */
+
 body.alto-contraste .badge-green,
+body.alto-contraste [class*="badge-green"],
+body.alto-contraste [class*="irrigado"] {
+    color: #72F1A3 !important;
+    border-color: #72F1A3 !important;
+}
+
 body.alto-contraste .badge-red,
+body.alto-contraste [class*="badge-red"],
+body.alto-contraste [class*="falha"] {
+    color: #FF8585 !important;
+    border-color: #FF8585 !important;
+}
+
 body.alto-contraste .badge-yellow,
 body.alto-contraste .badge-orange,
-body.alto-contraste .status-badge {
-    background-color: #000000 !important;
-    font-weight: bold !important;
-    border: 2px solid #ffffff !important;
-}
-
-/* Cores específicas de acessibilidade para alertas */
-body.alto-contraste .badge-red, 
-body.alto-contraste [class*="badge-red"],
-body.alto-contraste [class*="falha"] { border-color: #ff5555 !important; color: #ff5555 !important; }
-
-body.alto-contraste .badge-green, 
-body.alto-contraste [class*="badge-green"],
-body.alto-contraste [class*="irrigado"] { border-color: #55ff55 !important; color: #55ff55 !important; }
-
-body.alto-contraste .badge-yellow, 
-body.alto-contraste .badge-orange,
 body.alto-contraste [class*="badge-yellow"],
-body.alto-contraste [class*="alerta"] { border-color: #ffff00 !important; color: #ffff00 !important; }
-
-/* --- GRÁFICOS --- */
-body.alto-contraste .chart-container,
-body.alto-contraste .grafico-container {
-    background-color: #000000 !important;
-    border: 2px solid #ffffff !important;
+body.alto-contraste [class*="alerta"] {
+    color: #FFE082 !important;
+    border-color: #FFE082 !important;
 }
 
-/* --- BOTÕES GERAIS DE AÇÃO (Salvar, Cadastrar, etc) --- */
+body.alto-contraste .status-badge {
+    background: var(--hc-elevated) !important;
+    border: 1px solid var(--hc-border) !important;
+    font-weight: bold;
+}
+
+
+/* ==========================================
+   CORREÇÃO DE CONFLITOS DOS CARDS
+   ========================================== */
+
+body.alto-contraste .main-content .card,
+body.alto-contraste .main-content .widget,
+body.alto-contraste .main-content .card-big,
+body.alto-contraste .main-content .adm-card-container,
+body.alto-contraste .main-content .profile-card-container,
+body.alto-contraste .main-content .kpi-cards > div {
+    background: #10263D !important;
+    background-color: #10263D !important;
+    color: #F2F6FA !important;
+    border: 1px solid #1E3B57 !important;
+    box-shadow: none !important;
+}
+
+/* Títulos e descrições dos cards */
+body.alto-contraste .main-content .card h1,
+body.alto-contraste .main-content .card h2,
+body.alto-contraste .main-content .card h3,
+body.alto-contraste .main-content .card p,
+body.alto-contraste .main-content .widget h1,
+body.alto-contraste .main-content .widget h2,
+body.alto-contraste .main-content .widget h3,
+body.alto-contraste .main-content .widget p,
+body.alto-contraste .main-content .card-big h1,
+body.alto-contraste .main-content .card-big h2,
+body.alto-contraste .main-content .card-big h3,
+body.alto-contraste .main-content .card-big p {
+    color: #F2F6FA !important;
+    background-color: transparent !important;
+}
+
+/* Elementos internos dos cards */
+body.alto-contraste .main-content .card .card-content,
+body.alto-contraste .main-content .card .card-body,
+body.alto-contraste .main-content .widget .card-content,
+body.alto-contraste .main-content .card-big > div {
+    background: transparent !important;
+    color: #F2F6FA !important;
+    box-shadow: none !important;
+}
+
+
+/* --- BOTÕES DE ACESSIBILIDADE --- */
+
+body.alto-contraste .btn-acessibilidade {
+    background: var(--hc-surface) !important;
+    color: var(--hc-text) !important;
+    border: 1px solid var(--hc-text-secondary) !important;
+}
+
+body.alto-contraste .btn-acessibilidade:hover {
+    background: var(--hc-focus) !important;
+    color: var(--hc-background) !important;
+}
+
+/* --- BOTÕES DE AÇÃO --- */
+
 body.alto-contraste .btn-submit,
 body.alto-contraste .adm-btn-submit,
 body.alto-contraste .profile-btn-submit,
 body.alto-contraste .btn-add-user {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border: 2px solid #ffffff !important;
-    font-weight: bold !important;
+    background: var(--hc-elevated) !important;
+    color: var(--hc-text) !important;
+    border: 1px solid var(--hc-focus) !important;
+    font-weight: bold;
 }
+
 body.alto-contraste .btn-submit:hover,
-body.alto-contraste .adm-btn-submit:hover {
-    background-color: #000000 !important;
-    color: #ffffff !important;
+body.alto-contraste .adm-btn-submit:hover,
+body.alto-contraste .profile-btn-submit:hover,
+body.alto-contraste .btn-add-user:hover {
+    background: var(--hc-focus) !important;
+    color: var(--hc-background) !important;
 }
 
 body.alto-contraste .btn-voltar,
 body.alto-contraste .btn-cancelar {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border: 2px solid #ffffff !important;
+    background: var(--hc-surface) !important;
+    color: var(--hc-text) !important;
+    border: 1px solid var(--hc-text-secondary) !important;
 }
 
-/* Logout */
-body.alto-contraste .logout-btn {
-    color: #ff5555 !important;
-}
-/* Força a área de conteúdo principal a ficar preta */
-body.alto-contraste .main-content {
-    background-color: #000000 !important;
+/* --- DIVISORES --- */
+
+body.alto-contraste .adm-section-divider,
+body.alto-contraste .profile-section-divider,
+body.alto-contraste .section-title {
+    border-color: var(--hc-border) !important;
 }
 
-/* Força o container branco de trás do "Painel do Administrador" a ficar preto com borda branca */
-body.alto-contraste .main-content > div,
-body.alto-contraste .widget,
-body.alto-contraste .adm-card-container,
-body.alto-contraste .profile-card-container {
-    background-color: #000000 !important;
-    background: #000000 !important;
-    border: none !important;
+/* --- FOCO DE TECLADO: ACESSIBILIDADE --- */
+
+body.alto-contraste a:focus-visible,
+body.alto-contraste button:focus-visible,
+body.alto-contraste input:focus-visible,
+body.alto-contraste select:focus-visible,
+body.alto-contraste textarea:focus-visible {
+    outline: 3px solid var(--hc-focus) !important;
+    outline-offset: 3px;
+}
+
+/* --- MODAIS --- */
+
+body.alto-contraste .modal-content,
+body.alto-contraste .swal2-popup {
+    background: var(--hc-surface) !important;
+    color: var(--hc-text) !important;
+    border: 1px solid var(--hc-border) !important;
+}
+
+body.alto-contraste .modal-header,
+body.alto-contraste .modal-footer {
+    border-color: var(--hc-border) !important;
+}
+
+body.alto-contraste .swal2-title,
+body.alto-contraste .swal2-html-container {
+    color: var(--hc-text) !important;
+}
+
+
+/* ==========================================
+   UNIFIED CARDS - ALTO CONTRASTE HYDROFLOW
+   ========================================== */
+
+body.alto-contraste .unified-card {
+    background: #10263D !important;
+    background-color: #10263D !important;
+
+    color: #F2F6FA !important;
+
+    border: 1px solid #1E3B57 !important;
+    box-shadow: none !important;
+
+    /* Mantém o formato original dos cards */
+    border-radius: 8px;
+}
+
+/* Textos dentro dos cards */
+body.alto-contraste .unified-card h1,
+body.alto-contraste .unified-card h2,
+body.alto-contraste .unified-card h3,
+body.alto-contraste .unified-card h4,
+body.alto-contraste .unified-card p,
+body.alto-contraste .unified-card span,
+body.alto-contraste .unified-card label,
+body.alto-contraste .unified-card td,
+body.alto-contraste .unified-card th {
+    color: #F2F6FA !important;
+}
+
+/* Textos secundários */
+body.alto-contraste .unified-card small {
+    color: #A9C0D6 !important;
+}
+
+/* Elementos internos sem fundo próprio */
+body.alto-contraste .unified-card .card-content,
+body.alto-contraste .unified-card .card-body {
+    background: transparent !important;
     box-shadow: none !important;
 }
 
-/* Garante que o ícone de cadeado do "Painel do Administrador" também fique branco */
-body.alto-contraste .main-content i,
-body.alto-contraste .main-content .fa-solid {
-    color: #ffffff !important;
-}
-/* --- COMPLEMENTO PARA OS CARDS DE ATALHOS / ACESSOS --- */
 
-/* Força os 3 cards brancos novos a ficarem pretos com borda branca */
-body.alto-contraste .main-content .card-big,
-body.alto-contraste .main-content [class*="-card"], 
-body.alto-contraste .main-content div[style*="background"],
-body.alto-contraste .main-content .widget {
-    background-color: #000000 !important;
-    background: #000000 !important;
-    border: none!important;
+/* ==========================================
+   ALTO CONTRASTE 2 — CARDS DE STATUS E MAPA
+   ========================================== */
+
+body.alto-contraste .statusUsu,
+body.alto-contraste .mapaUsu {
+    background: #10263D !important;
+    background-color: #10263D !important;
+    color: #F2F6FA !important;
+    border: 1px solid #1E3B57 !important;
+    box-shadow: none !important;
 }
 
-/* Força as descrições longas e títulos internos desses cards a aparecerem em branco */
-body.alto-contraste .main-content div {
-    color: #ffffff !important;
+/* Textos internos */
+body.alto-contraste .statusUsu h1,
+body.alto-contraste .statusUsu h2,
+body.alto-contraste .statusUsu h3,
+body.alto-contraste .statusUsu p,
+body.alto-contraste .statusUsu span,
+body.alto-contraste .mapaUsu h1,
+body.alto-contraste .mapaUsu h2,
+body.alto-contraste .mapaUsu h3,
+body.alto-contraste .mapaUsu p,
+body.alto-contraste .mapaUsu span {
+    color: #F2F6FA !important;
 }
 
-/* Ajusta os botões coloridos de baixo (Gerenciar Acessos, Novo Sensor, Editar Dados) */
-body.alto-contraste .main-content button,
-body.alto-contraste .main-content a.btn,
-body.alto-contraste .main-content [class*="btn-"] {
-    background-color: #000000 !important;
-    background: #000000 !important;
-    color: #ffffff !important;
-    border: none !important;
+/* Textos secundários */
+body.alto-contraste .statusUsu small,
+body.alto-contraste .mapaUsu small {
+    color: #A9C0D6 !important;
 }
 
-/* Efeito invertido ao passar o mouse nesses botões no alto contraste */
-body.alto-contraste .main-content button:hover,
-body.alto-contraste .main-content [class*="btn-"]:hover {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-}
-/* --- MATAR O B.O. DO SENSOR ALPHA (FUNDO BRANCO/TEXTO BRANCO) --- */
-
-/* Força absolutamente QUALQUER tag interna da tabela a inverter a cor */
-body.alto-contraste table td *,
-body.alto-contraste table td span,
-body.alto-contraste table td div,
-body.alto-contraste table td button,
-body.alto-contraste .data-table td [class*="badge"],
-body.alto-contraste .data-table td [class*="status"] {
-    background-color: #000000 !important;
-    background: #000000 !important;
-    color: #ffffff !important;
-    border: none !important;
-    opacity: 1 !important;
+/* Elementos internos que tenham fundo branco */
+body.alto-contraste .statusUsu > div,
+body.alto-contraste .mapaUsu > div {
+    color: #F2F6FA;
 }
 
+/* Foco visível em elementos interativos */
+body.alto-contraste .statusUsu a:focus-visible,
+body.alto-contraste .mapaUsu a:focus-visible,
+body.alto-contraste .statusUsu button:focus-visible,
+body.alto-contraste .mapaUsu button:focus-visible {
+    outline: 3px solid #4DD0E1 !important;
+    outline-offset: 3px;
+}
+
+/* Auto contraste - Status e Mapa dos Sensores */
+body.alto-contraste .statusSen,
+body.alto-contraste .mapSen {
+    background: #10263D !important;
+    background-color: #10263D !important;
+    color: #F2F6FA !important;
+    border: 1px solid #1E3B57 !important;
+    box-shadow: none !important;
+}
+
+/* Textos internos */
+body.alto-contraste .statusSen h1,
+body.alto-contraste .statusSen h2,
+body.alto-contraste .statusSen h3,
+body.alto-contraste .statusSen p,
+body.alto-contraste .statusSen span,
+body.alto-contraste .statusSen label,
+body.alto-contraste .mapSen h1,
+body.alto-contraste .mapSen h2,
+body.alto-contraste .mapSen h3,
+body.alto-contraste .mapSen p,
+body.alto-contraste .mapSen span,
+body.alto-contraste .mapSen label {
+    color: #F2F6FA !important;
+}
+
+/* Textos secundários */
+body.alto-contraste .statusSen small,
+body.alto-contraste .mapSen small {
+    color: #A9C0D6 !important;
+}
+
+/* Foco acessível em links e botões */
+body.alto-contraste .statusSen a:focus-visible,
+body.alto-contraste .mapSen a:focus-visible,
+body.alto-contraste .statusSen button:focus-visible,
+body.alto-contraste .mapSen button:focus-visible {
+    outline: 3px solid #4DD0E1 !important;
+    outline-offset: 3px;
+}
+
+/* Auto contraste - Badges dos sensores */
+body.alto-contraste .sensor-badge {
+    border: 1px solid #1E3B57 !important;
+}
+
+/* Sensor de solo */
+body.alto-contraste .badge-solo {
+    background: #16324B !important;
+    color: #4DD0E1 !important;
+}
+
+/* Sensor de ar */
+body.alto-contraste .badge-ar {
+    background: #16324B !important;
+    color: #A9C0D6 !important;
+}
+
+/* Auto contraste - Gráfico Radar */
+body.alto-contraste .grafRadar {
+    background: #10263D !important;
+    background-color: #10263D !important;
+    color: #F2F6FA !important;
+    border: 1px solid #1E3B57 !important;
+    box-shadow: none !important;
+}
+
+/* Textos dentro do gráfico */
+body.alto-contraste .grafRadar h1,
+body.alto-contraste .grafRadar h2,
+body.alto-contraste .grafRadar h3,
+body.alto-contraste .grafRadar p,
+body.alto-contraste .grafRadar span,
+body.alto-contraste .grafRadar label {
+    color: #F2F6FA !important;
+}
+
+/* Auto contraste - Cards de Usuários, Sensores e Comandos */
+body.alto-contraste .ctUsu,
+body.alto-contraste .ctSen,
+body.alto-contraste .cmd {
+    background: #10263D !important;
+    background-color: #10263D !important;
+    color: #F2F6FA !important;
+    border: 1px solid #1E3B57 !important;
+    box-shadow: none !important;
+}
+
+/* Textos internos */
+body.alto-contraste .ctUsu h1,
+body.alto-contraste .ctUsu h2,
+body.alto-contraste .ctUsu h3,
+body.alto-contraste .ctUsu p,
+body.alto-contraste .ctUsu span,
+body.alto-contraste .ctUsu label,
+body.alto-contraste .ctSen h1,
+body.alto-contraste .ctSen h2,
+body.alto-contraste .ctSen h3,
+body.alto-contraste .ctSen p,
+body.alto-contraste .ctSen span,
+body.alto-contraste .ctSen label,
+body.alto-contraste .cmd h1,
+body.alto-contraste .cmd h2,
+body.alto-contraste .cmd h3,
+body.alto-contraste .cmd p,
+body.alto-contraste .cmd span,
+body.alto-contraste .cmd label {
+    color: #F2F6FA !important;
+}
+
+/* Textos secundários */
+body.alto-contraste .ctUsu small,
+body.alto-contraste .ctSen small,
+body.alto-contraste .cmd small {
+    color: #A9C0D6 !important;
+}
+
+/* Campos de formulário dentro dos cards */
+body.alto-contraste .ctUsu input,
+body.alto-contraste .ctSen input,
+body.alto-contraste .cmd input,
+body.alto-contraste .ctUsu select,
+body.alto-contraste .ctSen select,
+body.alto-contraste .cmd select,
+body.alto-contraste .ctUsu textarea,
+body.alto-contraste .ctSen textarea,
+body.alto-contraste .cmd textarea {
+    background: #0A1A2B !important;
+    color: #F2F6FA !important;
+    border: 1px solid #1E3B57 !important;
+}
+
+/* Auto contraste - Status Ativo */
+body.alto-contraste .spanAtivoo {
+    background: #16324B !important;
+    background-color: #16324B !important;
+    color: #4DD0A1 !important;
+    border: 1px solid #4DD0A1 !important;
+}
+
+/* Auto contraste - Status Inativo */
+body.alto-contraste .spanInativoo {
+    background: #16324B !important;
+    background-color: #16324B !important;
+    color: #FF8A8A !important;
+    border: 1px solid #FF8A8A !important;
+}
+
+/* Auto contraste - Variáveis de Cultura */
+body.alto-contraste .varCult,
+body.alto-contraste .topCon {
+    background: #10263D !important;
+    background-color: #10263D !important;
+    color: #F2F6FA !important;
+    border: 1px solid #1E3B57 !important;
+    box-shadow: none !important;
+}
+
+/* Auto contraste - Filtros */
+body.alto-contraste .filtroo {
+    background: #0A1A2B !important;
+    background-color: #0A1A2B !important;
+    color: #F2F6FA !important;
+    border: 1px solid #1E3B57 !important;
+}
+
+/* Textos internos */
+body.alto-contraste .varCult h1,
+body.alto-contraste .varCult h2,
+body.alto-contraste .varCult h3,
+body.alto-contraste .varCult p,
+body.alto-contraste .varCult span,
+body.alto-contraste .varCult label,
+body.alto-contraste .topCon h1,
+body.alto-contraste .topCon h2,
+body.alto-contraste .topCon h3,
+body.alto-contraste .topCon p,
+body.alto-contraste .topCon span,
+body.alto-contraste .topCon label,
+body.alto-contraste .filtroo h1,
+body.alto-contraste .filtroo h2,
+body.alto-contraste .filtroo h3,
+body.alto-contraste .filtroo p,
+body.alto-contraste .filtroo span,
+body.alto-contraste .filtroo label {
+    color: #F2F6FA !important;
+}
+
+/* Textos secundários */
+body.alto-contraste .varCult small,
+body.alto-contraste .topCon small,
+body.alto-contraste .filtroo small {
+    color: #A9C0D6 !important;
+}
+
+/* Campos de formulário */
+body.alto-contraste .filtroo input,
+body.alto-contraste .filtroo select,
+body.alto-contraste .filtroo textarea {
+    background: #10263D !important;
+    color: #F2F6FA !important;
+    border: 1px solid #1E3B57 !important;
+}
+
+/* Opções dos selects */
+body.alto-contraste .filtroo select option {
+    background: #10263D !important;
+    color: #F2F6FA !important;
+}
+
+/* Foco acessível */
+body.alto-contraste .filtroo input:focus-visible,
+body.alto-contraste .filtroo select:focus-visible,
+body.alto-contraste .filtroo button:focus-visible {
+    outline: 3px solid #4DD0E1 !important;
+    outline-offset: 2px;
+}
 /* =========================================================
    ACESSIBILIDADE - AUMENTAR / DIMINUIR FONTE
    ========================================================= */

@@ -69,6 +69,7 @@
                 <div class="adm-input-group">
                     <label for="dis_cep">CEP</label>
                     <input type="text" id="dis_cep" name="DIS_CEP" class="mascara-cep" value="<?= old('DIS_CEP', $dispositivo['DIS_CEP'] ?? '') ?>" placeholder="00000-000">
+                    <small id="cep_mensagem" style="margin-top: 5px;"></small>
                 </div>
                 <div class="adm-input-group flex-2">
                     <label for="dis_rua">Rua/Logradouro</label>
@@ -167,15 +168,80 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Máscara Inteligente para Coordenadas Geográficas (Latitude e Longitude)
         // Permite o sinal de menos opcional no início, até 3 dígitos antes do ponto e até 6 casas decimais.
-        $('.mascara-coordenada').mask('~Z00.000000', {
+        $('.mascara-coordenada').mask('~Z##.######', {
             translation: {
-                '~': { pattern: /[-]/, optional: true },
-                'Z': { pattern: /[0-9]/, optional: true }
+                '~': { pattern: /-/, optional: true },
+                'Z': { pattern: /[0-9]/, optional: true },
+                '#': { pattern: /[0-9]/, optional: true }
             },
-            placeholder: ""
+            placeholder: ''
         });
     });
 });
+
+
+    // 3. Preenchimento automático do endereço pelo CEP
+    const campoCep = document.getElementById('dis_cep');
+    const campoRua = document.getElementById('dis_rua');
+    const campoCidade = document.getElementById('dis_cidade');
+    const campoUF = document.getElementById('dis_uf');
+    const mensagemCep = document.getElementById('cep_mensagem');
+
+    let ultimoCepConsultado = '';
+
+    campoCep.addEventListener('input', async function () {
+        const cep = this.value.replace(/\D/g, '');
+
+        if (cep.length !== 8) {
+            ultimoCepConsultado = '';
+            mensagemCep.textContent = '';
+            return;
+        }
+
+        // Evita consultar o mesmo CEP várias vezes
+        if (cep === ultimoCepConsultado) {
+            return;
+        }
+
+        ultimoCepConsultado = cep;
+        mensagemCep.style.color = '#666';
+        mensagemCep.textContent = 'Consultando CEP...';
+
+        try {
+            const resposta = await fetch(
+                `https://viacep.com.br/ws/${cep}/json/`
+            );
+
+            if (!resposta.ok) {
+                throw new Error('Falha na consulta');
+            }
+
+            const dados = await resposta.json();
+
+            if (dados.erro) {
+                mensagemCep.style.color = '#dc3545';
+                mensagemCep.textContent = 'CEP não encontrado.';
+                ultimoCepConsultado = '';
+                return;
+            }
+
+            // Preenche somente os campos de endereço existentes
+            campoRua.value = dados.logradouro || '';
+            campoCidade.value = dados.localidade || '';
+            campoUF.value = dados.uf || '';
+
+            mensagemCep.style.color = '#198754';
+            mensagemCep.textContent = 'Endereço preenchido com sucesso!';
+
+        } catch (erro) {
+            mensagemCep.style.color = '#dc3545';
+            mensagemCep.textContent =
+                'Não foi possível consultar o CEP. Tente novamente.';
+
+            ultimoCepConsultado = '';
+        }
+    });
+
 </script>
 
 <style>

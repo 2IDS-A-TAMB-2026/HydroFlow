@@ -1,6 +1,6 @@
-
 <main class="main-content" style="flex: 1; padding: 30px; background-color: #f4f6f9; overflow-y: auto; font-family: Arial, sans-serif;">
     
+    <!-- HEADER -->
     <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
         <div>
             <h2 style="color: #1e3c72; font-size: 1.8rem; font-weight: 600; margin: 0;">
@@ -15,7 +15,8 @@
         </a>
     </div>
 
-    <div class="kpi-cards">
+    <!-- CARDS KPI -->
+    <div class="kpi-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px;">
         
         <div class="card card-cyan">
             <div class="card-content">
@@ -59,18 +60,20 @@
 
     </div>
 
-    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;">
-        <h3 style="color: #333; font-size: 1.2rem; margin-top: 0; margin-bottom: 20px; font-weight: 600;">
-            <i class="fa-solid fa-chart-line" style="color: #007bff; margin-right: 8px;"></i> Volume Consumido de Água (Últimos 7 dias)
+    <!-- SEÇÃO DO GRÁFICO RADAR -->
+    <div class="grafRadar" style="">
+        <h3 style0="color: #333; font-size: 1.2rem; margin-top: 0; margin-bottom: 20px; font-weight: 600;">
+            <i class="fa-solid fa-chart-pie" style="color: #007bff; margin-right: 8px;"></i> Visão Geral dos Indicadores do Sistema (KPIs)
         </h3>
-        <div style="height: 300px; width: 100%;">
+        <div style="position: relative; height: 350px; width: 100%; max-width: 700px; margin: 0 auto;">
             <canvas id="graficoGlobalAdmin"></canvas>
         </div>
     </div>
 
+    <!-- CARDS DE AÇÃO (SERVIÇOS/GESTÃO) -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 30px;">
         
-        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+        <div class ="ctUsu"style="">
             <div>
                 <div style="background-color: rgba(0, 123, 255, 0.1); color: #007bff; width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 15px;">
                     <i class="fa-solid fa-users-gear"></i>
@@ -83,7 +86,7 @@
             </a>
         </div>
 
-        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="ctSen" style="">
             <div>
                 <div style="background-color: rgba(40, 167, 69, 0.1); color: #28a745; width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 15px;">
                     <i class="fa-solid fa-microchip"></i>
@@ -96,67 +99,131 @@
             </a>
         </div>
 
-        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-                <div style="background-color: rgba(108, 117, 125, 0.1); color: #6c757d; width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 15px;">
-                    <i class="fa-solid fa-id-card-clip"></i>
-                </div>
-                <h3 style="color: #333; font-size: 1.2rem; margin: 0 0 10px 0; font-weight: 600;">Configurações do Perfil</h3>
-                <p style="color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">Modifique suas credenciais de segurança do administrador master, troque e-mails e chaves de criptografia.</p>
-            </div>
-            <a href="<?= base_url('admin/usuarios/editar-perfil') ?>" style="display: block; text-align: center; background: #6c757d; color: white; padding: 12px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(108,117,125,0.15);">
-                Editar Dados
-            </a>
-        </div>
 
     </div>
 
-    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-        <h3 style="color: #333; font-size: 1.2rem; margin-top: 0; margin-bottom: 20px; font-weight: 600;">
-            <i class="fa-solid fa-clock-rotate-left" style="color: #17a2b8; margin-right: 8px;"></i> Últimas Irrigações do Sistema (Auditoria Global)
-        </h3>
+    
+    <!-- CENTRAL DE MONITORAMENTO DOS DISPOSITIVOS -->
+    <div class="cmd"style="">
+
+        <div style="display: flex; justify-content: space-between;
+                    align-items: center; flex-wrap: wrap; gap: 12px;
+                    margin-bottom: 20px;">
+
+            <div>
+                <h3 style="color: #333; font-size: 1.2rem;
+                        margin: 0 0 6px; font-weight: 600;">
+                    <i class="fa-solid fa-tower-broadcast"
+                    style="color: #17a2b8; margin-right: 8px;"></i>
+                    Central de Monitoramento
+                </h3>
+
+                <p style="color: #777; font-size: 0.9rem; margin: 0;">
+                    Acompanhe a situação dos dispositivos cadastrados.
+                </p>
+            </div>
+
+            <a href="<?= base_url('admin/dispositivos/') ?>"
+            style="background: #007bff; color: white; padding: 10px 16px;
+                    border-radius: 7px; text-decoration: none;
+                    font-weight: 600; font-size: 0.9rem;">
+                <i class="fa-solid fa-microchip"></i>
+                Gerenciar dispositivos
+            </a>
+        </div>
+
         <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <table style="width: 100%; border-collapse: collapse;
+                        text-align: left; font-size: 0.9rem;">
+
                 <thead>
-                    <tr style="border-bottom: 2px solid #eee; color: #666; font-weight: bold;">
-                        <th style="padding: 12px 8px;">Data/Hora</th>
-                        <th style="padding: 12px 8px;">Usuário</th>
-                        <th style="padding: 12px 8px;">Planta</th>
-                        <th style="padding: 12px 8px;">Dispositivo</th>
-                        <th style="padding: 12px 8px;">Volume (L)</th>
-                        <th style="padding: 12px 8px;">Status</th>
+                    <tr style="border-bottom: 2px solid #eee; color: #666;">
+                        <th style="padding: 14px 10px;">ID</th>
+                        <th style="padding: 14px 10px;">Dispositivo</th>
+                        <th style="padding: 14px 10px;">Responsável</th>
+                        <th style="padding: 14px 10px;">Estado</th>
+                        <th style="padding: 14px 10px;">Última comunicação</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    <?php if(!empty($ultimas_irrigacoes)): ?>
-                        <?php foreach($ultimas_irrigacoes as $irrigacao): ?>
+                    <?php if (!empty($dispositivos_monitoramento)): ?>
+
+                        <?php foreach ($dispositivos_monitoramento as $disp): ?>
+                            <?php
+                                $status = strtoupper(trim($disp['DIS_STATUS'] ?? ''));
+                                $ativo = ($status === 'ATIVO');
+                            ?>
+
                             <tr style="border-bottom: 1px solid #eee; color: #444;">
-                                <td style="padding: 12px 8px;"><?= date('d/m/Y', strtotime($irrigacao['IRR_DATA'])) ?> - <?= $irrigacao['IRR_HORA'] ?></td>
-                                <td style="padding: 12px 8px;"><b><?= esc($irrigacao['nome_usuario']) ?></b></td>
-                                <td style="padding: 12px 8px;"><?= esc($irrigacao['nome_planta']) ?></td>
-                                <td style="padding: 12px 8px;"><code style="background: #f1f1f1; padding: 3px 6px; border-radius: 4px;"><?= esc($irrigacao['nome_dispositivo']) ?></code></td>
-                                <td style="padding: 12px 8px;"><?= number_format($irrigacao['IRR_VOLUME'], 2, ',', '.') ?> L</td>
-                                <td style="padding: 12px 8px;">
-                                    <?php if($irrigacao['IRR_STATUS'] == 'Concluído'): ?>
-                                        <span style="background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">Concluído</span>
+
+                                <td style="padding: 15px 10px;">
+                                    #<?= esc($disp['DIS_ID']) ?>
+                                </td>
+
+                                <td style="padding: 15px 10px;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 36px; height: 36px;
+                                                    border-radius: 8px;
+                                                    background: #eaf2ff; color: #007bff;
+                                                    display: flex; align-items: center;
+                                                    justify-content: center;">
+                                            <i class="fa-solid fa-microchip"></i>
+                                        </div>
+
+                                        <strong>
+                                            <?= esc($disp['DIS_NOME'] ?? 'Sem nome') ?>
+                                        </strong>
+                                    </div>
+                                </td>
+
+                                <td style="padding: 15px 10px;">
+                                    <?= esc($disp['nome_usuario'] ?? 'Não identificado') ?>
+                                </td>
+
+                                <td style="padding: 15px 10px;">
+                                    <?php if ($ativo): ?>
+                                        <span class="spanAtivoo">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            Ativo
+                                        </span>
                                     <?php else: ?>
-                                        <span style="background: #f8d7da; color: #721c24; padding: 4px 8px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">Falha</span>
+                                        <span class="spanInativoo" style="">
+                                            <i class="fa-solid fa-circle-xmark"></i>
+                                            Inativo
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td style="padding: 15px 10px;">
+                                    <?php if (!empty($disp['ultima_data']) && !empty($disp['ultima_hora'])): ?>
+                                        <?= esc(date('d/m/Y', strtotime($disp['ultima_data']))) ?>
+                                        <?= esc($disp['ultima_hora']) ?>
+                                    <?php else: ?>
+                                        <span style="color: #999;">Nenhuma medição</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
+
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" style="padding: 20px; text-align: center; color: #999;">Nenhuma irrigação registrada na malha global até o momento.</td>
+                            <td colspan="6"
+                                style="padding: 30px; text-align: center; color: #999;">
+                                <i class="fa-solid fa-server"
+                                style="font-size: 1.5rem; display: block;
+                                        margin-bottom: 10px;"></i>
+                                Nenhum dispositivo cadastrado.
+                            </td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
+
             </table>
         </div>
     </div>
 
+
 </main>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -164,39 +231,134 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         
-        // 1. Renderização Dinâmica do Gráfico de Telemetria
-        const ctx = document.getElementById('graficoGlobalAdmin').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: <?= json_encode($grafico_labels) ?>,
-                datasets: [{
-                    label: 'Volume de Água (Litros)',
-                    data: <?= json_encode($grafico_valores) ?>,
-                    backgroundColor: 'rgba(0, 180, 219, 0.1)',
-                    borderColor: '#0083b0',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#00b4db',
-                    pointBorderColor: '#fff',
-                    pointRadius: 5,
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
+        // Renderização Dinâmica do Gráfico RADAR
+            const ctx = document.getElementById('graficoGlobalAdmin').getContext('2d');
 
-        // 2. Interceptador de Logout Amigável (SweetAlert2)
+            const graficoRadar = new Chart(ctx, {
+                type: 'radar',
+
+                data: {
+                    labels: [
+                        'Dispositivos Ativos',
+                        'Alertas (Falhas)',
+                        'Usuários na Base',
+                        'Dispositivos Inativos'
+                    ],
+
+                    datasets: [{
+                        label: 'Métricas do Sistema',
+
+                        data: [
+                            <?= (int)($dispositivosAtivos ?? $total_ativos ?? 0) ?>,
+                            <?= (int)($totalFalhas ?? $total_falhas ?? 0) ?>,
+                            <?= (int)($totalUsuarios ?? $total_usuarios ?? 0) ?>,
+                            <?= (int)($dispositivosInativos ?? $total_inativos ?? 0) ?>
+                        ],
+
+                        backgroundColor: 'rgba(0, 123, 255, 0.25)',
+                        borderColor: '#007bff',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#007bff',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#007bff',
+                        pointRadius: 5
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: document.body.classList.contains('alto-contraste')
+                                    ? 'rgba(169, 192, 214, 0.4)'
+                                    : 'rgba(0, 0, 0, 0.1)'
+                            },
+
+                            grid: {
+                                color: document.body.classList.contains('alto-contraste')
+                                    ? 'rgba(169, 192, 214, 0.25)'
+                                    : 'rgba(0, 0, 0, 0.08)'
+                            },
+
+                            suggestedMin: 0,
+                            suggestedMax: 35,
+
+                            ticks: {
+                                stepSize: 10,
+                                backdropColor: 'transparent',
+
+                                color: document.body.classList.contains('alto-contraste')
+                                    ? '#F2F6FA'
+                                    : '#666',
+
+                                font: {
+                                    size: 11
+                                }
+                            },
+
+                            pointLabels: {
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+
+                                color: document.body.classList.contains('alto-contraste')
+                                    ? '#FFFFFF'
+                                    : '#333'
+                            }
+                        }
+                    }
+                }
+            });
+
+
+            // Atualização das cores ao alternar o alto contraste
+            const btnContraste = document.getElementById('btn-contraste');
+
+            if (btnContraste) {
+                btnContraste.addEventListener('click', function () {
+
+                    // Verifica o estado atualizado do alto contraste
+                    const escuro = document.body.classList.contains('alto-contraste');
+
+                    const escala = graficoRadar.options.scales.r;
+
+                    // Textos ao redor do gráfico
+                    escala.pointLabels.color = escuro
+                        ? '#FFFFFF'
+                        : '#333';
+
+                    // Números da escala
+                    escala.ticks.color = escuro
+                        ? '#F2F6FA'
+                        : '#666';
+
+                    // Linhas da grade
+                    escala.grid.color = escuro
+                        ? 'rgba(169, 192, 214, 0.25)'
+                        : 'rgba(0, 0, 0, 0.08)';
+
+                    // Linhas que partem do centro
+                    escala.angleLines.color = escuro
+                        ? 'rgba(169, 192, 214, 0.4)'
+                        : 'rgba(0, 0, 0, 0.1)';
+
+                    // Aplica as alterações no gráfico
+                    graficoRadar.update();
+                });
+            }
+
+        // Interceptador de Logout Amigável (SweetAlert2)
         const btnLogout = document.getElementById('btn-logout');
         if (btnLogout) {
             btnLogout.addEventListener('click', function(e) {

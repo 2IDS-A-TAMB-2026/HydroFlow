@@ -26,7 +26,7 @@
         <hr class="divider">
 
         <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px;">
-            <div style="flex: 1; min-width: 300px; background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;">
+            <div class="varCult" style="">
                 <h4 style="margin: 0 0 15px 0; color: #1e3c72; font-size: 15px; font-weight: 600; align-self: flex-start;">
                     <i class="fa-solid fa-pie-chart"></i> Variedade de Cultivo
                 </h4>
@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <div style="flex: 1; min-width: 300px; background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;">
+            <div class="topCon" style="">
                 <h4 style="margin: 0 0 15px 0; color: #1e3c72; font-size: 15px; font-weight: 600; align-self: flex-start;">
                     <i class="fa-solid fa-droplet"></i> Top Consumo de Água (L por rega)
                 </h4>
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+        <div class="filtroo" style="">
             <h5 style="margin-top: 0; margin-bottom: 15px; color: #495057; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-filter" style="color: #6c757d;"></i> Filtros de Busca Avançada
             </h5>
@@ -132,7 +132,7 @@
                                 <td><?= esc($planta['PLANTA_TIPO']) ?></td>
                                 <td><?= esc($planta['PLANTA_CULTURA'] ?? 'Não informada') ?></td>
                                 <td><?= esc($planta['PLANTA_QTD_AGUA'] ?? '0') ?> L (a cada <?= esc($planta['PLANTA_PERIDIOCIDADE']) ?> dia(s))</td>
-                                <td><?= esc($planta['DISPOSITIVO_RESPONSAVEL'] ?? 'Irrigation 1000') ?></td>
+                                <td><?= esc($planta['DIS_NOME'] ?? 'Não informado') ?></td>
                                 <td class="actions-cell" style="text-align: center;">
                                     <a href="<?= base_url('planta/editar/' . $planta['PLANTA_ID']) ?>" class="btn-icon btn-edit" title="Editar" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
                                         <i class="fa-solid fa-pen"></i>

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc/botao_acessibilidade.dart';
+import 'package:tcc/home.dart';
 import 'accessibility_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -315,7 +316,7 @@ class _SobreNosState extends State<SobreNos> {
             // 📌 FOOTER
             Container(
               padding: const EdgeInsets.all(30),
-              color: highContrast ? DarkPalette.surface : azulRoyal,
+              color: highContrast ? DarkPalette.surface : Home.azulPrimario,
               child: Center(
                 child: Text(
                   "© 2026 HydroFlow • Tecnologia Sustentável",

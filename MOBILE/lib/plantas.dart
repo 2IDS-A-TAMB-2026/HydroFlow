@@ -7,6 +7,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:tcc/home.dart';
 import 'accessibility_provider.dart';
 import 'botao_acessibilidade.dart';
 
@@ -41,6 +42,9 @@ class _PlantasPageState extends State<PlantasPage> {
   String? filtroTipo;
   String? filtroParametro;
   final TextEditingController _buscaController = TextEditingController();
+
+  // [NOVO] Índice da fatia do gráfico que está com o mouse/dedo em cima (-1 = nenhuma)
+  int _secaoTocada = -1;
 
   @override
   void initState() {
@@ -82,7 +86,7 @@ class _PlantasPageState extends State<PlantasPage> {
 
       final response = await http.get(
         Uri.parse(
-          'http://10.141.131.48/HydroFlow/public/api/plantas?usuario_id=$idUsuario',
+          'http://10.141.131.57/HydroFlow/public/api/plantas?usuario_id=$idUsuario',
         ),
         headers: {'Accept': 'application/json'},
       );
@@ -95,9 +99,10 @@ class _PlantasPageState extends State<PlantasPage> {
 
         setState(() {
           plantas = dados;
-          plantasFiltradas = dados;
           isLoading = false;
         });
+        // [ALTERADO] mantém a busca/filtro ativos ao atualizar a lista
+        _aplicarFiltros();
       } else {
         throw Exception('Erro na API: ${response.statusCode}');
       }
@@ -115,16 +120,35 @@ class _PlantasPageState extends State<PlantasPage> {
   /// ─────────────────────────────────────────────
   /// LÓGICA DE FILTRAGEM LOCAL
   /// ─────────────────────────────────────────────
+  // [NOVO] deixa o texto minúsculo e sem acento (busca "hortalica" acha "Hortaliça")
+  String _normalizar(String texto) {
+    const comAcento = 'áàâãäéèêëíìîïóòôõöúùûüçñ';
+    const semAcento = 'aaaaaeeeeiiiiooooouuuucn';
+    var resultado = texto.toLowerCase();
+    for (int i = 0; i < comAcento.length; i++) {
+      resultado = resultado.replaceAll(comAcento[i], semAcento[i]);
+    }
+    return resultado;
+  }
+
   void _aplicarFiltros() {
-    final query = _buscaController.text.toLowerCase();
+    final query = _normalizar(_buscaController.text.trim());
+    final tipoFiltro = filtroTipo == null ? null : _normalizar(filtroTipo!);
+
     setState(() {
       plantasFiltradas = plantas.where((p) {
-        final nome = (p['nome'] ?? '').toString().toLowerCase();
-        final cultura = (p['cultura'] ?? '').toString().toLowerCase();
-        final tipo = (p['tipo'] ?? '').toString();
+        // [ALTERADO] chaves corretas do banco (antes: nome, cultura, tipo)
+        final nome = _normalizar((p['PLANTA_NOME'] ?? p['nome'] ?? p['NOME'] ?? '').toString());
+        final cultura = _normalizar((p['PLANTA_CULTURA'] ?? p['cultura'] ?? '').toString());
+        final tipo = _normalizar((p['PLANTA_TIPO'] ?? p['tipo'] ?? p['TIPO'] ?? '').toString());
+        final id = _normalizar((p['PLANTA_ID'] ?? p['ID'] ?? '').toString());
 
-        final bateuBusca = nome.contains(query) || cultura.contains(query);
-        final bateuTipo = filtroTipo == null || tipo == filtroTipo;
+        final bateuBusca = query.isEmpty ||
+            nome.contains(query) ||
+            cultura.contains(query) ||
+            tipo.contains(query) ||
+            id.contains(query);
+        final bateuTipo = tipoFiltro == null || tipo == _normalizar(tipoFiltro!);
 
         return bateuBusca && bateuTipo;
       }).toList();
@@ -264,6 +288,144 @@ class _PlantasPageState extends State<PlantasPage> {
     }
   }
 
+  // Retorna o ID do usuário que está logado no aplicativo.
+  Future<String> _obterIdUsuario() async {
+    final prefs = await SharedPreferences.getInstance();
+    final usuarioJson = prefs.getString('usuarioLogado');
+    if (usuarioJson == null) throw Exception('Usuário não encontrado. Faça login novamente.');
+    final usuario = jsonDecode(usuarioJson);
+    final id = usuario['USU_ID'];
+    if (id == null) throw Exception('ID do usuário não encontrado.');
+    return id.toString();
+  }
+
+  Future<void> _editarPlanta(Map<String, dynamic> planta) async {
+    final id = planta['PLANTA_ID']?.toString();
+    if (id == null || id.isEmpty || id == 'null') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Não foi possível identificar esta planta.')),
+      );
+      return;
+    }
+
+    final nome = TextEditingController(text: (planta['PLANTA_NOME'] ?? '').toString());
+    final tipo = TextEditingController(text: (planta['PLANTA_TIPO'] ?? '').toString());
+    final cultura = TextEditingController(text: (planta['PLANTA_CULTURA'] ?? '').toString());
+    final agua = TextEditingController(text: (planta['PLANTA_QTD_AGUA'] ?? '').toString());
+    final periodicidade = TextEditingController(text: (planta['PLANTA_PERIDIOCIDADE'] ?? '').toString());
+
+    final confirmado = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Editar planta'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(controller: nome, decoration: const InputDecoration(labelText: 'Nome da planta')),
+              TextField(controller: tipo, decoration: const InputDecoration(labelText: 'Tipo')),
+              TextField(controller: cultura, decoration: const InputDecoration(labelText: 'Cultura')),
+              TextField(controller: agua, keyboardType: const TextInputType.numberWithOptions(decimal: true), decoration: const InputDecoration(labelText: 'Quantidade de água (L)')),
+              TextField(controller: periodicidade, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Periodicidade (dias)')),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancelar')),
+          ElevatedButton(onPressed: () => Navigator.pop(dialogContext, true), child: const Text('Salvar')),
+        ],
+      ),
+    );
+
+    if (confirmado != true) {
+      nome.dispose(); tipo.dispose(); cultura.dispose(); agua.dispose(); periodicidade.dispose();
+      return;
+    }
+    if (nome.text.trim().isEmpty || tipo.text.trim().isEmpty || cultura.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Preencha nome, tipo e cultura.')),
+      );
+      nome.dispose(); tipo.dispose(); cultura.dispose(); agua.dispose(); periodicidade.dispose();
+      return;
+    }
+
+    try {
+      final usuarioId = await _obterIdUsuario();
+      final url = Uri.parse('http://10.141.131.57/HydroFlow/public/api/plantas/$id?usuario_id=$usuarioId');
+      final response = await http.put(
+        url,
+        headers: {'Accept': 'application/json'},
+        body: jsonEncode({
+          'PLANTA_NOME': nome.text.trim(),
+          'PLANTA_TIPO': tipo.text.trim(),
+          'PLANTA_CULTURA': cultura.text.trim(),
+          'PLANTA_QTD_AGUA': agua.text.trim().isEmpty ? '0' : agua.text.trim(),
+          'PLANTA_PERIDIOCIDADE': periodicidade.text.trim().isEmpty ? '1' : periodicidade.text.trim(),
+          'FK_DIS_ID': planta['FK_DIS_ID'],
+        }),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Planta atualizada com sucesso.')));
+        await _buscarPlantasDaApi();
+      } else {
+        throw Exception('A API retornou HTTP ${response.statusCode}: ${response.body}');
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não foi possível editar a planta: $e')));
+    } finally {
+      nome.dispose(); tipo.dispose(); cultura.dispose(); agua.dispose(); periodicidade.dispose();
+    }
+  }
+
+  Future<void> _excluirPlanta(Map<String, dynamic> planta) async {
+    final id = planta['PLANTA_ID']?.toString();
+    if (id == null || id.isEmpty || id == 'null') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Não foi possível identificar esta planta.')),
+      );
+      return;
+    }
+
+    final confirmado = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Excluir planta'),
+        content: Text('Tem certeza de que deseja excluir "${planta['PLANTA_NOME'] ?? 'esta planta'}"?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancelar')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Excluir'),
+          ),
+        ],
+      ),
+    );
+    if (confirmado != true) return;
+
+    try {
+      final usuarioId = await _obterIdUsuario();
+      final url = Uri.parse('http://10.141.131.57/HydroFlow/public/api/plantas/$id?usuario_id=$usuarioId');
+      final response = await http.delete(url, headers: {'Accept': 'application/json'});
+      if (response.statusCode == 200 || response.statusCode == 202 || response.statusCode == 204) {
+        if (!mounted) return;
+        setState(() {
+          plantas.removeWhere((p) => p['PLANTA_ID'].toString() == id);
+          plantasFiltradas.removeWhere((p) => p['PLANTA_ID'].toString() == id);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Planta excluída com sucesso.')));
+        await _buscarPlantasDaApi();
+      } else {
+        throw Exception('A API retornou HTTP ${response.statusCode}: ${response.body}');
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não foi possível excluir a planta: $e')));
+    }
+  }
+
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
@@ -376,36 +538,9 @@ class _PlantasPageState extends State<PlantasPage> {
 
                     const SizedBox(height: 16),
 
-                    /// 2. GRÁFICOS (FL_Chart)
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        bool isWide = constraints.maxWidth > 700;
-                        return isWide
-                            ? Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: _buildChartDonut(
-                                      high,
-                                      f,
-                                      bgContainer,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: _buildChartBar(high, f, bgContainer),
-                                  ),
-                                ],
-                              )
-                            : Column(
-                                children: [
-                                  _buildChartDonut(high, f, bgContainer),
-                                  const SizedBox(height: 16),
-                                  _buildChartBar(high, f, bgContainer),
-                                ],
-                              );
-                      },
-                    ),
+                    /// 2. GRÁFICO (FL_Chart)
+                    // [ALTERADO] só o gráfico de rosca; o gráfico de barras foi removido
+                    _buildChartDonut(high, f, bgContainer),
 
                     const SizedBox(height: 16),
 
@@ -498,7 +633,7 @@ class _PlantasPageState extends State<PlantasPage> {
                                               : Colors.blue,
                                           size: 18 * f,
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () => _editarPlanta(Map<String, dynamic>.from(p)),
                                       ),
                                       IconButton(
                                         icon: Icon(
@@ -508,7 +643,7 @@ class _PlantasPageState extends State<PlantasPage> {
                                               : Colors.red,
                                           size: 18 * f,
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () => _excluirPlanta(Map<String, dynamic>.from(p)),
                                       ),
                                     ],
                                   ),
@@ -554,6 +689,19 @@ class _PlantasPageState extends State<PlantasPage> {
 
     final total = plantas.length;
 
+    // [NOVO] lista fixa para ligar o índice da fatia à cultura
+    final entradas = culturas.entries.toList();
+
+    // [NOVO] dados exibidos no centro do gráfico (hover/toque)
+    final temSelecao = _secaoTocada >= 0 && _secaoTocada < entradas.length;
+    final nomeCentro = temSelecao ? entradas[_secaoTocada].key : 'Total';
+    final qtdCentro = temSelecao ? entradas[_secaoTocada].value : total;
+    final pctCentro = temSelecao
+        ? '${((qtdCentro / total) * 100).toStringAsFixed(0)}%'
+        : null;
+
+    final corTexto = high ? DarkPalette.textPrimary : Colors.black87;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -589,179 +737,95 @@ class _PlantasPageState extends State<PlantasPage> {
 
           const SizedBox(height: 20),
 
+          // [ALTERADO] gráfico com informação ao passar o mouse / tocar,
+          // e sem a legenda fixa embaixo
           SizedBox(
-            height: 180,
-            child: PieChart(
-              PieChartData(
-                sectionsSpace: 2,
-                centerSpaceRadius: 40,
-
-                sections: culturas.entries.map((entry) {
-                  final quantidade = entry.value;
-
-                  final percentual = (quantidade / total) * 100;
-
-                  return PieChartSectionData(
-                    value: quantidade.toDouble(),
-                    title: '${percentual.toStringAsFixed(0)}%',
-                    radius: 35,
-                    titleStyle: TextStyle(
-                      fontSize: 12 * f,
-                      color: Colors.white,
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // Legenda
-          ...culturas.entries.map((entry) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(
-                '${entry.key}: ${entry.value} planta(s)',
-                style: TextStyle(
-                  fontSize: 12 * f,
-                  color: high ? DarkPalette.textSecondary : Colors.black87,
-                ),
-              ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  /// WIDGET DO GRÁFICO DE BARRAS
-  Widget _buildChartBar(bool high, double f, Color bg) {
-    // Pega somente plantas que possuem quantidade de água
-    final plantasComAgua = plantas.where((p) {
-      final agua = double.tryParse((p['PLANTA_QTD_AGUA'] ?? '0').toString());
-
-      return agua != null;
-    }).toList();
-
-    if (plantasComAgua.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF),
-          ),
-        ),
-        child: const Center(child: Text('Nenhum dado de consumo disponível')),
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: high ? DarkPalette.surfaceBorder : const Color(0xFFE9ECEF),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.water_drop,
-                color: high ? Colors.cyanAccent : const Color(0xFF1E3C72),
-                size: 18 * f,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                "Consumo de Água (L por rega)",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15 * f,
-                  color: high
-                      ? DarkPalette.textPrimary
-                      : const Color(0xFF1E3C72),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
-
-          SizedBox(
-            height: 180,
-            child: BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.spaceAround,
-                borderData: FlBorderData(show: false),
-
-                titlesData: FlTitlesData(
-                  leftTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: true, reservedSize: 30),
-                  ),
-
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-
-                      getTitlesWidget: (val, meta) {
-                        final index = val.toInt();
-
-                        if (index >= 0 && index < plantasComAgua.length) {
-                          final nome =
-                              plantasComAgua[index]['PLANTA_NOME']
-                                  ?.toString() ??
-                              '';
-
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              nome,
-                              style: TextStyle(
-                                fontSize: 10 * f,
-                                color: high
-                                    ? DarkPalette.textSecondary
-                                    : Colors.black,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        }
-
-                        return const Text('');
+            height: 200,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                PieChart(
+                  PieChartData(
+                    sectionsSpace: 2,
+                    centerSpaceRadius: 55,
+                    pieTouchData: PieTouchData(
+                      touchCallback:
+                          (FlTouchEvent event, PieTouchResponse? resposta) {
+                        setState(() {
+                          if (!event.isInterestedForInteractions ||
+                              resposta == null ||
+                              resposta.touchedSection == null) {
+                            _secaoTocada = -1;
+                            return;
+                          }
+                          _secaoTocada =
+                              resposta.touchedSection!.touchedSectionIndex;
+                        });
                       },
                     ),
-                  ),
+                    sections: List.generate(entradas.length, (i) {
+                      final selecionada = i == _secaoTocada;
 
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
+                      return PieChartSectionData(
+                        value: entradas[i].value.toDouble(),
+                        // [ALTERADO] a fatia sob o mouse muda levemente de cor
+                        color: selecionada
+                            ? (high
+                                ? Colors.cyanAccent
+                                : const Color(0xFF0097A7))
+                            : const Color(0xFF00BCD4),
+                        title: '', // sem texto fixo nas fatias
+                        radius: selecionada ? 42 : 35, // destaca a fatia
+                      );
+                    }),
                   ),
                 ),
 
-                barGroups: List.generate(plantasComAgua.length, (index) {
-                  final planta = plantasComAgua[index];
-
-                  final agua =
-                      double.tryParse(
-                        (planta['PLANTA_QTD_AGUA'] ?? '0').toString(),
-                      ) ??
-                      0;
-
-                  return BarChartGroupData(
-                    x: index,
-                    barRods: [BarChartRodData(toY: agua, width: 16)],
-                  );
-                }),
-              ),
+                // Informação no centro da rosca
+                IgnorePointer(
+                  child: SizedBox(
+                    width: 100,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          nomeCentro,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12 * f,
+                            fontWeight: FontWeight.bold,
+                            color: corTexto,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '$qtdCentro planta(s)',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 11 * f,
+                            color: high
+                                ? DarkPalette.textSecondary
+                                : Colors.black54,
+                          ),
+                        ),
+                        if (pctCentro != null)
+                          Text(
+                            pctCentro,
+                            style: TextStyle(
+                              fontSize: 13 * f,
+                              fontWeight: FontWeight.bold,
+                              color: high
+                                  ? Colors.cyanAccent
+                                  : const Color(0xFF1E3C72),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -815,7 +879,8 @@ class _PlantasPageState extends State<PlantasPage> {
                     labelText: "Buscar por Tipo",
                     border: OutlineInputBorder(),
                   ),
-                  items: ['Ornamental', 'Frutífera', 'Medicinal', 'Hortaliça']
+                  // [ALTERADO] mesmos tipos da tela de cadastro (antes tinha "Grãos")
+                  items: ['Hortaliça', 'Frutífera', 'Legume', 'Grão', 'Ornamental', 'Medicinal']
                       .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                       .toList(),
                   onChanged: (v) {
@@ -838,13 +903,13 @@ class _PlantasPageState extends State<PlantasPage> {
                   style: TextStyle(fontSize: 14 * f, color: Colors.white),
                 ),
               ),
-              if (filtroTipo != null)
+              // [ALTERADO] aparece também quando há texto na busca e limpa os dois
+              if (filtroTipo != null || _buscaController.text.isNotEmpty)
                 TextButton(
                   onPressed: () {
-                    setState(() {
-                      filtroTipo = null;
-                      _aplicarFiltros();
-                    });
+                    filtroTipo = null;
+                    _buscaController.clear(); // o listener reaplica os filtros
+                    _aplicarFiltros();
                   },
                   child: const Text("Limpar Filtro"),
                 ),
@@ -886,15 +951,7 @@ class _PlantasPageState extends State<PlantasPage> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.table_chart, size: 16),
-              label: const Text("Exportar Excel"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1F7246),
-                foregroundColor: Colors.white,
-              ),
-            ),
+            
             const SizedBox(width: 8),
             OutlinedButton.icon(
               onPressed: _exportarPdf,
@@ -921,7 +978,7 @@ class _PlantasPageState extends State<PlantasPage> {
                   colors: [DarkPalette.background, DarkPalette.surface],
                 )
               : null,
-          color: high ? null : azul,
+          color: high ? null : Home.azulPrimario,
         ),
         child: Column(
           children: [

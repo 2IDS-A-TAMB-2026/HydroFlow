@@ -481,12 +481,6 @@
                 </div>
             </div>
             
-            <div class="dashboard-col" style="flex: 2;">
-                <span style="font-size: 0.9rem; font-weight: bold; color: #666; margin-bottom: 15px;">Volume Atual dos Meus Tanques (%)</span>
-                <div style="width: 100%; height: 220px; position: relative;">
-                    <canvas id="chartTanques"></canvas>
-                </div>
-            </div>
         </div>
     </div>
     <?php endif; ?>
@@ -548,7 +542,6 @@
                         <th style="padding: 12px 8px;">ID</th>
                         <th style="padding: 12px 8px;">Nome do Dispositivo</th>
                         <th style="padding: 12px 8px;">Descrição / Identificação</th>
-                        <th style="padding: 12px 8px;">Nível Ocupado</th>
                         <th style="padding: 12px 8px;">Status do Sistema</th>
                         <th style="padding: 12px 8px; text-align: center;">Ações</th>
                     </tr>
@@ -565,10 +558,6 @@
                                 <td style="padding: 12px 8px;"><strong><?= esc($disp['DIS_NOME']) ?></strong></td>
                                 <td style="padding: 12px 8px; color: #555;">
                                     <?= esc($disp['DIS_DESCRICAO'] ?: 'Sem descrição cadastrada pelo administrador.') ?>
-                                </td>
-                                <td style="padding: 12px 8px;">
-                                    <strong><?= esc($disp['DIS_NIVEL_TANQUE']) ?>%</strong> 
-                                    <small style="color: #666; margin-left: 4px;">(<?= $litros ?>L)</small>
                                 </td>
                                 <td style="padding: 12px 8px;">
                                     <?php if (strtoupper($disp['DIS_STATUS']) === 'ATIVO'): ?>
@@ -695,90 +684,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
-    const ctxTanques = document.getElementById('chartTanques').getContext('2d');
-    const dadosOriginais = <?= json_encode($grafico_tanques) ?>;
-
-    let listaTanques = [];
-    if (dadosOriginais && dadosOriginais.labels) {
-        for (let i = 0; i < dadosOriginais.labels.length; i++) {
-            listaTanques.push({
-                nome: dadosOriginais.labels[i],
-                nivel: parseFloat(dadosOriginais.valores[i])
-            });
-        }
-    }
-
-    listaTanques.sort((a, b) => a.nivel - b.nivel);
-
-    const labelsOrdenadas = listaTanques.map(item => item.nome);
-    const valoresOrdenados = listaTanques.map(item => item.nivel);
-
-    new Chart(ctxTanques, {
-        type: 'bar',
-        data: {
-            labels: labelsOrdenadas,
-            datasets: [{
-                label: 'Nível Atual',
-                data: valoresOrdenados,
-                borderWidth: 1.5,
-                borderRadius: 6,
-                borderSkipped: 'start',
-                backgroundColor: function(context) {
-                    const value = context.dataset.data[context.dataIndex];
-                    if (value < 30) return 'rgba(211, 47, 47, 0.85)';
-                    if (value <= 50) return 'rgba(245, 124, 0, 0.85)';
-                    return 'rgba(30, 136, 229, 0.85)';
-                },
-                borderColor: function(context) {
-                    const value = context.dataset.data[context.dataIndex];
-                    if (value < 30) return '#d32f2f';
-                    if (value <= 50) return '#f57c00';
-                    return '#1e88e5';
-                },
-                hoverBackgroundColor: function(context) {
-                    const value = context.dataset.data[context.dataIndex];
-                    if (value < 30) return '#b71c1c';
-                    if (value <= 50) return '#e65100';
-                    return '#1565c0';
-                }
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return ` Nível: ${context.parsed.y}%`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    grid: { color: '#f1f3f5' },
-                    ticks: {
-                        callback: function(value) { return value + '%'; },
-                        font: { size: 11, family: 'Arial' }
-                    }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: {
-                        maxRotation: 25,
-                        minRotation: 15,
-                        font: { size: 10, weight: '600' },
-                        color: '#444'
-                    }
-                }
-            }
-        }
-    });
     <?php endif; ?>
 
     // MODAL INTEGRADO AO OPENSTREETMAP + ALTO CONTRASTE
@@ -874,25 +779,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <span style="font-size: 0.82rem; line-height: 1.4; display: block; margin-top: 2px;">${descricao}</span>
                                     </div>
                                     ${htmlSensorBox}
-                                </div>
-
-                                <div class="swal-card-bg" style="border-radius: 10px; padding: 14px;">
-                                    <h4 style="margin: 0 0 10px 0; border-bottom: 1px solid #cbd5e1; padding-bottom: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
-                                        <i class="fa-solid fa-gauge-high"></i> Telemetria
-                                    </h4>
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div>
-                                            <small style="display: block; font-size: 0.7rem; font-weight: 600;">Volume de Armazenamento</small>
-                                            <div style="display: flex; align-items: baseline; gap: 4px; margin-top: 2px;">
-                                                <strong style="font-size: 1.3rem; font-weight: 800;">${nivel}%</strong>
-                                                <span style="font-size: 0.8rem; font-weight: 600;">(${litros}L)</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <small style="display: block; font-size: 0.7rem; font-weight: 600; margin-bottom: 3px;">Status do Sistema</small>
-                                            ${statusBadge}
-                                        </div>
-                                    </div>
                                 </div>
 
                             </div>

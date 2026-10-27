@@ -27,7 +27,11 @@ class CadastroPlantaPage extends StatefulWidget {
 
 class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
   static const String _urlApi =
-      'http://10.141.131.48/HydroFlow/public/api/plantas/novo';
+      'http://10.141.131.57/HydroFlow/public/api/plantas/novo';
+
+  // [NOVO] URL para buscar os dispositivos do usuário logado
+  static const String _urlDispositivos =
+      'http://10.141.131.57/HydroFlow/public/api/dispositivos';
 
   final _formKey = GlobalKey<FormState>();
 
@@ -37,21 +41,28 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
   final TextEditingController _periodoController = TextEditingController();
 
   String? _tipoSelecionado;
-  String? _dispositivoSelecionado;
+
+  // [ALTERADO] agora guarda o DIS_ID (int) em vez do nome (String)
+  int? _dispositivoSelecionado;
 
   String _unidadeAgua = 'Litros/dia';
   String _unidadeTempo = 'Dias';
 
   bool salvando = false;
 
-  // Nome exibido -> ID no banco (ajuste para os IDs reais da tabela de dispositivos)
-  final Map<String, int> _dispositivos = {
-    "Irriga 1000": 1,
-    "Hortas 03012": 2,
-    "Irrigation PRO": 3,
-  };
+  // [NOVO] ID do usuário logado e lista de dispositivos vindos da API
+  int? _usuarioId;
+  List<Map<String, dynamic>> _dispositivos = [];
+  bool _carregandoDisp = true;
 
   static const azulPrimario = Color(0xFF002855);
+
+  // [NOVO] carrega os dispositivos assim que a tela abre
+  @override
+  void initState() {
+    super.initState();
+    _carregarDispositivos();
+  }
 
   @override
   void dispose() {
@@ -60,6 +71,46 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
     _qtdAguaController.dispose();
     _periodoController.dispose();
     super.dispose();
+  }
+
+  // [NOVO] Busca somente os dispositivos do usuário que fez login
+  Future<void> _carregarDispositivos() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final usuarioJson = prefs.getString('usuarioLogado');
+      if (usuarioJson == null) throw Exception('Usuário não encontrado.');
+
+      final usuario = jsonDecode(usuarioJson);
+      final id = int.tryParse(usuario['USU_ID'].toString());
+      if (id == null) throw Exception('ID do usuário inválido.');
+
+      final resp = await http.get(
+        Uri.parse('$_urlDispositivos?usuario_id=$id'),
+        headers: {'Accept': 'application/json'},
+      );
+
+      if (resp.statusCode != 200) {
+        throw Exception('Erro ${resp.statusCode}');
+      }
+
+      final body = jsonDecode(resp.body);
+      final List<dynamic> lista = body is List ? body : (body['data'] ?? []);
+
+      if (!mounted) return;
+      setState(() {
+        _usuarioId = id;
+        _dispositivos = List<Map<String, dynamic>>.from(
+          lista.map((e) => Map<String, dynamic>.from(e)),
+        );
+        _carregandoDisp = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _carregandoDisp = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao carregar dispositivos: $e')),
+      );
+    }
   }
 
   Future<void> _logout() async {
@@ -90,6 +141,14 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
   Future<void> _salvar() async {
     if (!_formKey.currentState!.validate()) return;
 
+    // [NOVO] garante que o usuário logado foi carregado
+    if (_usuarioId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário não identificado. Faça login novamente.')),
+      );
+      return;
+    }
+
     // Converte para as unidades que o banco guarda (litros e dias)
     double qtd = double.parse(_qtdAguaController.text.replaceAll(',', '.'));
     if (_unidadeAgua == 'mL/dia') qtd = qtd / 1000;
@@ -105,8 +164,8 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
       "PLANTA_CULTURA": _culturaController.text.trim(),
       "PLANTA_QTD_AGUA": qtd,
       "PLANTA_PERIDIOCIDADE": periodoDias,
-      "FK_USU_ID": 1, // fixo enquanto o login não existe
-      "FK_DIS_ID": _dispositivos[_dispositivoSelecionado],
+      "FK_USU_ID": _usuarioId, 
+      "FK_DIS_ID": _dispositivoSelecionado, 
     };
 
     setState(() => salvando = true);
@@ -344,7 +403,8 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
                               "Frutífera",
                               "Legume",
                               "Grão",
-                              "Ornamental"
+                              "Ornamental",
+                              "Medicinal"
                             ]
                                 .map((e) => DropdownMenuItem(
                                       value: e,
@@ -423,19 +483,30 @@ class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
 
                     const SizedBox(height: 12),
 
-                    DropdownButtonFormField<String>(
+                    // [ALTERADO] Dropdown agora usa os dispositivos do usuário logado
+                    DropdownButtonFormField<int>(
                       isExpanded: true,
                       value: _dispositivoSelecionado,
-                      decoration: _input("Dispositivo", high, f),
+                      decoration: _input(
+                        _carregandoDisp
+                            ? "Carregando dispositivos..."
+                            : "Dispositivo",
+                        high,
+                        f,
+                      ),
                       dropdownColor:
                           high ? DarkPalette.surfaceElevated : Colors.white,
                       style: estiloTexto,
-                      items: _dispositivos.keys
-                          .map((e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e, overflow: TextOverflow.ellipsis),
-                              ))
-                          .toList(),
+                      items: _dispositivos.map((d) {
+                        final id = int.tryParse(d['DIS_ID'].toString());
+                        return DropdownMenuItem<int>(
+                          value: id,
+                          child: Text(
+                            d['DIS_NOME']?.toString() ?? 'Dispositivo #$id',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
                       onChanged: (v) =>
                           setState(() => _dispositivoSelecionado = v),
                       validator: (v) =>

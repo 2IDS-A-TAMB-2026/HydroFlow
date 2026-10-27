@@ -99,7 +99,7 @@
 //     try {
 //       final resposta = await http.delete(
 //         Uri.parse(
-//           'http://10.141.131.48/HydroFlow/public/api/plantas/$plantaID',
+//           'http://10.141.131.57/HydroFlow/public/api/plantas/$plantaID',
 //         ),
 //         headers: {
 //           'Accept': 'application/json',
@@ -653,7 +653,7 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
       //Faz uma requisição http do tipo GET para a API
       final resposta = await http.get(
         Uri.parse(
-          'http://10.141.131.48/HydroFlow/public/api/plantas' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
+          'http://10.141.131.57/HydroFlow/public/api/plantas' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -693,7 +693,7 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
       //Faz uma requisição http do tipo Delete para a API
       final resposta = await http.delete(
         Uri.parse(
-          'http://10.141.131.48/HydroFlow/public/api/$plantasID' //MUDAR ESSA BAGAÇA
+          'http://10.141.131.57/HydroFlow/public/api/$plantasID' //MUDAR ESSA BAGAÇA
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -877,14 +877,14 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
 }*/
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; // biblioteca http
-import 'dart:convert'; // Pacote para gerar JSON
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:tcc/botao_acessibilidade.dart';
 import 'accessibility_provider.dart';
 
 /// ─────────────────────────────────────────────
-///  PALETA DO MODO ESCURO (mesma dos demais telas)
+///  PALETA DO MODO ESCURO (mesma das demais telas)
 /// ─────────────────────────────────────────────
 class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
@@ -907,111 +907,211 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
 
   static const azul = Color(0xFF002855);
 
-  //Criar uma lista que armazenará os componentes retornados da API
+  static const String _baseUrl = 'http://10.141.131.57/HydroFlow/public/api';
+
+  // Lista completa retornada pela API
   List<dynamic> plantas = [];
 
-  //Criar uma variável para indicar se os dados estão carregando
-  bool carregando = true;
+  // Lista exibida na tabela (já filtrada)
+  List<dynamic> plantasFiltradas = [];
 
-  //armazenar uma possível mensagem de erro da API
+  bool carregando = true;
   String? erro;
 
-  //Criar uma função para rodar toda vez que abrir a página
-  @override initState(){
+  // Controladores do formulário de filtros
+  final TextEditingController _buscaController = TextEditingController();
+  final TextEditingController _estoqueMinController = TextEditingController();
+  final TextEditingController _estoqueMaxController = TextEditingController();
+  String _estoqueFiltro = 'todos';
+
+  @override
+  void initState() {
     super.initState();
     consultarplantas();
   }
 
+  // ===========================================================================
+  // HELPERS
+  // ===========================================================================
+  double _toDouble(dynamic valor) {
+    return double.tryParse(valor?.toString().replaceAll(',', '.') ?? '') ?? 0.0;
+  }
 
-  Future<void> consultarplantas() async {
-    try{
-      //Faz uma requisição http do tipo GET para a API
-      final resposta = await http.get(
-        Uri.parse(
-          'http://10.141.131.48/HydroFlow/public/api/plantas' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
-        ),
-        //informar para a API que os dados são em json
-        headers: {
-        'Accept': 'application/json',
+  // Remove acentos e deixa minúsculo para a busca por texto
+  String _normalizar(String texto) {
+    const comAcento = 'áàâãäéèêëíìîïóòôõöúùûüçñ';
+    const semAcento = 'aaaaaeeeeiiiiooooouuuucn';
+    var resultado = texto.toLowerCase();
+    for (int i = 0; i < comAcento.length; i++) {
+      resultado = resultado.replaceAll(comAcento[i], semAcento[i]);
+    }
+    return resultado;
+  }
+
+  // ===========================================================================
+  // FILTRO LOCAL
+  // ===========================================================================
+  void _aplicarFiltros() {
+    final busca = _normalizar(_buscaController.text.trim());
+    final double? estoqueMin =
+        double.tryParse(_estoqueMinController.text.replaceAll(',', '.'));
+    final double? estoqueMax =
+        double.tryParse(_estoqueMaxController.text.replaceAll(',', '.'));
+
+    final resultado = plantas.where((e) {
+      if (e is! Map) return false;
+      final item = Map<String, dynamic>.from(e);
+
+      // Aceita os nomes de campos antigos e os retornados pela API HydroFlow.
+      final id = item['ID'] ?? item['PLANTA_ID'] ?? item['id'] ?? '';
+      final codigo = item['CODIGO'] ?? item['PLANTA_CODIGO'] ?? item['codigo'] ?? '';
+      final nome = item['NOME'] ?? item['PLANTA_NOME'] ?? item['nome'] ?? '';
+      final tipo = item['TIPO'] ?? item['PLANTA_TIPO'] ?? item['tipo'] ?? '';
+      final cultura = item['CULTURA'] ?? item['PLANTA_CULTURA'] ?? item['cultura'] ?? '';
+
+      // Busca por ID, código, nome, tipo ou cultura.
+      if (busca.isNotEmpty) {
+        final texto = _normalizar('$id $codigo $nome $tipo $cultura');
+        if (!texto.contains(busca)) return false;
       }
-      );
-      
-      //Converter a resposta em JSON
-      final resultado = jsonDecode(resposta.body);
 
-      //Verificar se a resposta da API foi bem sucedida
-      if(resposta.statusCode == 200){
-        setState((){
-          //Salvar os componentes em uma variável
-          plantas = resultado['data'] ?? [];
+      final estoque = _toDouble(
+        item['ESTOQUE'] ?? item['PLANTA_ESTOQUE'] ?? item['PLANTA_QTD_AGUA'] ?? 0,
+      );
+
+      if (estoqueMin != null && estoque < estoqueMin) return false;
+      if (estoqueMax != null && estoque > estoqueMax) return false;
+
+      switch (_estoqueFiltro) {
+        case 'com_estoque':
+          if (!(estoque > 0)) return false;
+          break;
+        case 'sem_estoque':
+          if (!(estoque <= 0)) return false;
+          break;
+      }
+      return true;
+    }).toList();
+
+    setState(() {
+      plantasFiltradas = resultado;
+    });
+  }
+
+  void _limparFiltros() {
+    _buscaController.clear();
+    _estoqueMinController.clear();
+    _estoqueMaxController.clear();
+    _estoqueFiltro = 'todos';
+    _aplicarFiltros();
+  }
+
+  // ===========================================================================
+  // API
+  // ===========================================================================
+  Future<void> consultarplantas() async {
+    if (!mounted) return;
+    setState(() {
+      carregando = true;
+      erro = null;
+    });
+
+    try {
+      final resposta = await http.get(
+        Uri.parse('$_baseUrl/plantas'),
+        headers: {'Accept': 'application/json'},
+      );
+
+      print('STATUS PLANTAS: ${resposta.statusCode}');
+      print('RESPOSTA PLANTAS: ${resposta.body}');
+
+      if (!mounted) return;
+
+      final dynamic resultado = jsonDecode(resposta.body);
+
+      if (resposta.statusCode == 200) {
+        List<dynamic> lista = [];
+        if (resultado is List) {
+          lista = resultado;
+        } else if (resultado is Map && resultado['data'] is List) {
+          lista = resultado['data'];
+        }
+
+        plantas = lista;
+        carregando = false;
+        _aplicarFiltros(); // mantém os filtros ativos após atualizar
+      } else {
+        setState(() {
+          erro = (resultado is Map ? resultado['message'] : null)
+                  ?.toString() ??
+              'Erro ao consultar plantas';
           carregando = false;
         });
       }
-      else {
-       setState((){
-          //Salva uma mensagem de erro
-          plantas = resultado['message'] ?? 'Erro ao consultar plantas';
-          carregando = false;
-        }); 
-      }
-    }
-    catch(e){
-      setState((){
+    } catch (e) {
+      print('ERRO PLANTAS: $e');
+      if (!mounted) return;
+      setState(() {
         erro = 'Erro: $e';
         carregando = false;
       });
     }
   }
 
-  Future<void> excluirplantas(dynamic plantasID) async {
-    try{
-      //Faz uma requisição http do tipo Delete para a API
+  Future<void> excluirplantas(dynamic plantaId) async {
+    try {
       final resposta = await http.delete(
-        Uri.parse(
-          'http://10.141.131.48/HydroFlow/public/api/plantas/$plantasID' //MUDAR ESSA BAGAÇA
-        ),
-        //informar para a API que os dados são em json
+        Uri.parse('$_baseUrl/plantas/$plantaId'),
         headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
       );
-      //Converter a resposta em JSON
-      final resultado = jsonDecode(resposta.body);
 
-      //Verificar se a exclusão foi concluída
-      if(resposta.statusCode == 200 || resposta.statusCode == 201){
+      if (!mounted) return;
+
+      String? mensagem;
+      try {
+        final resultado = jsonDecode(resposta.body);
+        if (resultado is Map) mensagem = resultado['message']?.toString();
+      } catch (_) {}
+
+      if (resposta.statusCode == 200 ||
+          resposta.statusCode == 201 ||
+          resposta.statusCode == 204) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('plantas excluído com sucesso!')),
+          const SnackBar(content: Text('Planta excluída com sucesso!')),
         );
-
-        await consultarplantas(); // Atualizar a tela após excluir
-      }
-      else {
-        //Exibe uma mensagem de erro
+        await consultarplantas();
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao excluir plantas: ${resultado['message'] ?? 'Erro desconhecido'}')),
+          SnackBar(
+              content:
+                  Text('Erro ao excluir planta: ${mensagem ?? 'Erro desconhecido'}')),
         );
       }
-
-    }
-    catch(e){
-      //Exibe erro da api
+    } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao acessar API: $e')),
-        );
+        SnackBar(content: Text('Erro ao acessar API: $e')),
+      );
     }
   }
 
   @override
   void dispose() {
     horizontalController.dispose();
+    _buscaController.dispose();
+    _estoqueMinController.dispose();
+    _estoqueMaxController.dispose();
     super.dispose();
   }
 
+  // ===========================================================================
+  // BUILD
+  // ===========================================================================
   @override
   Widget build(BuildContext context) {
-    // Escutando as configurações do Provider de acessibilidade
     final acc = Provider.of<AccessibilityProvider>(context);
     final high = acc.isHighContrast;
     final f = acc.fontSizeFactor;
@@ -1023,6 +1123,17 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
         ? const BorderSide(color: DarkPalette.surfaceBorder, width: 2)
         : BorderSide.none;
 
+    final decoracaoCard = BoxDecoration(
+      color: bgContainer,
+      borderRadius: BorderRadius.circular(12),
+      border: high
+          ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5)
+          : null,
+      boxShadow: high
+          ? []
+          : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8)],
+    );
+
     return Scaffold(
       backgroundColor: bgPage,
       appBar: AppBar(
@@ -1031,173 +1142,350 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
         foregroundColor: Colors.white,
         elevation: 0,
         shape: Border(bottom: appBarBorder),
-        //Adicionar um botão de atualização
         actions: [
           IconButton(
-            onPressed: (){
-              setState((){
-                carregando = true;
-                erro = null;
-              });
-              consultarplantas();
-            },
+            onPressed: consultarplantas,
             icon: const Icon(Icons.refresh),
           ),
           const BotaoAcessibilidade(),
         ],
       ),
-      body: 
-      carregando
-      ? Center(
-        child: CircularProgressIndicator(
-          color: high ? Colors.cyanAccent : azul,
-        ),
-      )
-      :
-      Padding(
-        padding: const EdgeInsets.all(24),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: bgContainer,
-            borderRadius: BorderRadius.circular(12),
-            border: high ? Border.all(color: DarkPalette.surfaceBorder, width: 1.5) : null,
-            boxShadow: high
-                ? []
-                : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8)],
-          ),
-          child: Scrollbar(
-            controller: horizontalController,
-            thumbVisibility: true,
-            trackVisibility: true,
-            scrollbarOrientation: ScrollbarOrientation.bottom,
-            child: SingleChildScrollView(
-              controller: horizontalController,
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(
-                  high ? DarkPalette.surfaceElevated : const Color(0xFFE7F0F2),
-                ),
-                headingTextStyle: TextStyle(
-                  color: high ? Colors.cyanAccent : azul,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14 * f,
-                ),
-                dataTextStyle: TextStyle(
-                  color: high ? DarkPalette.textSecondary : Colors.black87,
-                  fontSize: 13 * f,
-                ),
-                border: TableBorder.all(
-                  color: high ? DarkPalette.surfaceBorder : const Color(0xFFE0E5E7),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                columns: const [
-                  DataColumn(
-                    label: Text(
-                      'ID',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+      body: carregando
+          ? Center(
+              child: CircularProgressIndicator(
+                color: high ? Colors.cyanAccent : azul,
+              ),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // MENSAGEM DE ERRO
+                  if (erro != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child:
+                          Text(erro!, style: const TextStyle(color: Colors.red)),
                     ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'CODIGO',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'NOME',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'ESTOQUE',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Ações',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-                
-                // Criar uma lista de linhas da tabela a partir dos componentes
-                rows: plantas.map<DataRow> ((plantas) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(plantas['ID'] ?? '')),
-                      DataCell(Text(plantas['CODIGO'] ?? '')),
-                      DataCell(Text(plantas['NOME'] ?? '')),
-                      DataCell(Text(plantas['ESTOQUE'] ?? '')),
-                      DataCell(
+
+                  // CARD 1: FILTROS DE BUSCA
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: decoracaoCard,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Row(
                           children: [
-                            IconButton(
-                              icon: Icon(Icons.edit, color: high ? Colors.cyanAccent : const Color.fromARGB(255, 3, 83, 148)),
-                              onPressed: () {
-                                // Lógica para editar o modelo
-                                final id = plantas['ID'];
-                              }
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete, color: high ? Colors.redAccent : Colors.red),
-                              onPressed: () async {
-                                // Lógica para excluir o modelo
-                                final id = plantas['ID'];
-
-                                //Exibir uma mensagem de confirmação antes de excluir o modelo
-                                final confirmar = await showDialog<bool>(
-                                  context: context,
-                                  builder: (context){
-                                    return AlertDialog(
-                                      backgroundColor: high ? DarkPalette.surface : Colors.white,
-                                      title: Text(
-                                        "Excluir Modelo?",
-                                        style: TextStyle(color: high ? DarkPalette.textPrimary : Colors.black87),
-                                      ),
-                                      content: Text(
-                                        "Deseja excluir o modelo ${plantas['NOME']}",
-                                        style: TextStyle(color: high ? DarkPalette.textSecondary : Colors.black87),
-                                      ),
-                                      actions: [
-                                        //Botão de cancelar a ação
-                                        TextButton(
-                                          onPressed:() {
-                                            Navigator.pop(context, false);
-                                          },
-                                          child: Text("Cancelar", style: TextStyle(color: high ? Colors.cyanAccent : azul))
-                                        ),
-                                        
-                                        //Botão de excluir
-                                        TextButton(
-                                          onPressed:() {
-                                            Navigator.pop(context, true);
-                                          },
-                                          child: const Text("excluir", style: TextStyle(color: Colors.red))
-                                        ),
-                                      ],
-                                    );
-                                  }
-                                );
-                                //Se o usuário confimar a exclusão, chama a função
-                                if(confirmar == true){
-                                  await excluirplantas(id);
-                                }
-                              }
+                            Icon(Icons.filter_alt,
+                                color:
+                                    high ? Colors.cyanAccent : Colors.grey[700]),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Filtros de Busca',
+                              style: TextStyle(
+                                fontSize: 16 * f,
+                                fontWeight: FontWeight.bold,
+                                color: high
+                                    ? DarkPalette.textPrimary
+                                    : Colors.black87,
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  );
-                }). toList()
+                        const SizedBox(height: 16),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: [
+                            _buildTextField('Buscar (nome/código)',
+                                _buscaController, 'Ex: Alface', high,
+                                width: 220),
+                            _buildNumberField('Estoque mínimo',
+                                _estoqueMinController, 'Ex: 1', high),
+                            _buildNumberField('Estoque máximo',
+                                _estoqueMaxController, 'Ex: 50', high),
+                            _buildDropdownEstoque(high),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: _aplicarFiltros,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF00A65A),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6)),
+                                ),
+                                icon: const Icon(Icons.search,
+                                    color: Colors.white),
+                                label: Text(
+                                  'Filtrar',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14 * f),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: _limparFiltros,
+                                style: OutlinedButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 14),
+                                  foregroundColor:
+                                      high ? Colors.cyanAccent : Colors.black87,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6)),
+                                ),
+                                icon: const Icon(Icons.clear),
+                                label: Text('Limpar',
+                                    style: TextStyle(fontSize: 14 * f)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // CARD 2: TABELA
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: decoracaoCard,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Plantas cadastradas (${plantasFiltradas.length})',
+                          style: TextStyle(
+                            fontSize: 15 * f,
+                            fontWeight: FontWeight.bold,
+                            color: high ? DarkPalette.textPrimary : azul,
+                          ),
+                        ),
+                        const Divider(height: 20),
+                        Scrollbar(
+                          controller: horizontalController,
+                          thumbVisibility: true,
+                          trackVisibility: true,
+                          scrollbarOrientation: ScrollbarOrientation.bottom,
+                          child: SingleChildScrollView(
+                            controller: horizontalController,
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              headingRowColor: WidgetStateProperty.all(
+                                high
+                                    ? DarkPalette.surfaceElevated
+                                    : const Color(0xFFE7F0F2),
+                              ),
+                              headingTextStyle: TextStyle(
+                                color: high ? Colors.cyanAccent : azul,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14 * f,
+                              ),
+                              dataTextStyle: TextStyle(
+                                color: high
+                                    ? DarkPalette.textSecondary
+                                    : Colors.black87,
+                                fontSize: 13 * f,
+                              ),
+                              border: TableBorder.all(
+                                color: high
+                                    ? DarkPalette.surfaceBorder
+                                    : const Color(0xFFE0E5E7),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              columns: const [
+                                DataColumn(label: Text('ID')),
+                                DataColumn(label: Text('CODIGO')),
+                                DataColumn(label: Text('NOME')),
+                                DataColumn(label: Text('ESTOQUE')),
+                                DataColumn(label: Text('AÇÕES')),
+                              ],
+                              rows: plantasFiltradas.isEmpty
+                                  ? [
+                                      const DataRow(cells: [
+                                        DataCell(Text(
+                                            'Nenhum registro encontrado.')),
+                                        DataCell(Text('')),
+                                        DataCell(Text('')),
+                                        DataCell(Text('')),
+                                        DataCell(Text('')),
+                                      ])
+                                    ]
+                                  : plantasFiltradas.map<DataRow>((rowItem) {
+                                      final planta = Map<String, dynamic>.from(
+                                          rowItem as Map);
+                                      return _buildRow(planta, high);
+                                    }).toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
+    );
+  }
+
+  // ===========================================================================
+  // LINHA DA TABELA
+  // ===========================================================================
+  DataRow _buildRow(Map<String, dynamic> planta, bool high) {
+    return DataRow(
+      cells: [
+        DataCell(Text(planta['ID']?.toString() ?? '')),
+        DataCell(Text(planta['CODIGO']?.toString() ?? '')),
+        DataCell(Text(planta['NOME']?.toString() ?? '')),
+        DataCell(Text(planta['ESTOQUE']?.toString() ?? '')),
+        DataCell(
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.edit,
+                  color: high
+                      ? Colors.cyanAccent
+                      : const Color.fromARGB(255, 3, 83, 148),
+                ),
+                onPressed: () {
+                  // TODO: lógica para editar a planta
+                  final id = planta['ID'];
+                  print('Editar planta: $id');
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.delete,
+                    color: high ? Colors.redAccent : Colors.red),
+                onPressed: () async {
+                  final id = planta['ID'];
+
+                  final confirmar = await showDialog<bool>(
+                    context: context,
+                    builder: (dialogContext) {
+                      return AlertDialog(
+                        backgroundColor:
+                            high ? DarkPalette.surface : Colors.white,
+                        title: Text(
+                          'Excluir planta?',
+                          style: TextStyle(
+                              color: high
+                                  ? DarkPalette.textPrimary
+                                  : Colors.black87),
+                        ),
+                        content: Text(
+                          'Deseja excluir a planta ${planta['NOME'] ?? ''}?',
+                          style: TextStyle(
+                              color: high
+                                  ? DarkPalette.textSecondary
+                                  : Colors.black87),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pop(dialogContext, false),
+                            child: Text('Cancelar',
+                                style: TextStyle(
+                                    color: high ? Colors.cyanAccent : azul)),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(dialogContext, true),
+                            child: const Text('Excluir',
+                                style: TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  if (confirmar == true) {
+                    await excluirplantas(id);
+                  }
+                },
+              ),
+            ],
           ),
         ),
+      ],
+    );
+  }
+
+  // ===========================================================================
+  // COMPONENTES AUXILIARES
+  // ===========================================================================
+  Widget _buildTextField(String label, TextEditingController controller,
+      String placeholder, bool isHigh,
+      {double width = 150}) {
+    return SizedBox(
+      width: width,
+      child: TextField(
+        controller: controller,
+        onChanged: (_) => _aplicarFiltros(), // filtra enquanto digita
+        style: TextStyle(color: isHigh ? Colors.white : Colors.black),
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: placeholder,
+          isDense: true,
+          border: const OutlineInputBorder(),
+          suffixIcon: const Icon(Icons.search, size: 18),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNumberField(String label, TextEditingController controller,
+      String placeholder, bool isHigh) {
+    return SizedBox(
+      width: 150,
+      child: TextField(
+        controller: controller,
+        onChanged: (_) => _aplicarFiltros(),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        style: TextStyle(color: isHigh ? Colors.white : Colors.black),
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: placeholder,
+          isDense: true,
+          border: const OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownEstoque(bool isHigh) {
+    return SizedBox(
+      width: 170,
+      child: DropdownButtonFormField<String>(
+        value: _estoqueFiltro,
+        decoration: const InputDecoration(
+          labelText: 'Situação do estoque',
+          isDense: true,
+          border: OutlineInputBorder(),
+        ),
+        dropdownColor: isHigh ? DarkPalette.surface : Colors.white,
+        style: TextStyle(color: isHigh ? Colors.white : Colors.black),
+        items: const [
+          DropdownMenuItem(value: 'todos', child: Text('Todos')),
+          DropdownMenuItem(value: 'com_estoque', child: Text('Com estoque')),
+          DropdownMenuItem(value: 'sem_estoque', child: Text('Sem estoque')),
+        ],
+        onChanged: (val) {
+          if (val != null) {
+            _estoqueFiltro = val;
+            _aplicarFiltros();
+          }
+        },
       ),
     );
   }

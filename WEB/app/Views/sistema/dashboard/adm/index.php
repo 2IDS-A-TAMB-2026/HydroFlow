@@ -49,7 +49,7 @@
 
                     <div class="card-content">
                         <h3><?= $inativos ?? 30 ?></h3>
-                        <p>Dispositivos Inativos</p>
+                        <p>Dispositivos</p>
                     </div>
 
                     <i class="fa-solid fa-bug card-icon"></i>

@@ -181,7 +181,7 @@
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-bottom: 20px;">
             
-            <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 20px; border: 1px solid #eef2f5; display: flex; align-items: center; min-height: 280px; box-sizing: border-box;">
+            <div class= "statusUsu" style="">
                 <div style="width: 45%; height: 100%; max-height: 200px;">
                     <canvas id="chartStatusUsuarios"></canvas>
                 </div>
@@ -194,7 +194,7 @@
                 </div>
             </div>
 
-            <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 20px; border: 1px solid #eef2f5; display: flex; flex-direction: column; min-height: 280px; justify-content: flex-start; box-sizing: border-box;">
+            <div class="mapaUsu" style="">
                 <h4 style="margin: 0 0 5px 0; color: #4a5568; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Distribuição Geográfica</h4>
                 
                 <div style="width: 100%; height: 100%; min-height: 220px;">

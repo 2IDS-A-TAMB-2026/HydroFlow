@@ -10,7 +10,6 @@ import 'home.dart';
 import 'login.dart';
 import 'sobre_nos.dart';
 import 'dashboard.dart';
-import 'esqueci_senha.dart';
 import 'cadastro_planta.dart';
 import 'plantas.dart';
 import 'sensores.dart';
@@ -80,7 +79,6 @@ class HydroflowApp extends StatelessWidget {
         '/login': (context) => const LoginMobilePage(),
         '/sobre': (context) => const SobreNos(),
         '/dashboard': (context) => const DashboardPage(),
-        '/nova_senha': (context) => const NovaSenhaPage(),
         '/cadastro_plantas': (context) => const CadastroPlantaPage(),
         '/plantas': (context) => const PlantasPage(),
         '/equipamentos': (context) => const RelatoriodispositivosPage(),

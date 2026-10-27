@@ -140,7 +140,7 @@
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px;">
         
-        <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 15px; border: 1px solid #eef2f5; display: flex; align-items: center; height: 140px;">
+        <div class = "statusSen"style="">
             <div style="width: 40%; height: 100%;">
                 <canvas id="chartStatusHardwareRosca"></canvas>
             </div>
@@ -153,7 +153,7 @@
             </div>
         </div>
 
-        <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 15px; border: 1px solid #eef2f5; display: flex; align-items: center; height: 140px;">
+        <div class = "mapSen" style="">
             <div style="width: 40%; height: 100%;">
                 <canvas id="chartTiposBarra"></canvas>
             </div>

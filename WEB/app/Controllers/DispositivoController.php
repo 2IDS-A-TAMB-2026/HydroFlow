@@ -181,90 +181,162 @@ class DispositivoController extends BaseController
      * Área do Usuário: Listagem dos Dispositivos Vinculados à Sessão do Cliente
      * Rota: /meus-dispositivos
      */
+    
     public function meusDispositivos()
     {
-        // 1. TRAVA DE SEGURANÇA SEGUNDO SUAS REGRAS: Verifica se o usuário está logado
+        // 1. Verifica se o usuário está logado
         if (!session()->get('logado') && !session()->get('id')) {
-            return redirect()->to(base_url('login'))->with('erro', 'Acesso restrito. Por favor, faça login.');
+            return redirect()->to(base_url('login'))
+                ->with('erro', 'Acesso restrito. Por favor, faça login.');
         }
 
-        // 2. Captura o ID do usuário guardado na sessão atual dele (com os seus fallbacks)
-        $usuarioId = session()->get('id') ?? session()->get('id_usuario') ?? session()->get('USU_ID');
+        // 2. Captura o ID do usuário
+        $usuarioId = session()->get('id')
+            ?? session()->get('id_usuario')
+            ?? session()->get('USU_ID');
 
-        // 3. Captura TODOS os filtros de busca vindos da URL (GET)
+        // 3. Captura os filtros da URL
         $busca  = $this->request->getGet('busca');
         $status = $this->request->getGet('status');
         $nivel  = $this->request->getGet('nivel');
 
-        // 4. Query com JOIN na tabela SENSOR e aliases para os campos não colidirem
+        // 4. Busca os dispositivos SEM JOIN com SENSOR
+        // Assim, cada dispositivo aparece apenas uma vez.
         $query = $this->dispositivoModel
-                      ->select('DISPOSITIVO.*, SENSOR.SEN_NOME as sensor_nome, SENSOR.SEN_TIPO as sensor_tipo, SENSOR.SEN_STATUS as sensor_status')
-                      ->join('SENSOR', 'SENSOR.FK_DIS_ID = DISPOSITIVO.DIS_ID', 'left') // Left join garante exibições sem sensor
-                      ->where('DISPOSITIVO.FK_USU_ID', $usuarioId);
+            ->where('DISPOSITIVO.FK_USU_ID', $usuarioId);
 
-        // FILTRO 1: Busca por texto (Nome ou Descrição)
+        // Filtro por nome ou descrição
         if (!empty($busca)) {
-            $query = $query->groupStart()
-                           ->like('DISPOSITIVO.DIS_NOME', $busca)
-                           ->orLike('DISPOSITIVO.DIS_DESCRICAO', $busca)
-                           ->groupEnd();
+            $query->groupStart()
+                ->like('DISPOSITIVO.DIS_NOME', $busca)
+                ->orLike('DISPOSITIVO.DIS_DESCRICAO', $busca)
+                ->groupEnd();
         }
 
-        // FILTRO 2: Busca por Status (Ativo / Inativo)
+        // Filtro por status
         if (!empty($status)) {
-            $query = $query->where('DISPOSITIVO.DIS_STATUS', strtoupper($status));
+            $query->where(
+                'DISPOSITIVO.DIS_STATUS',
+                strtoupper($status)
+            );
         }
 
-        // FILTRO 3: Busca Inteligente por Faixas de Nível do Tanque
+        // Filtro por nível do tanque
         if (!empty($nivel)) {
             if ($nivel === 'critico') {
-                $query = $query->where('DISPOSITIVO.DIS_NIVEL_TANQUE <', 30);
+                $query->where('DISPOSITIVO.DIS_NIVEL_TANQUE <', 30);
             } elseif ($nivel === 'alerta') {
-                $query = $query->where('DISPOSITIVO.DIS_NIVEL_TANQUE >=', 30)->where('DISPOSITIVO.DIS_NIVEL_TANQUE <=', 50);
+                $query->where('DISPOSITIVO.DIS_NIVEL_TANQUE >=', 30)
+                    ->where('DISPOSITIVO.DIS_NIVEL_TANQUE <=', 50);
             } elseif ($nivel === 'ideal') {
-                $query = $query->where('DISPOSITIVO.DIS_NIVEL_TANQUE >', 50);
+                $query->where('DISPOSITIVO.DIS_NIVEL_TANQUE >', 50);
             }
         }
 
-        // 5. Executa a busca trazendo os dispositivos filtrados do dono
-        $dados['dispositivos'] = $query->findAll();
-        
-        // Devolvemos os estados dos filtros para manter os selects selecionados na tela
-        $dados['busca']        = $busca;
-        $dados['status_sel']   = $status;
-        $dados['nivel_sel']    = $nivel;
-        $dados['titulo']       = "Meus Dispositivos - HydroFlow";
+        // 5. Executa a busca dos dispositivos
+        $dispositivos = $query->findAll();
+
+        // 6. Busca os sensores separadamente
+        // Preserva os dados dos dois sensores de cada dispositivo.
+        $sensoresPorDispositivo = [];
+
+        if (!empty($dispositivos)) {
+            $idsDispositivos = array_column($dispositivos, 'DIS_ID');
+
+            $db = \Config\Database::connect();
+
+            $sensores = $db->table('SENSOR')
+                ->select('FK_DIS_ID, SEN_NOME, SEN_TIPO, SEN_STATUS')
+                ->whereIn('FK_DIS_ID', $idsDispositivos)
+                ->get()
+                ->getResultArray();
+
+            // Agrupa os sensores pelo dispositivo correspondente
+            foreach ($sensores as $sensor) {
+                $idDispositivo = $sensor['FK_DIS_ID'];
+
+                $sensoresPorDispositivo[$idDispositivo][] = [
+                    'nome'   => $sensor['SEN_NOME'],
+                    'tipo'   => $sensor['SEN_TIPO'],
+                    'status' => $sensor['SEN_STATUS'],
+                ];
+            }
+        }
+
+        // 7. Anexa os sensores a cada dispositivo
+        foreach ($dispositivos as &$dispositivo) {
+            $idDispositivo = $dispositivo['DIS_ID'];
+
+            $dispositivo['sensores'] =
+                $sensoresPorDispositivo[$idDispositivo] ?? [];
+
+            // Mantém compatibilidade com o modal atual,
+            // que utiliza os dados de um único sensor.
+            $primeiroSensor = $dispositivo['sensores'][0] ?? null;
+
+            $dispositivo['sensor_nome'] =
+                $primeiroSensor['nome'] ?? '';
+
+            $dispositivo['sensor_tipo'] =
+                $primeiroSensor['tipo'] ?? '';
+
+            $dispositivo['sensor_status'] =
+                $primeiroSensor['status'] ?? '';
+        }
+
+        unset($dispositivo);
+
+        $dados['dispositivos'] = $dispositivos;
+
+        // 8. Preserva os filtros selecionados na tela
+        $dados['busca']      = $busca;
+        $dados['status_sel'] = $status;
+        $dados['nivel_sel']  = $nivel;
+        $dados['titulo']     = 'Meus Dispositivos - HydroFlow';
 
         // ================= GRÁFICOS DO USUÁRIO =================
-        // Gráfico 1: Status dos dispositivos DELE (Ativos vs Inativos)
-        $contagemStatus = $this->dispositivoModel->getContagemStatus($usuarioId);
-        
+
+        // Gráfico 1: Status dos dispositivos
+        $contagemStatus = $this->dispositivoModel
+            ->getContagemStatus($usuarioId);
+
         $statusLabels = [];
         $statusValores = [];
+
         foreach ($contagemStatus as $cs) {
             $statusLabels[] = strtoupper($cs['DIS_STATUS']);
-            $statusValores[] = (int)$cs['total'];
+            $statusValores[] = (int) $cs['total'];
         }
+
         $dados['grafico_status'] = [
             'labels'  => $statusLabels,
-            'valores' => $statusValores
+            'valores' => $statusValores,
         ];
 
-        // Gráfico 2: Nível dos Tanques (Baseado nos itens que restaram após o filtro)
+        // Gráfico 2: Nível dos tanques dos dispositivos filtrados
         $tanqueLabels = [];
         $tanqueValores = [];
-        $dispositivosGrafico = array_slice($dados['dispositivos'], 0, 10); 
+
+        $dispositivosGrafico = array_slice(
+            $dados['dispositivos'],
+            0,
+            10
+        );
+
         foreach ($dispositivosGrafico as $disp) {
             $tanqueLabels[] = $disp['DIS_NOME'];
-            $tanqueValores[] = (float)$disp['DIS_NIVEL_TANQUE'];
+            $tanqueValores[] = (float) $disp['DIS_NIVEL_TANQUE'];
         }
+
         $dados['grafico_tanques'] = [
             'labels'  => $tanqueLabels,
-            'valores' => $tanqueValores
+            'valores' => $tanqueValores,
         ];
-        // =====================================================
 
-        // 6. Renderiza a View do painel do cliente
+        // =======================================================
+
+        // 9. Renderiza a view
         return view('sistema/dispositivos/meus-dispositivos', $dados);
     }
+
 }

@@ -99,4 +99,119 @@ class PlantasController extends ResourceController
             'id'       => $this->model->getInsertID()
         ]);
     }
+
+    
+    // Exclui uma planta pelo ID
+    public function delete($id = null)
+    {
+        // Verifica se o ID foi informado
+        if ($id === null) {
+            return $this->fail('ID da planta não informado.', 400);
+        }
+
+        // Identifica o usuário logado
+        $idUsuarioLogado = session()->get('id')
+            ?? session()->get('id_usuario')
+            ?? session()->get('USU_ID')
+            ?? $this->request->getGet('usuario_id')
+            ?? $this->request->getHeaderLine('X-User-Id');
+
+        if (empty($idUsuarioLogado)) {
+            return $this->failUnauthorized(
+                'Não foi possível identificar o usuário logado.'
+            );
+        }
+
+        // Busca a planta pelo ID
+        $planta = $this->model->find($id);
+
+        if ($planta === null) {
+            return $this->failNotFound('Planta não encontrada.');
+        }
+
+        // Verifica se a planta pertence ao usuário logado
+        if ($planta['FK_USU_ID'] != $idUsuarioLogado) {
+            return $this->failForbidden(
+                'Você não tem permissão para excluir esta planta.'
+            );
+        }
+
+        // Exclui a planta
+        if ($this->model->delete($id) === false) {
+            return $this->fail('Não foi possível excluir a planta.', 400);
+        }
+
+        return $this->respond([
+            'status' => 200,
+            'mensagem' => 'Planta excluída com sucesso!'
+        ]);
+    }
+
+    
+public function atualizar($id = null)
+{
+    if ($id === null) {
+        return $this->fail('ID da planta não informado.', 400);
+    }
+
+    $usuarioId = session()->get('id')
+        ?? session()->get('id_usuario')
+        ?? session()->get('USU_ID')
+        ?? $this->request->getGet('usuario_id')
+        ?? $this->request->getHeaderLine('X-User-Id');
+
+    if (empty($usuarioId)) {
+        return $this->failUnauthorized(
+            'Não foi possível identificar o usuário logado.'
+        );
+    }
+
+    $planta = $this->model->find($id);
+
+    if ($planta === null) {
+        return $this->failNotFound('Planta não encontrada.');
+    }
+
+    if ((string) $planta['FK_USU_ID'] !== (string) $usuarioId) {
+        return $this->failForbidden(
+            'Você não tem permissão para editar esta planta.'
+        );
+    }
+
+    $dadosRecebidos = $this->request->getJSON(true);
+
+    if (!is_array($dadosRecebidos) || empty($dadosRecebidos)) {
+        return $this->fail('Nenhum dado foi enviado.', 400);
+    }
+
+    $camposPermitidos = [
+        'PLANTA_NOME',
+        'PLANTA_TIPO',
+        'PLANTA_QTD_AGUA',
+        'PLANTA_PERIDIOCIDADE',
+        'PLANTA_CULTURA',
+    ];
+
+    $dados = array_intersect_key(
+        $dadosRecebidos,
+        array_flip($camposPermitidos)
+    );
+
+    if (empty($dados)) {
+        return $this->fail(
+            'Nenhum campo válido foi enviado para atualização.',
+            400
+        );
+    }
+
+    if ($this->model->update($id, $dados) === false) {
+        return $this->fail($this->model->errors(), 400);
+    }
+
+    return $this->respond([
+        'status' => 200,
+        'mensagem' => 'Planta atualizada com sucesso!'
+    ]);
+}
+
 }
