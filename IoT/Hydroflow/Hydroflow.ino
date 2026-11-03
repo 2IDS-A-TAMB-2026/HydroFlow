@@ -505,7 +505,3 @@ void loop() {
 
   delay(5000);
 } 
-
-
-
-CODIGO CERTO DESSA PRR DE IOT KR
