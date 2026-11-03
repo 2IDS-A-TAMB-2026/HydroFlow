@@ -18,7 +18,7 @@ class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
   static const Color surfaceElevated = Color(0xFF16324B);
-  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color surfaceBorder = Color(0xFF1E3B46);
   static const Color textPrimary = Color(0xFFF2F6FA);
   static const Color textSecondary = Color(0xFFA9C0D6);
 }
@@ -103,7 +103,7 @@ class _DashboardPageState extends State<DashboardPage> {
       }
 
       final resposta = await http.get(
-        Uri.parse('http://10.141.131.57/HydroFlow/public/api/dashboard?usuario_id=$idUsuario'),
+        Uri.parse('http://10.141.131.46/HydroFlow/public/api/dashboard?usuario_id=$idUsuario'),
         headers: {
           'Accept': 'application/json',
           //'X-Usuario-Id': idUsuario.toString(),

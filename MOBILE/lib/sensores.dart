@@ -15,7 +15,7 @@ class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
   static const Color surfaceElevated = Color(0xFF16324B);
-  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color surfaceBorder = Color(0xFF1E3B46);
   static const Color textPrimary = Color(0xFFF2F6FA);
   static const Color textSecondary = Color(0xFFA9C0D6);
 }
@@ -39,7 +39,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
   String? erro;
 
   final String apiUrl =
-      'http://10.141.131.57/HydroFlow/public/api/dispositivos';
+      'http://10.141.131.46/HydroFlow/public/api/dispositivos';
 
   static const azul = Color(0xFF002855);
 
@@ -747,7 +747,7 @@ class _RelatoriodispositivosPageState extends State<RelatoriodispositivosPage> {
           children: [
             Icon(
               Icons.error_outline,
-              size: 57 * f,
+              size: 46 * f,
               color: high ? Colors.redAccent : Colors.red,
             ),
             const SizedBox(height: 12),

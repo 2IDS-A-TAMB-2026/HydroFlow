@@ -15,7 +15,7 @@ class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
   static const Color surfaceElevated = Color(0xFF16324B);
-  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color surfaceBorder = Color(0xFF1E3B46);
   static const Color textPrimary = Color(0xFFF2F6FA);
   static const Color textSecondary = Color(0xFFA9C0D6);
 }
@@ -125,7 +125,7 @@ class _Relatoriodados_sensoresPageState
       };
 
       final uri = Uri.parse(
-        'http://10.141.131.57/HydroFlow/public/api/dados_sensores',
+        'http://10.141.131.46/HydroFlow/public/api/dados_sensores',
       ).replace(queryParameters: parametros);
 
       print('URL DOS SENSORES: $uri');
@@ -905,7 +905,7 @@ class _Relatoriodados_sensoresPageState
     } else {
       text = 'Ótimo';
       bg = const Color(0xFFD4EDDA);
-      fg = const Color(0xFF155724);
+      fg = const Color(0xFF154624);
     }
 
     return Container(

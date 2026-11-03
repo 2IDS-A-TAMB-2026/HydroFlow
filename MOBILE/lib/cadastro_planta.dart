@@ -13,7 +13,7 @@ class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
   static const Color surfaceElevated = Color(0xFF16324B);
-  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color surfaceBorder = Color(0xFF1E3B46);
   static const Color textPrimary = Color(0xFFF2F6FA);
   static const Color textSecondary = Color(0xFFA9C0D6);
 }
@@ -27,11 +27,11 @@ class CadastroPlantaPage extends StatefulWidget {
 
 class _CadastroPlantaPageState extends State<CadastroPlantaPage> {
   static const String _urlApi =
-      'http://10.141.131.57/HydroFlow/public/api/plantas/novo';
+      'http://10.141.131.46/HydroFlow/public/api/plantas/novo';
 
   // [NOVO] URL para buscar os dispositivos do usuário logado
   static const String _urlDispositivos =
-      'http://10.141.131.57/HydroFlow/public/api/dispositivos';
+      'http://10.141.131.46/HydroFlow/public/api/dispositivos';
 
   final _formKey = GlobalKey<FormState>();
 

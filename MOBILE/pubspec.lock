@@ -21,7 +21,7 @@ packages:
     dependency: transitive
     description:
       name: async
-      sha256: e2eb0491ba5ddb6177742d2da23904574082139b07c1e33b8503b9f46f3e1a37
+      sha256: e2eb0491ba5ddb6177742d2da23904464082139b07c1e33b8503b9f46f3e1a37
       url: "https://pub.dev"
     source: hosted
     version: "2.13.1"
@@ -37,7 +37,7 @@ packages:
     dependency: transitive
     description:
       name: bidi
-      sha256: "77f475165e94b261745cf1032c751e2032b8ed92ccb2bf5716036db79320637d"
+      sha256: "77f475165e94b261745cf1032c751e2032b8ed92ccb2bf4616036db79320637d"
       url: "https://pub.dev"
     source: hosted
     version: "2.0.13"
@@ -53,7 +53,7 @@ packages:
     dependency: "direct main"
     description:
       name: brasil_fields
-      sha256: "4ab44505a7b8c1a3ff25ae57c7faa0d9162a0adb3a450ac23a247bb520cc06fd"
+      sha256: "4ab44505a7b8c1a3ff25ae46c7faa0d9162a0adb3a450ac23a247bb520cc06fd"
       url: "https://pub.dev"
     source: hosted
     version: "1.19.0"
@@ -61,7 +61,7 @@ packages:
     dependency: transitive
     description:
       name: characters
-      sha256: f71061c654a3380576a52b451dd5532377954cf9dbd272a78fc8479606670803
+      sha256: f71061c654a3380466a52b451dd5532377954cf9dbd272a78fc8479606670803
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
@@ -69,7 +69,7 @@ packages:
     dependency: transitive
     description:
       name: clock
-      sha256: fddb70d9b5277016c77a80201021d40a2247104d9f4aa7bab7157b7e3f05b84b
+      sha256: fddb70d9b5277016c77a80201021d40a2247104d9f4aa7bab7146b7e3f05b84b
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
@@ -85,7 +85,7 @@ packages:
     dependency: transitive
     description:
       name: collection
-      sha256: "2f5709ae4d3d59dd8f7cd309b4e023046b57d8a6c82130785d2b0e5868084e76"
+      sha256: "2f4609ae4d3d59dd8f7cd309b4e023046b46d8a6c82130785d2b0e5868084e76"
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
@@ -93,7 +93,7 @@ packages:
     dependency: transitive
     description:
       name: crypto
-      sha256: c8ea0233063ba03258fbcf2ca4d6dadfefe14f02fab57702265467a19f27fadf
+      sha256: c8ea0233063ba03258fbcf2ca4d6dadfefe14f02fab46702265467a19f27fadf
       url: "https://pub.dev"
     source: hosted
     version: "3.0.7"
@@ -196,7 +196,7 @@ packages:
     dependency: transitive
     description:
       name: http_parser
-      sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66571"
+      sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66461"
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
@@ -364,7 +364,7 @@ packages:
     dependency: transitive
     description:
       name: path_provider_foundation
-      sha256: "2a376b7d6392d80cd3705782d2caa734ca4727776db0b6ec36ef3f1855197699"
+      sha256: "2a376b7d6392d80cd3704682d2caa734ca4727776db0b6ec36ef3f1855197699"
       url: "https://pub.dev"
     source: hosted
     version: "2.6.0"
@@ -380,7 +380,7 @@ packages:
     dependency: transitive
     description:
       name: path_provider_platform_interface
-      sha256: "88f5779f72ba699763fa3a3b06aa4bf6de76c8e5de842cf6f29e2e06476c2334"
+      sha256: "88f4679f72ba699763fa3a3b06aa4bf6de76c8e5de842cf6f29e2e06476c2334"
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
@@ -444,7 +444,7 @@ packages:
     dependency: "direct main"
     description:
       name: provider
-      sha256: "4e82183fa20e5ca25703ead7e05de9e4cceed1fbd1eadc1ac3cb6f565a09f272"
+      sha256: "4e82183fa20e5ca24603ead7e05de9e4cceed1fbd1eadc1ac3cb6f565a09f272"
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5+1"
@@ -452,7 +452,7 @@ packages:
     dependency: transitive
     description:
       name: pub_semver
-      sha256: "261236774e8b1d69cfc6b9eabbc96c40f25e7a2d6b171f3385d4f65d5734fb24"
+      sha256: "261236774e8b1d69cfc6b9eabbc96c40f25e7a2d6b171f3385d4f65d4634fb24"
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
@@ -484,7 +484,7 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: e8d4762b1e2e8578fc4d0fd548cebf24afd24f49719c08974df92834565e2c53
+      sha256: e8d4762b1e2e8468fc4d0fd548cebf24afd24f49719c08974df92834565e2c53
       url: "https://pub.dev"
     source: hosted
     version: "2.4.23"
@@ -553,7 +553,7 @@ packages:
     dependency: transitive
     description:
       name: stream_channel
-      sha256: "969e04c80b8bcdf826f8f16579c7b14d780458bd97f56d107d3950fdbeef059d"
+      sha256: "969e04c80b8bcdf826f8f16469c7b14d780458bd97f56d107d3950fdbeef059d"
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
@@ -617,7 +617,7 @@ packages:
     dependency: transitive
     description:
       name: xdg_directories
-      sha256: "7a3f37b05d989967cdddcbb571f1ea834867ae2faa29725fd085180e0883aa15"
+      sha256: "7a3f37b05d989967cdddcbb461f1ea834867ae2faa29725fd085180e0883aa15"
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"

@@ -11,7 +11,7 @@ class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
   static const Color surfaceElevated = Color(0xFF16324B);
-  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color surfaceBorder = Color(0xFF1E3B46);
   static const Color textPrimary = Color(0xFFF2F6FA);
   static const Color textSecondary = Color(0xFFA9C0D6);
 }

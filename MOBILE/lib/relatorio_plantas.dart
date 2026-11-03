@@ -13,7 +13,7 @@
 //   static const Color background = Color(0xFF0A1A2B);
 //   static const Color surface = Color(0xFF10263D);
 //   static const Color surfaceElevated = Color(0xFF16324B);
-//   static const Color surfaceBorder = Color(0xFF1E3B57);
+//   static const Color surfaceBorder = Color(0xFF1E3B46);
 //   static const Color textPrimary = Color(0xFFF2F6FA);
 //   static const Color textSecondary = Color(0xFFA9C0D6);
 // }
@@ -99,7 +99,7 @@
 //     try {
 //       final resposta = await http.delete(
 //         Uri.parse(
-//           'http://10.141.131.57/HydroFlow/public/api/plantas/$plantaID',
+//           'http://10.141.131.46/HydroFlow/public/api/plantas/$plantaID',
 //         ),
 //         headers: {
 //           'Accept': 'application/json',
@@ -653,7 +653,7 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
       //Faz uma requisição http do tipo GET para a API
       final resposta = await http.get(
         Uri.parse(
-          'http://10.141.131.57/HydroFlow/public/api/plantas' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
+          'http://10.141.131.46/HydroFlow/public/api/plantas' //MUDAR ESSA BOMBA AQUIIIIIIIIIIIIIIIIIIII
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -693,7 +693,7 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
       //Faz uma requisição http do tipo Delete para a API
       final resposta = await http.delete(
         Uri.parse(
-          'http://10.141.131.57/HydroFlow/public/api/$plantasID' //MUDAR ESSA BAGAÇA
+          'http://10.141.131.46/HydroFlow/public/api/$plantasID' //MUDAR ESSA BAGAÇA
         ),
         //informar para a API que os dados são em json
         headers: {
@@ -890,7 +890,7 @@ class DarkPalette {
   static const Color background = Color(0xFF0A1A2B);
   static const Color surface = Color(0xFF10263D);
   static const Color surfaceElevated = Color(0xFF16324B);
-  static const Color surfaceBorder = Color(0xFF1E3B57);
+  static const Color surfaceBorder = Color(0xFF1E3B46);
   static const Color textPrimary = Color(0xFFF2F6FA);
   static const Color textSecondary = Color(0xFFA9C0D6);
 }
@@ -907,7 +907,7 @@ class _RelatorioplantasPageState extends State<RelatorioplantasPage> {
 
   static const azul = Color(0xFF002855);
 
-  static const String _baseUrl = 'http://10.141.131.57/HydroFlow/public/api';
+  static const String _baseUrl = 'http://10.141.131.46/HydroFlow/public/api';
 
   // Lista completa retornada pela API
   List<dynamic> plantas = [];
